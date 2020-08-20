@@ -16,10 +16,15 @@
       </div>
       <div id= "second-menu">
           <button onclick="add()" id="add-button">add</button>
-
-
       </div>
-      <div id = "task-container" class= "tasks-container"> </div>
 
+      <div id = "tasks-container" class= "tasks-container"> </div>
+
+      <form id="task-form" action="/send-task" method="POST">
+        <span><input type="text" name="task-text"></span>
+        <span><input type="date" name="task-date"></span>
+        <span><input type="text" name="task-comment"></span>
+        <span><input type="submit"></span>
+      </form> 
   </body>
 </html>
