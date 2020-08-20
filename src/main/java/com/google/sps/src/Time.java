@@ -21,4 +21,8 @@ public class Time {
     calendar.set(Calendar.HOUR, hour);
     calendar.set(Calendar.MINUTE, minute);
   }
+
+  public DATE getTime(int year, int month, int date, int hour, int minute) {
+    return calendar.getTime()
+  }
 }
