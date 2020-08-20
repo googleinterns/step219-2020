@@ -7,12 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar; 
 
-public class Time extends HttpServlet {
+
+@WebServlet("/time")
+public class TimeServlet extends HttpServlet {
   private Calendar calendar;
 
   @Override
   public void init() {
-    calendar = Calendar.getInstance());
+    calendar = Calendar.getInstance();
   }
 
   public void setTime(int year, int month, int date, int hour, int minute) {
@@ -25,10 +27,12 @@ public class Time extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    setTime(request.getParameter("year"), request.getParameter("month"), 
-    request.getParameter("date"), request.getParameter("hour"), request.getParameter("minute"));
+    setTime(Integer.valueOf(request.getParameter("year")), 
+              Integer.valueOf(request.getParameter("month")), 
+              Integer.valueOf(request.getParameter("date")),
+              Integer.valueOf(request.getParameter("hour")),
+              Integer.valueOf(request.getParameter("minute")));
   }
-
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
