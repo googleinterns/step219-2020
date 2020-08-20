@@ -1,6 +1,3 @@
-package com.google.sps.servlets;
-
-
 public class Place {
   private String string;
   private double lat;
