@@ -16,15 +16,17 @@
       </div>
       <div id= "second-menu">
           <button onclick="add()" id="add-button">add</button>
+
+
       </div>
+ 
+      <template id="task" class = "not-done">
+      <h6 class="title">My TODO title</h6>
+      <time datetime="2020-08-18" class="when">Time</time>
+      <span class="adress">Place</span>
+      <span class="text">Comment</span>
+      potato
+      </template>
 
-      <div id = "task-container" class= "tasks-container"> </div>
-
-      <form id="task-form" action="/send-task" method="POST">
-        <span><input type="text" name="task-text"></span>
-        <span><input type="date" name="task-date"></span>
-        <span><input type="text" name="task-comment"></span>
-        <span><input type="submit"></span>
-      </form>      
   </body>
 </html>
