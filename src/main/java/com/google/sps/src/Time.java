@@ -1,10 +1,3 @@
-package com.google.sps.servlets;
-
-import java.io.IOException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.Calendar; 
 
 public class Time {
@@ -23,7 +16,13 @@ public class Time {
     calendar.set(Calendar.MINUTE, minute);
   }
 
-  public DATE getTime(int year, int month, int date, int hour, int minute) {
+  public DATE getTime() {
     return calendar.getTime()
+  }
+
+  public String getTimeAsString() {
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
+      String strDate = dateFormat.format(calendar.getTime());  
+    return strDate
   }
 }
