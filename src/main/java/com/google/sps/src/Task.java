@@ -14,6 +14,14 @@ public class Task {
     taskText.setComment(message);
   }
 
+  void setPlace(Place place) {
+    this.place = place;
+  }
+
+  void setTime(Time time) {
+    this.Time = time;
+  }
+
   TaskText getTaskText() {
     return taskText;
   }
