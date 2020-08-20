@@ -23,4 +23,13 @@ public class Place {
       this(lat, lng);
       this(str);
   }
+  public double getLat() {
+      return lat;
+  }
+  public double getLng() {
+      return lng;
+  }
+  public String getLat() {
+      return string;
+  }
 }
