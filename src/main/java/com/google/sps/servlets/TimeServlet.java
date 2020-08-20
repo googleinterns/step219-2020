@@ -22,4 +22,17 @@ public class Time extends HttpServlet {
     calendar.set(Calendar.HOUR, hour);
     calendar.set(Calendar.MINUTE, minute);
   }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    setTime(request.getParameter("year"), request.getParameter("month"), 
+    request.getParameter("date"), request.getParameter("hour"), request.getParameter("minute"));
+  }
+
+
+  @Override
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    response.setContentType("text/html;");
+    response.getWriter().println(calendar.getTime());
+  }
 }
