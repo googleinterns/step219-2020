@@ -19,7 +19,7 @@ public class Task {
   }
 
   void setTime(Time time) {
-    this.Time = time;
+    this.time = time;
   }
 
   TaskText getTaskText() {

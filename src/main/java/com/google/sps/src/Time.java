@@ -11,11 +11,10 @@ public class Time {
   private Calendar calendar;
 
   public Time() {
-    calendar = Calendar.getInstance());
+    calendar = Calendar.getInstance();
   }
 
-  public Time(int year, int month, int date, int hour, int minute) {
-    calendar = Calendar.getInstance());
+  public void setTime(int year, int month, int date, int hour, int minute) {
     calendar.set(Calendar.YEAR, year);
     calendar.set(Calendar.MONTH, month);
     calendar.set(Calendar.DATE, date);
