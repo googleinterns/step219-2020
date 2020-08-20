@@ -10,8 +10,11 @@ public class TaskText{
       this.title = title;
       this.comment = comment;
   }
-  public Place() {
+  public TaskText() {
       this("New Task");
+  }
+  public void setComment(String comment) {
+      this.comment = comment;
   }
   public String getComment() {
       return comment;

@@ -1,4 +1,7 @@
-import java.util.Calendar; 
+import java.util.Calendar;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;  
 
 public class Time {
   private Calendar calendar;
@@ -16,13 +19,13 @@ public class Time {
     calendar.set(Calendar.MINUTE, minute);
   }
 
-  public DATE getTime() {
-    return calendar.getTime()
+  public Date getTime() {
+    return calendar.getTime();
   }
 
   public String getTimeAsString() {
       DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");  
       String strDate = dateFormat.format(calendar.getTime());  
-    return strDate
+    return strDate;
   }
 }
