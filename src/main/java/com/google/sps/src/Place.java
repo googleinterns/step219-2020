@@ -17,12 +17,15 @@ public class Place {
       this.lng = lng;
       this.string = str;
   }
+
   public double getLat() {
       return lat;
   }
+
   public double getLng() {
       return lng;
   }
+  
   public String getString() {
       return string;
   }

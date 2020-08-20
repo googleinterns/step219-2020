@@ -6,7 +6,7 @@ public class TaskText{
       this.title = title;
       this.comment = "";
   }
-  public TaskText(String title, String cmment) {
+  public TaskText(String title, String comment) {
       this.title = title;
       this.comment = comment;
   }

@@ -10,6 +10,12 @@ public class Task {
     this.place = place;
   }
 
+  Task(Time time, TaskText taskText)
+  {
+    this.time = time;
+    this.taskText = taskText;
+  }
+
   void setComment(String message) {
     taskText.setComment(message);
   }

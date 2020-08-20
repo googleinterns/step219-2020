@@ -1,6 +1,14 @@
 import java.util.Calendar; 
 
 public class Time {
+  private String date;
+  public String getDate() {
+    return date;
+  }
+}
+
+/*
+public class Time {
   private Calendar calendar;
 
   public Time() {
@@ -25,4 +33,4 @@ public class Time {
       String strDate = dateFormat.format(calendar.getTime());  
     return strDate
   }
-}
+}*/
