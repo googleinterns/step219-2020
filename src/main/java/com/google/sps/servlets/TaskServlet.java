@@ -15,8 +15,11 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.sps.src.Task;
+import com.google.sps.src.TaskText;
+import com.google.sps.src.Time;
 
-@WebServlet("/task")
+@WebServlet("/send-task")
 public class TaskServlet extends HttpServlet {
   
   ArrayList<Task> tasks;
@@ -29,27 +32,33 @@ public class TaskServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
       String date = (String)entity.getProperty("date");
-      String comment = (String)entity.getProperty("comment")
+      String comment = (String)entity.getProperty("comment");
       Task task = new Task(new Time(date), new TaskText(text, comment));
-      messages.add(task);
+      tasks.add(task);
     }
+  }
+
+  private Task getTask(HttpServletRequest request) {
+      return new Task(new Time(request.getParameter("task-date")), 
+                          new TaskText(request.getParameter("task-text"), request.getParameter("task-comment")));
   }
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    messages.add(new UserComment(getUserMessage(request), getUserEmail()));
-    
-    Entity commentEntity = new Entity("comment");
-    commentEntity.setProperty("message", getUserMessage(request));
-    commentEntity.setProperty("email", getUserEmail());
+    Task task = getTask(request);
+    tasks.add(task);
+    Entity taskEntity = new Entity("task");
+    taskEntity.setProperty("text", task.getTaskText().getTitle());
+    taskEntity.setProperty("date", task.getTime().getDate());
+    taskEntity.setProperty("comment", task.getTaskText().getComment());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(commentEntity);
+    datastore.put(taskEntity);
     response.sendRedirect("/index.html");
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    response.setContentType("text/html;");
-    response.getWriter().println(calendar.getTime());
+    Gson gson = new Gson();
+    response.getWriter().println(gson.toJson(tasks));
   }
 }

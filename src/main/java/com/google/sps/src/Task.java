@@ -1,42 +1,43 @@
+package com.google.sps.src;
 
 public class Task {
   private Time time;
   private TaskText taskText;
   private Place place;
 
-  Task(Time time, TaskText taskText, Place place) {
+  public Task(Time time, TaskText taskText, Place place) {
     this.time = time;
     this.taskText = taskText;
     this.place = place;
   }
 
-  Task(Time time, TaskText taskText)
+  public Task(Time time, TaskText taskText)
   {
     this.time = time;
     this.taskText = taskText;
   }
 
-  void setComment(String message) {
+  public void setComment(String message) {
     taskText.setComment(message);
   }
 
-  void setPlace(Place place) {
+  public void setPlace(Place place) {
     this.place = place;
   }
 
-  void setTime(Time time) {
+  public void setTime(Time time) {
     this.time = time;
   }
 
-  TaskText getTaskText() {
+  public TaskText getTaskText() {
     return taskText;
   }
 
-  Time getTime() {
+  public Time getTime() {
     return time;
   }
 
-  Place getPlace() {
+  public Place getPlace() {
     return place;
   }
 }

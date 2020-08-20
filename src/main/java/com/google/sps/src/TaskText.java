@@ -1,3 +1,5 @@
+package com.google.sps.src;
+
 public class TaskText{
   private String title;
   private String comment;
@@ -6,12 +8,8 @@ public class TaskText{
       this.title = title;
       this.comment = "";
   }
-<<<<<<< HEAD
-  public TaskText(String title, String comment) {
-=======
 
-  public TaskText(String title, String cmment) {
->>>>>>> c0ab75a53ab4d3504cfe2e9e755de9b94afeeecb
+  public TaskText(String title, String comment) {
       this.title = title;
       this.comment = comment;
   }

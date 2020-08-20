@@ -1,3 +1,5 @@
+package com.google.sps.src;
+
 import java.util.Calendar;
 import java.util.Date;
 import java.text.DateFormat;
@@ -5,6 +7,11 @@ import java.text.SimpleDateFormat;
 
 public class Time {
   private String date;
+  
+  public Time(String date) {
+    this.date = date;
+  }
+  
   public String getDate() {
     return date;
   }

@@ -1,3 +1,6 @@
+package com.google.sps.src;
+
+
 public class Place {
   private String string;
   private double lat;

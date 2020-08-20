@@ -1,6 +1,7 @@
 async function add() {
-  fetch('/task').then(response => response.json()).then((tasksList) => {
-    let container = document.getElementById('tasks-container');
+  fetch('/send-task').then(response => response.json()).then((tasksList) => {
+    container = document.getElementById('task-container');
+    console.log(tasksList);
     container.innerText = '';
     for (const task of tasksList) {
         container.appendChild(createListElement(task));
@@ -10,10 +11,9 @@ async function add() {
 
 function createListElement(task) {
     const liElement = document.createElement("li");
-    liElement.innerHTML = '<p id= "title">' + task.getTaskText().getTitle()
-    + '<p id= "time">' + task.getTime().getTimeAsString()
-    + '<p id= "place">' + task.getPlace().getString()
-    +  '<p id= "comment">' + task.getTaskText().getComment();
+    liElement.innerHTML = '<p id= "title">' + task.taskText.title
+    + '<p id= "time">' + task.time.date
+    +  '<p id= "comment">' + task.taskText.comment
     return liElement;
 }
 

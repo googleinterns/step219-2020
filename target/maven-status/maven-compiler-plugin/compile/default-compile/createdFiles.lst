@@ -1,0 +1,5 @@
+com/google/sps/src/Task.class
+com/google/sps/servlets/TaskServlet.class
+com/google/sps/src/Time.class
+com/google/sps/src/TaskText.class
+com/google/sps/src/Place.class
