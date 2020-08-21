@@ -11,9 +11,10 @@ async function add() {
 
 function createListElement(task) {
     const liElement = document.createElement("li");
-    liElement.innerHTML = '<p id= "title">' + task.taskText.title
-    + '<p id= "time">' + task.time.date
-    +  '<p id= "comment">' + task.taskText.comment
+    liElement.innerHTML = '<div id="task"><div id= "title">' + task.taskText.title
+    + '</div><div id= "time">' + task.time.date
+    + '</div><div id= "place">' + task.place.string + '</div></div>'
+    +  '</div><div id= "comment">' + task.taskText.comment + '</div></div>'
     return liElement;
 }
 
