@@ -48,6 +48,8 @@ public class DeleteTaskServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    //Gson gson = new Gson();
+    //int id = gson.fromJson(request.getReader(), int.class);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int id = Integer.parseInt(request.getParameter("id"));
     datastore.delete(keys.get(id));
@@ -57,6 +59,17 @@ public class DeleteTaskServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
+    Query query = new Query("task");
+    PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(query);
+    tasks.clear();
+    for (Entity entity : results.asIterable()) {
+      String text = (String)entity.getProperty("text");
+      String date = (String)entity.getProperty("date");
+      String place = (String)entity.getProperty("place");
+      String comment = (String)entity.getProperty("comment");
+      Task task = new Task(new Time(date), new TaskText(text, comment), new Place(place));
+      tasks.add(task);
+    }
     response.getWriter().println(gson.toJson(tasks));
   }
 }
