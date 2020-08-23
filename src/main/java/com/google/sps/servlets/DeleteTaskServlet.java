@@ -48,8 +48,6 @@ public class DeleteTaskServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //Gson gson = new Gson();
-    //int id = gson.fromJson(request.getReader(), int.class);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int id = Integer.parseInt(request.getParameter("id"));
     datastore.delete(keys.get(id));
