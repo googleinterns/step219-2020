@@ -1,0 +1,69 @@
+#app-title {
+    width: 15%;
+    font-family: "Lucida Console", Courier, monospace;
+    background: #4d2c91;
+    padding: 3px;
+    color: #FF5722;
+}
+
+.task_titleData {
+    width: 15%;
+    font-family: "Lucida Console", Courier, monospace;
+    background: #7B1FA2;
+    margin: 3px;
+    padding: 3px;
+    color: #FFFFFF
+}
+
+.task_buttonHolder {
+  float: right;
+}
+
+.task_button {
+  margin: 2px;
+  padding: 2px;
+  background: #FF5722;
+}
+.task_placeData {
+  margin: 3px;
+  padding: 3px;
+}
+
+.task_timeData {
+  margin: 3px;
+  padding: 3px;
+}
+
+.task_dataholder div{
+    height: 100%;
+    width: 10%;
+    display: inline-block;
+    border: 1px solid  #dff1ee;
+    padding: 3px;
+    margin: 3px;
+}
+
+.tasklist_node {
+    padding: 5px;
+    list-style-type: none;
+    background-color: #ce93d8;
+    margin-top: 7px;
+}
+
+.chosen_tasklist_node {
+    padding: 5px;
+    list-style-type: none;
+    background-color: #ff0000;
+    margin-top: 7px;
+}
+
+.task_commentData {
+  margin: 3px;
+    padding: 3px;
+}
+
+#task_container {
+    width: 100%;
+}
+
+

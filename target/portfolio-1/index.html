@@ -6,30 +6,26 @@
     <link rel="stylesheet" href="style.css">
     <script src="script.js"></script>
   </head>
-  <body onload="add()">
+  <body onload="loadToDos()">
       <div id = "title-main menu-line">
-      <h4 id="title">To-do map app</h4>
-      <div id= "main-menu">
-          <button onclick="loadListPage()" id="list-button">List</button>
+        <h4 id="app-title">To-do map app</h4>
+        <div id= "main-menu">
+            <button onclick="loadListPage()" id="list-button">List</button>
+        </div>
+      </div>
 
-      </div>
-      </div>
       <div id= "second-menu">
-          <button onclick="add()" id="add-button">add</button>
+          <button onclick="loadToDos()" id="add-button">add</button>
       </div>
-<<<<<<< HEAD
-
-      <div id = "task-container" class= "tasks-container"></div>
-=======
-    
-      <div id = "tasks-container" class= "tasks-container"> </div>
->>>>>>> 1b03429ffef5552a758b5427304feff97262dc31
-
+      
       <form id="task-form" action="/send-task" method="POST">
         <span><input type="text" name="task-text"></span>
         <span><input type="text" name="task-date"></span>
+        <span><input type="text" name="task-place"></span>
         <span><input type="text" name="task-comment"></span>
         <span><input type="submit"></span>
       </form> 
+
+      <div id = "task-container" class= "tasks-container"></div>
   </body>
 </html>
