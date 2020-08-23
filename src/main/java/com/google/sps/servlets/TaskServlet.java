@@ -59,6 +59,17 @@ public class TaskServlet extends HttpServlet {
 
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println(request.getParameter("type"));
+    if (request.getParameter("type") != null && request.getParameter("type").equals("notify")) {
+ 
+      long number = Long.parseLong(request.getParameter("number"));
+     
+      tasks.removeIf(element -> (element.getNumber() == number));
+     
+      response.sendRedirect("/index.html");
+      return;
+    }
+    
     Entity taskEntity = new Entity("task");
     
     Task task = getTask(request, taskEntity.getKey().getId());

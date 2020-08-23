@@ -21,14 +21,18 @@ import com.google.sps.src.Time;
 import com.google.sps.src.Place;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
+import java.util.Scanner;
 
 @WebServlet("/remove-task")
-public class TaskServlet extends HttpServlet {
+public class RemoveTaskServlet extends HttpServlet {
  
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long number = Long.parseLong(request.getParameter("number"));
-    Key key = KeyFactory.createKey()
+    System.out.println(number);
+    Key key = KeyFactory.createKey("task", number);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    datastore.delete(key);
     response.sendRedirect("/index.html");
   }
 }

@@ -62,23 +62,47 @@ function createTaskDataholderElement(task) {
     return taskDataholderElement;
 }
 
-function changeView(view) {
-  view.setAttribute("class", "chosen_tasklist_node");
-}
-
 function getConfirmation() {
   result = confirm("Do you really want to remove this task?");
-  alert("Hello braza " + result + "|");
   return result;
 }
 
-function removeElement(event) {
+async function removeElement(view) {
+  bodyText = "number=" + view.id;
+  console.log(view)
+  console.log(bodyText)
+  
+  await fetch('/remove-task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: bodyText
+  });
+
+  notificationText = "type=notify&number=" + view.id;
+  console.log(notificationText)
+  await fetch('/send-task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: notificationText
+  })
+  
+  view.remove();
+}
+
+function doRemoveEvent(event) {
   console.log(event)
   elementId = event.path[2].id;
   view = document.getElementById(elementId);
-  changeView(view);
-  setTimeout(getConfirmation, 0)
+  
+  view.setAttribute("class", "chosen_tasklist_node");
   result = getConfirmation();
+  if (result) {
+    removeElement(view);
+  }
   view.setAttribute("class", "tasklist_node");
 }
 
@@ -89,7 +113,7 @@ function createButtonElements() {
   const removeButton = document.createElement("span")
   removeButton.innerText = "REMOVE";
   removeButton.setAttribute("class", "task_button")
-  removeButton.addEventListener("click", removeElement);
+  removeButton.addEventListener("click", doRemoveEvent);
 
   buttonHolder.appendChild(removeButton);
   return buttonHolder;

@@ -67,23 +67,40 @@ function getConfirmation() {
   return result;
 }
 
-function removeElement(view) {
-  view.parentNode.removeChild(view);
+async function removeElement(view) {
   bodyText = "number=" + view.id;
+  console.log(view)
   console.log(bodyText)
-  let response = await fetch('/remove-task', {
+  
+  await fetch('/remove-task', {
     method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
     body: bodyText
   });
+
+  notificationText = "type=notify&number=" + view.id;
+  console.log(notificationText)
+  await fetch('/send-task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: notificationText
+  })
+  
+  view.remove();
 }
 
 function doRemoveEvent(event) {
   console.log(event)
   elementId = event.path[2].id;
   view = document.getElementById(elementId);
+  
   view.setAttribute("class", "chosen_tasklist_node");
   result = getConfirmation();
-  if (result === "true") {
+  if (result) {
     removeElement(view);
   }
   view.setAttribute("class", "tasklist_node");
@@ -96,7 +113,7 @@ function createButtonElements() {
   const removeButton = document.createElement("span")
   removeButton.innerText = "REMOVE";
   removeButton.setAttribute("class", "task_button")
-  removeButton.addEventListener("click", removeElement);
+  removeButton.addEventListener("click", doRemoveEvent);
 
   buttonHolder.appendChild(removeButton);
   return buttonHolder;
