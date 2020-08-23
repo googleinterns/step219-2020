@@ -15,6 +15,7 @@ import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
+import com.google.appengine.api.users.UserServiceFactory;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.sps.src.Task;
@@ -22,15 +23,16 @@ import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
 import com.google.sps.src.Place;
 
-@WebServlet("/send-task")
-public class TaskServlet extends HttpServlet {
-  
+@WebServlet("/delete-task")
+public class DeleteTaskServlet extends HttpServlet {
   ArrayList<Task> tasks;
   ArrayList<Key> keys;
+
   
   @Override
   public void init() {
     tasks = new ArrayList<Task>();
+    keys = new ArrayList<Key>();
     Query query = new Query("task");
     PreparedQuery results = DatastoreServiceFactory.getDatastoreService().prepare(query);
     for (Entity entity : results.asIterable()) {
@@ -44,22 +46,11 @@ public class TaskServlet extends HttpServlet {
     }
   }
 
-  private Task getTask(HttpServletRequest request) {
-      return new Task(new Time(request.getParameter("task-date")), 
-                          new TaskText(request.getParameter("task-text"), request.getParameter("task-comment")), new Place(request.getParameter("task-place")));
-  }
-
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Task task = getTask(request);
-    tasks.add(task);
-    Entity taskEntity = new Entity("task", Integer.toString(tasks.size()));
-    taskEntity.setProperty("text", task.getTaskText().getTitle());
-    taskEntity.setProperty("date", task.getTime().getDate());
-    taskEntity.setProperty("comment", task.getTaskText().getComment());
-    taskEntity.setProperty("place", task.getPlace().getString());
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+    int id = Integer.parseInt(request.getParameter("id"));
+    datastore.delete(keys.get(id));
     response.sendRedirect("/index.html");
   }
 
