@@ -22,6 +22,10 @@ public class TaskText{
       this.comment = comment;
   }
 
+  public void setTitle(String title) {
+      this.title = title;
+  }
+
   public String getComment() {
       return comment;
   }

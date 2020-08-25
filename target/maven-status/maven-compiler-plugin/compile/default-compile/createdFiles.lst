@@ -1,3 +1,4 @@
+com/google/sps/servlets/RemoveTaskServlet.class
 com/google/sps/src/Task.class
 com/google/sps/servlets/TaskServlet.class
 com/google/sps/src/Time.class

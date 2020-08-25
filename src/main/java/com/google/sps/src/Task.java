@@ -4,17 +4,17 @@ public class Task {
   private Time time;
   private TaskText taskText;
   private Place place;
+  private long number;
 
-  public Task(Time time, TaskText taskText, Place place) {
+  public Task(Time time, TaskText taskText, Place place, long number) {
     this.time = time;
     this.taskText = taskText;
     this.place = place;
+    this.number = number;
   }
 
-  public Task(Time time, TaskText taskText)
-  {
-    this.time = time;
-    this.taskText = taskText;
+  public long getNumber() {
+    return number;
   }
 
   public void setComment(String message) {
