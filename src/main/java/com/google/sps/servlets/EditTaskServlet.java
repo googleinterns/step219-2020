@@ -22,9 +22,10 @@ import com.google.sps.src.Task;
 import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
 import com.google.sps.src.Place;
+import java.lang.Exception;
 
-@WebServlet("/delete-task")
-public class DeleteTaskServlet extends HttpServlet {
+@WebServlet("/edit-task")
+public class EditTaskServlet extends HttpServlet {
   ArrayList<Key> keys;
 
   
@@ -42,7 +43,39 @@ public class DeleteTaskServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     int id = Integer.parseInt(request.getParameter("id"));
-    datastore.delete(keys.get(id));
+    System.out.println(id);
+    String title = request.getParameter("task-text");
+    System.out.println(title);
+    String date = request.getParameter("task-date");
+    System.out.println(date);
+    String place = request.getParameter("task-place");
+    System.out.println(place);
+    String comment = request.getParameter("task-comment");
+    System.out.println(comment);
+    try {
+    Entity taskEntity = datastore.get(keys.get(id));
+
+    if (!title.equals("")) {
+        taskEntity.setProperty("text",title);
+    }
+    if (!date.equals("")) {
+        taskEntity.setProperty("date", date);
+    }
+    if (!place.equals("")) {
+        taskEntity.setProperty("place", place);
+    }
+    if (!comment.equals("")) {
+        taskEntity.setProperty("comment", comment);
+    }
+    datastore.put(taskEntity);
+
+    System.out.println("data edited");
+    }
+     catch(Exception e)
+    { 
+        System.out.println("exeption");
+        return;
+    }
     response.sendRedirect("/index.html");
   }
 }

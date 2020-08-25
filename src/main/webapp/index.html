@@ -17,6 +17,7 @@
       <div id= "second-menu">
           <button onclick="add()" id="add-button">add</button>
       </div>
+      <h5>Create new Task</h5>
       <form id="task-form" action="/send-task" method="POST">
         <span><input type="text" name="task-text"></span>
         <span><input type="text" name="task-date"></span>
@@ -24,6 +25,23 @@
         <span><input type="text" name="task-comment"></span>
         <span><input type="submit"></span>
       </form> 
+      <h5>Delete Task</h5>
+      <form id="delete-form" action="/delete-task" method="POST">
+        <label for="id">id</label>
+        <span><input type="number" name="id"></span>
+        <span><input type="submit"></span>
+      </form> 
+      <h5>Edit Task</h5>
+      <form id="edit-form" action="/edit-task" method="POST">
+        <label for="id">id</label>
+        <span><input type="number" name="id"></span>
+        <span><input type="text" name="task-text"></span>
+        <span><input type="text" name="task-date"></span>
+        <span><input type="text" name="task-place"></span>
+        <span><input type="text" name="task-comment"></span>
+        <span><input type="submit"></span>
+      </form>
       <div id = "task-container" class= "tasks-container"></div>
+
   </body>
 </html>
