@@ -25,9 +25,47 @@ async function loadToDos() {
   });
 }
 
+function findParentListView(event) {
+  for (view of event.path)
+    if (view.localName == "li") {
+      return view;
+    }
+}
+
+async function editFieldData(event) {
+  console.log(event)
+  
+  taskView = findParentListView(event);
+
+  elementView = event.path[0];
+  askResult = prompt("Do you want to change this field?", elementView.innerText)
+  if (askResult == null)
+    return;
+  
+  elementView.innerText = askResult;
+
+  requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
+  await fetch('/remove-task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: requestParams
+  });
+
+  await fetch('/send-task', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: requestParams
+  });
+}
+
 function createTaskCommentElement(task) {
   const taskCommentElement = document.createElement("div");
   taskCommentElement.setAttribute("class", "task_commentData");
+  taskCommentElement.addEventListener("click", editFieldData);
   taskCommentElement.innerText = task.taskText.comment;
   return taskCommentElement;
 }
@@ -35,6 +73,7 @@ function createTaskCommentElement(task) {
 function createTaskTimeElement(task) {
   const taskTimeElement = document.createElement("div");
   taskTimeElement.setAttribute("class", "task_timeData");
+  taskTimeElement.addEventListener("click", editFieldData);
   taskTimeElement.innerText = task.time.date;
   return taskTimeElement;
 }
@@ -42,13 +81,15 @@ function createTaskTimeElement(task) {
 function createTaskTitleElement(task) {
   const taskTitleElement = document.createElement("div");
   taskTitleElement.setAttribute("class", "task_titleData");
+  taskTitleElement.addEventListener("click", editFieldData);
   taskTitleElement.innerText = task.taskText.title;
   return taskTitleElement;
 }
 
 function createTaskPlaceElement(task) {
   const taskPlaceElement = document.createElement("div");
-  taskPlaceElement.setAttribute("class", "task_commentData");
+  taskPlaceElement.setAttribute("class", "task_placeData");
+  taskPlaceElement.addEventListener("click", editFieldData);
   taskPlaceElement.innerText = task.place.string;
   return taskPlaceElement;
 }
@@ -68,20 +109,16 @@ function getConfirmation() {
 }
 
 async function removeElement(view) {
-  bodyText = "number=" + view.id;
-  console.log(view)
-  console.log(bodyText)
-  
+  notificationText = "type=notify&number=" + view.id;
   await fetch('/remove-task', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: bodyText
+    body: notificationText
   });
 
-  notificationText = "type=notify&number=" + view.id;
-  console.log(notificationText)
+  
   await fetch('/send-task', {
     method: 'POST',
     headers: {
@@ -94,7 +131,6 @@ async function removeElement(view) {
 }
 
 function doRemoveEvent(event) {
-  console.log(event)
   elementId = event.path[2].id;
   view = document.getElementById(elementId);
   
