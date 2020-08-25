@@ -165,5 +165,3 @@ function createListElement(task) {
     liElement.appendChild(createTaskCommentElement(task));
     return liElement;
 }
-
-
