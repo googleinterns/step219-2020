@@ -165,3 +165,126 @@ function createListElement(task) {
     liElement.appendChild(createTaskCommentElement(task));
     return liElement;
 }
+
+
+
+function initMap() {
+  const map = new google.maps.Map(
+      document.getElementById('map'),
+      {center: {lat: 55.752779, lng: 37.621588},
+      zoom: 6,
+      clickableIcons: true,
+      backgroundColor: "#red"
+    });
+  console.log('map showed');
+  getCurrentGeolocation(map);
+  console.log('geolocation');
+  var mapMarkers = new Object();
+  var mapInfos = new Object();
+  showTasksOnMap(map, mapMarkers, mapInfos);
+}
+
+async function showTasksOnMap(map, mapMarkers, mapInfos) {
+    fetch('/send-task').then(response => response.json()).then((tasksList) => {
+        for (const task of tasksList) {
+            markerName = "lat" + task.place.lat.toString() + "lng" + task.place.lng.toString();
+
+            if (markerName in mapMarkers) {
+                addInfoContent(task, mapInfos[markerName]);
+                mapMarkers[markerName].addListener('click', function() {
+                    mapInfos[markerName].open(map, mapMarkers[markerName]);
+                });
+            } else {
+                mapInfos[markerName] = new google.maps.InfoWindow({
+                    content: ''});
+                addInfoContent(task, mapInfos[markerName]);
+                var pos = {lat: task.place.lat, lng: task.place.lng};
+                mapMarkers[markerName] = new google.maps.Marker({
+                    position: pos,
+                    map: map,
+                    title: task.place.string});
+                mapMarkers[markerName].addListener('click', function() {
+                    mapInfos[markerName].open(map, mapMarkers[markerName]);
+                });
+            }
+    }
+    });
+}
+
+function addInfoContent(task, infoW) {
+    innerText = document.getElementById(task.number);
+    infoW.setContent(infoW.getContent() + innerText.innerHTML.toString());
+}
+
+function calculateAndDisplayRoute(directionsService, directionsRenderer, from, to) {
+  //from and to are google.maps.Marker class objects
+  console.log("entered calculateAndD");
+  const selectedMode = document.getElementById("mode").value;
+  directionsService.route(
+    {
+      origin: {lat: from.position.lat(), lng: from.position.lng() },
+      destination: {lat: to.lat(),
+          lng: to.lng()},
+      travelMode: google.maps.TravelMode[selectedMode]
+    },
+    (response, status) => {
+      if (status == "OK") {
+        directionsRenderer.setDirections(response);
+      } else {
+        window.alert("Directions request failed due to " + status);
+      }
+    }
+  );
+}
+
+function getCurrentGeolocation(map) {
+  infoWindow = new google.maps.InfoWindow();
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      position => {
+        const pos = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        };
+        infoWindow.setPosition(pos);
+        infoWindow.setContent("Location found.");
+        infoWindow.open(map);
+        map.setCenter(pos);
+      },
+      () => {
+        handleLocationError(true, infoWindow, map.getCenter());
+      }
+    );
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError(false, infoWindow, map.getCenter());
+  }
+}
+
+function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(
+    browserHasGeolocation
+      ? "Error: The Geolocation service failed."
+      : "Error: Your browser doesn't support geolocation."
+  );
+  infoWindow.open(map);
+}
+
+function showMap() {
+    mapCurState = document.getElementById('map');
+    taskForm = document.getElementById('task-form');
+    taskContainer = document.getElementById('task-container');
+    if (mapCurState.style.display == "none") {
+        initMap();
+        mapCurState.style.display = "block";
+        taskForm.style.display = "none";
+        taskContainer.style.display = "none";
+    } else {
+        mapCurState.style.display = "none";
+        taskForm.style.display = "block";
+        taskContainer.style.display = "block";
+    }
+}
+
