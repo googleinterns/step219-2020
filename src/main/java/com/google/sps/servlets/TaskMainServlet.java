@@ -57,7 +57,7 @@ public class TaskMainServlet extends HttpServlet {
       String date = (String)entity.getProperty("date");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
-      Task task = new Task(new Time(date), new TaskText(text, comment), new Place(place));
+      Task task = new Task(new Time(date), new TaskText(text, comment), new Place(place), 0); //0 is fictional value
       tasks.add(task);
     }
     response.getWriter().println(gson.toJson(tasks));
