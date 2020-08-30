@@ -17,7 +17,7 @@ import java.util.Map;
 @WebServlet("/remove-task")
 public class RemoveTaskServlet extends HttpServlet {
 
-  private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number) {
+  private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number) throws IOException {
     Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
@@ -33,6 +33,7 @@ public class RemoveTaskServlet extends HttpServlet {
       datastore.put(entity);
     } catch (Throwable e) {
       System.out.println("Key doesn't exists");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
   }
 
