@@ -40,7 +40,6 @@ public class TaskServlet extends HttpServlet {
       String date = (String)entity.getProperty("date");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
-
       Task task = new Task(new Time(date), 
         new TaskText(text, comment), 
         new Place(place), 
@@ -105,8 +104,7 @@ public class TaskServlet extends HttpServlet {
     String type = request.getParameter("type");
     if (type.equals("add")) {
       doAddTask(request, response);
-    }
-    else if (type.equals("notify")) {
+    } else if (type.equals("notify")) {
       doNotifyTask(request, response);
     } else if (type.equals("edit")) {
       doEditTask(request, response);

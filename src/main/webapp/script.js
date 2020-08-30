@@ -27,7 +27,7 @@ async function loadToDos() {
 
 function findParentListView(event) {
   for (view of event.path)
-    if (view.localName == "li") {
+    if (view.localName === "li") {
       return view;
     }
 }
