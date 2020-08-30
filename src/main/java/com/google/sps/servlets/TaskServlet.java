@@ -64,53 +64,67 @@ public class TaskServlet extends HttpServlet {
   /**
    * Adding task to a Datastore
    */
-  private void doAddTask(HttpServletRequest request, HttpServletResponse response) {
-    Entity taskEntity = new Entity("task");
-    taskEntity.setProperty("text", request.getParameter("task-date"));
-    taskEntity.setProperty("date", request.getParameter("task-text"));
-    taskEntity.setProperty("comment", request.getParameter("task-comment"));
-    taskEntity.setProperty("place", request.getParameter("task-place"));
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    datastore.put(taskEntity);
+  private void doAddTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try {
+      Entity taskEntity = new Entity("task");
+      taskEntity.setProperty("text", request.getParameter("task-date"));
+      taskEntity.setProperty("date", request.getParameter("task-text"));
+      taskEntity.setProperty("comment", request.getParameter("task-comment"));
+      taskEntity.setProperty("place", request.getParameter("task-place"));
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      datastore.put(taskEntity);
 
-    Task task = getTask(request, taskEntity.getKey().getId());
-    tasks.add(task);
+      Task task = getTask(request, taskEntity.getKey().getId());
+      tasks.add(task);
 
-    System.out.println("The id of the task is " + taskEntity.getKey().getId());
+      System.out.println("The id of the task is " + taskEntity.getKey().getId());
+    } catch (Exception e) {
+      System.out.println("LOG: error " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
   }
 
   /**
    * Edit one field of specified task
+   *
    * @param request contains id, field which is need to be changed and new data for this field
    */
-  private void doEditTask(HttpServletRequest request, HttpServletResponse response) {
-    String fieldName = request.getParameter("field");
-    long number = Long.parseLong(request.getParameter("number"));
-    String newFieldData = request.getParameter("new_data");
-    for (Task task : tasks) {
-      if (task.getNumber() == number) {
-        if (fieldName.equals("task_placeData")) {
-          task.setPlace(new Place(newFieldData));
-        } else if (fieldName.equals("task_timeData")) {
-          task.setTime(new Time(newFieldData));
+  private void doEditTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try {
+      String fieldName = request.getParameter("field");
+      long number = Long.parseLong(request.getParameter("number"));
+      String newFieldData = request.getParameter("new_data");
+      for (Task task : tasks) {
+        if (task.getNumber() == number) {
+          if (fieldName.equals("task_placeData")) {
+            task.setPlace(new Place(newFieldData));
+          } else if (fieldName.equals("task_timeData")) {
+            task.setTime(new Time(newFieldData));
+          } else if (fieldName.equals("task_titleData")) {
+            task.getTaskText().setTitle(newFieldData);
+          } else if (fieldName.equals("task_commentData")) {
+            task.getTaskText().setComment(newFieldData);
+          }
+          break;
         }
-        else if (fieldName.equals("task_titleData")) {
-          task.getTaskText().setTitle(newFieldData);
-        }
-        else if (fieldName.equals("task_commentData")) {
-          task.getTaskText().setComment(newFieldData);
-        }
-        break;
       }
+    } catch (Exception e) {
+      System.out.println("LOG: error! " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
   }
 
   /**
    * Delete task from Datastore
    */
-  private void doDeleteTask(HttpServletRequest request, HttpServletResponse response) {
-    long number = Long.parseLong(request.getParameter("number"));
-    tasks.removeIf(element -> (element.getNumber() == number));
+  private void doDeleteTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    try {
+      long number = Long.parseLong(request.getParameter("number"));
+      tasks.removeIf(element -> (element.getNumber() == number));
+    } catch (Throwable e) {
+      System.out.println("LOG: error " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
   }
 
   /**
