@@ -3,15 +3,15 @@ package com.google.sps.src;
 public class Task {
 
   private final TaskText taskText;
-  private final long number;
+  private final long datastoreId;
   private Time time;
   private Place place;
 
-  public Task(Time time, TaskText taskText, Place place, long number) {
+  public Task(Time time, TaskText taskText, Place place, long datastoreId) {
     this.time = time;
     this.taskText = taskText;
     this.place = place;
-    this.number = number;
+    this.datastoreId = datastoreId;
   }
 
   public void setField(String fieldName, String data) throws RuntimeException {
@@ -28,8 +28,8 @@ public class Task {
     }
   }
 
-  public long getNumber() {
-    return number;
+  public long getDatastoreId() {
+    return datastoreId;
   }
 
   public void setComment(String message) {

@@ -95,7 +95,7 @@ public class TaskServlet extends HttpServlet {
       long number = Long.parseLong(request.getParameter("number"));
       String newFieldData = request.getParameter("new_data");
       for (Task task : tasks) {
-        if (task.getNumber() == number) {
+        if (task.getDatastoreId() == number) {
           task.setField(fieldName, newFieldData);
           break;
         }
@@ -113,7 +113,7 @@ public class TaskServlet extends HttpServlet {
       throws IOException {
     try {
       long number = Long.parseLong(request.getParameter("number"));
-      tasks.removeIf(element -> (element.getNumber() == number));
+      tasks.removeIf(element -> (element.getDatastoreId() == number));
     } catch (Throwable e) {
       System.out.println("LOG: error " + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
