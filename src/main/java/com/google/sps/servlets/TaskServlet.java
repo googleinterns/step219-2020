@@ -57,39 +57,7 @@ public class TaskServlet extends HttpServlet {
                           id);
   }
 
-  @Override
-  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println(request.getParameter("type"));
-    String type = request.getParameter("type");
-    if (type.equals("notify")) {
-      long number = Long.parseLong(request.getParameter("number"));
-      tasks.removeIf(element -> (element.getNumber() == number));
-      response.sendRedirect("/index.html");
-      return;
-    } else if (type.equals("edit")) {
-      String fieldName = request.getParameter("field");
-      long number = Long.parseLong(request.getParameter("number"));
-      String newFieldData = request.getParameter("new_data");
-      for (Task task : tasks) {
-        if (task.getNumber() == number) {
-          if (fieldName.equals("task_placeData")) {
-            task.setPlace(new Place(newFieldData));
-          } else if (fieldName.equals("task_timeData")) {
-            task.setTime(new Time(newFieldData));
-          }
-          else if (fieldName.equals("task_titleData")) {
-            task.getTaskText().setTitle(newFieldData);
-          }
-          else if (fieldName.equals("task_commentData")) {
-            task.getTaskText().setComment(newFieldData);
-          }
-          break;
-        }
-      }
-      response.sendRedirect("/index.html");
-      return;
-    }
-
+  private void doAddTask(HttpServletRequest request, HttpServletResponse response) {
     Entity taskEntity = new Entity("task");
     taskEntity.setProperty("text", request.getParameter("task-date"));
     taskEntity.setProperty("date", request.getParameter("task-text"));
@@ -100,10 +68,52 @@ public class TaskServlet extends HttpServlet {
 
     Task task = getTask(request, taskEntity.getKey().getId());
     tasks.add(task);
-    
+
     System.out.println("The id of the task is " + taskEntity.getKey().getId());
+  }
+
+  private void doEditTask(HttpServletRequest request, HttpServletResponse response) {
+    String fieldName = request.getParameter("field");
+    long number = Long.parseLong(request.getParameter("number"));
+    String newFieldData = request.getParameter("new_data");
+    for (Task task : tasks) {
+      if (task.getNumber() == number) {
+        if (fieldName.equals("task_placeData")) {
+          task.setPlace(new Place(newFieldData));
+        } else if (fieldName.equals("task_timeData")) {
+          task.setTime(new Time(newFieldData));
+        }
+        else if (fieldName.equals("task_titleData")) {
+          task.getTaskText().setTitle(newFieldData);
+        }
+        else if (fieldName.equals("task_commentData")) {
+          task.getTaskText().setComment(newFieldData);
+        }
+        break;
+      }
+    }
+  }
+
+  private void doNotifyTask(HttpServletRequest request, HttpServletResponse response) {
+    long number = Long.parseLong(request.getParameter("number"));
+    tasks.removeIf(element -> (element.getNumber() == number));
+  }
+
+  @Override
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    System.out.println(request.getParameter("type"));
+    String type = request.getParameter("type");
+    if (type.equals("add")) {
+      doAddTask(request, response);
+    }
+    else if (type.equals("notify")) {
+      doNotifyTask(request, response);
+    } else if (type.equals("edit")) {
+      doEditTask(request, response);
+    }
     response.sendRedirect("/index.html");
   }
+
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
