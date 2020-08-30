@@ -16,29 +16,30 @@
 }
 
 .task_buttonHolder {
-  float: right;
+    float: right;
 }
 
 .task_button {
-  margin: 2px;
-  padding: 2px;
-  background: #FF5722;
+    margin: 2px;
+    padding: 2px;
+    background: #FF5722;
 }
+
 .task_placeData {
-  margin: 3px;
-  padding: 3px;
+    margin: 3px;
+    padding: 3px;
 }
 
 .task_timeData {
-  margin: 3px;
-  padding: 3px;
+    margin: 3px;
+    padding: 3px;
 }
 
-.task_dataholder div{
+.task_dataholder div {
     height: 100%;
     width: 10%;
     display: inline-block;
-    border: 1px solid  #dff1ee;
+    border: 1px solid #dff1ee;
     padding: 3px;
     margin: 3px;
 }
@@ -58,7 +59,7 @@
 }
 
 .task_commentData {
-  margin: 3px;
+    margin: 3px;
     padding: 3px;
 }
 
