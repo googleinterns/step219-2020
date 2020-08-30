@@ -96,15 +96,7 @@ public class TaskServlet extends HttpServlet {
       String newFieldData = request.getParameter("new_data");
       for (Task task : tasks) {
         if (task.getNumber() == number) {
-          if (fieldName.equals("task_placeData")) {
-            task.setPlace(new Place(newFieldData));
-          } else if (fieldName.equals("task_timeData")) {
-            task.setTime(new Time(newFieldData));
-          } else if (fieldName.equals("task_titleData")) {
-            task.getTaskText().setTitle(newFieldData);
-          } else if (fieldName.equals("task_commentData")) {
-            task.getTaskText().setComment(newFieldData);
-          }
+          task.setField(fieldName, newFieldData);
           break;
         }
       }
