@@ -1,9 +1,8 @@
 async function loadToDos() {
   fetch('/send-task').then(response => response.json()).then((tasksList) => {
-    container = document.getElementById('task-container');
+    const container = document.getElementById('task-container');
     console.log(tasksList);
     container.innerText = '';
-
 
     //Debug element
     container.appendChild(createListElement({
@@ -34,18 +33,18 @@ function findParentListView(event) {
 
 async function editFieldData(event) {
   console.log(event)
-  
-  taskView = findParentListView(event);
 
-  elementView = event.path[0];
-  askResult = prompt("Do you want to change this field?", elementView.innerText)
+  const taskView = findParentListView(event);
+  const elementView = event.path[0];
+  const askResult = prompt("Do you want to change this field?", elementView.innerText)
   if (askResult == null)
     return;
-  
+
   elementView.innerText = askResult;
 
-  requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
-  await fetch('/remove-task', {
+  const requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
+
+  let req1 = fetch('/remove-task', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -53,13 +52,17 @@ async function editFieldData(event) {
     body: requestParams
   });
 
-  await fetch('/send-task', {
+
+  let req2 = fetch('/send-task', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: requestParams
   });
+
+  await req1
+  await req2;
 }
 
 function createTaskCommentElement(task) {
@@ -104,12 +107,11 @@ function createTaskDataholderElement(task) {
 }
 
 function getConfirmation() {
-  result = confirm("Do you really want to remove this task?");
-  return result;
+  return confirm("Do you really want to remove this task?");
 }
 
 async function removeElement(view) {
-  notificationText = "type=delete&number=" + view.id;
+  const notificationText = "type=delete&number=" + view.id;
   await fetch('/remove-task', {
     method: 'POST',
     headers: {
@@ -118,7 +120,6 @@ async function removeElement(view) {
     body: notificationText
   });
 
-  
   await fetch('/send-task', {
     method: 'POST',
     headers: {
@@ -131,11 +132,11 @@ async function removeElement(view) {
 }
 
 function doRemoveEvent(event) {
-  elementId = event.path[2].id;
-  view = document.getElementById(elementId);
-  
+  const elementId = event.path[2].id;
+  const view = document.getElementById(elementId);
+
   view.setAttribute("class", "chosen_tasklist_node");
-  result = getConfirmation();
+  const result = getConfirmation();
   if (result) {
     removeElement(view);
   }
