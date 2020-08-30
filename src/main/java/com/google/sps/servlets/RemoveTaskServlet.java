@@ -52,7 +52,7 @@ public class RemoveTaskServlet extends HttpServlet {
 
     if (request.getParameter("type").equals("edit")) {
       doEditTask(request, response, number);
-    } else {
+    } else if (request.getParameter("type").equals("delete")) {
       doDeleteTask(request, response, number);
     }
     response.sendRedirect("/index.html");

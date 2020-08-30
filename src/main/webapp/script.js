@@ -109,7 +109,7 @@ function getConfirmation() {
 }
 
 async function removeElement(view) {
-  notificationText = "type=notify&number=" + view.id;
+  notificationText = "type=delete&number=" + view.id;
   await fetch('/remove-task', {
     method: 'POST',
     headers: {
