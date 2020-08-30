@@ -1,20 +1,23 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.*;
-
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @WebServlet("/update-server-task-list")
 public class RemoveTaskServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
-          throws IOException {
+      throws IOException {
     Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {

@@ -1,52 +1,54 @@
 package com.google.sps.servlets;
 
-import com.google.appengine.api.datastore.*;
+import com.google.appengine.api.datastore.DatastoreService;
+import com.google.appengine.api.datastore.DatastoreServiceFactory;
+import com.google.appengine.api.datastore.Entity;
+import com.google.appengine.api.datastore.PreparedQuery;
+import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
 import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
-
+import java.io.IOException;
+import java.util.ArrayList;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.ArrayList;
 
 @WebServlet("/update-local-task-list")
 public class TaskServlet extends HttpServlet {
 
   /**
-   * An ArrayList which contains all task of the user.
-   * All views for tasks in the UI are connected with this array
+   * An ArrayList which contains all task of the user. All views for tasks in the UI are connected
+   * with this array
    */
   private ArrayList<Task> tasks;
 
-  /**
-   * Initialize list of tasks taken from Datastore
-   */
+  /** Initialize list of tasks taken from Datastore */
   @Override
   public void init() {
     tasks = new ArrayList<Task>();
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    
+
     Query query = new Query("task");
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
-      String text = (String)entity.getProperty("text");
-      String date = (String)entity.getProperty("date");
+      String text = (String) entity.getProperty("text");
+      String date = (String) entity.getProperty("date");
       String place = (String) entity.getProperty("place");
       String comment = (String) entity.getProperty("comment");
-      Task task = new Task(new Time(date),
+      Task task =
+          new Task(
+              new Time(date),
               new TaskText(text, comment),
               new Place(place),
               entity.getKey().getId());
       tasks.add(task);
     }
   }
-
 
   private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
     Entity taskEntity = new Entity("task");
@@ -60,15 +62,17 @@ public class TaskServlet extends HttpServlet {
   /**
    * Adding task to a Datastore
    */
-  private void doAddTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private void doAddTask(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     try {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity taskEntity = buildTaskEntityFromRequest(request);
       datastore.put(taskEntity);
 
-      Task task = new Task(new Time(request.getParameter("task-date")),
-              new TaskText(request.getParameter("task-text"),
-                      request.getParameter("task-comment")),
+      Task task =
+          new Task(
+              new Time(request.getParameter("task-date")),
+              new TaskText(request.getParameter("task-text"), request.getParameter("task-comment")),
               new Place(request.getParameter("task-place")),
               taskEntity.getKey().getId());
       tasks.add(task);
@@ -84,7 +88,8 @@ public class TaskServlet extends HttpServlet {
    *
    * @param request contains id, field which is need to be changed and new data for this field
    */
-  private void doEditTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private void doEditTask(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     try {
       String fieldName = request.getParameter("field");
       long number = Long.parseLong(request.getParameter("number"));
@@ -104,7 +109,8 @@ public class TaskServlet extends HttpServlet {
   /**
    * Delete task from Datastore
    */
-  private void doDeleteTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+  private void doDeleteTask(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
     try {
       long number = Long.parseLong(request.getParameter("number"));
       tasks.removeIf(element -> (element.getNumber() == number));
@@ -115,8 +121,8 @@ public class TaskServlet extends HttpServlet {
   }
 
   /**
-   * Parsing given request.
-   * This function works with updating tasks it calls function which add, delete or edit them.
+   * Parsing given request. This function works with updating tasks it calls function which add,
+   * delete or edit them.
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -134,10 +140,7 @@ public class TaskServlet extends HttpServlet {
     response.sendRedirect("/index.html");
   }
 
-
-  /**
-   * Send all user tasks to javascript in json format
-   */
+  /** Send all user tasks to javascript in json format */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();

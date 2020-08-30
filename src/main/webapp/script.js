@@ -1,34 +1,36 @@
 async function loadToDos() {
-  fetch('/update-local-task-list').then(response => response.json()).then((tasksList) => {
-    const container = document.getElementById('task-container');
-    console.log(tasksList);
-    container.innerText = '';
+  fetch('/update-local-task-list').then(response => response.json()).then(
+      (tasksList) => {
+        const container = document.getElementById('task-container');
+        console.log(tasksList);
+        container.innerText = '';
 
-    //Debug element
-    container.appendChild(createListElement({
-      place: {
-        string: "place"
-      },
-      time: {
-        date: "date"
-      },
-      taskText: {
-        comment: "comment",
-        title: "debug"
-      }
-    }))
+        //Debug element
+        container.appendChild(createListElement({
+          place: {
+            string: "place"
+          },
+          time: {
+            date: "date"
+          },
+          taskText: {
+            comment: "comment",
+            title: "debug"
+          }
+        }))
 
-    for (const task of tasksList) {
-        container.appendChild(createListElement(task));
-    }
-  });
+        for (const task of tasksList) {
+          container.appendChild(createListElement(task));
+        }
+      });
 }
 
 function findParentListView(event) {
-  for (view of event.path)
+  for (view of event.path) {
     if (view.localName === "li") {
       return view;
     }
+  }
 }
 
 async function editFieldData(event) {
@@ -36,13 +38,16 @@ async function editFieldData(event) {
 
   const taskView = findParentListView(event);
   const elementView = event.path[0];
-  const askResult = prompt("Do you want to change this field?", elementView.innerText)
-  if (askResult == null)
+  const askResult = prompt("Do you want to change this field?",
+      elementView.innerText)
+  if (askResult == null) {
     return;
+  }
 
   elementView.innerText = askResult;
 
-  const requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
+  const requestParams = "field=" + elementView.className + "&type=edit&"
+      + "new_data=" + askResult + "&number=" + taskView.id;
 
   let req1 = fetch('/update-server-task-list', {
     method: 'POST',
@@ -51,7 +56,6 @@ async function editFieldData(event) {
     },
     body: requestParams
   });
-
 
   let req2 = fetch('/update-local-task-list', {
     method: 'POST',
@@ -98,12 +102,12 @@ function createTaskPlaceElement(task) {
 }
 
 function createTaskDataholderElement(task) {
-    const taskDataholderElement = document.createElement("div");
-    taskDataholderElement.setAttribute("class", "task_dataholder");
-    taskDataholderElement.appendChild(createTaskTitleElement(task));
-    taskDataholderElement.appendChild(createTaskTimeElement(task));
-    taskDataholderElement.appendChild(createTaskPlaceElement(task));
-    return taskDataholderElement;
+  const taskDataholderElement = document.createElement("div");
+  taskDataholderElement.setAttribute("class", "task_dataholder");
+  taskDataholderElement.appendChild(createTaskTitleElement(task));
+  taskDataholderElement.appendChild(createTaskTimeElement(task));
+  taskDataholderElement.appendChild(createTaskPlaceElement(task));
+  return taskDataholderElement;
 }
 
 function getConfirmation() {
@@ -127,7 +131,7 @@ async function removeElement(view) {
     },
     body: notificationText
   })
-  
+
   view.remove();
 }
 
@@ -144,7 +148,7 @@ function doRemoveEvent(event) {
 }
 
 function createButtonElements() {
-	const buttonHolder = document.createElement("div");
+  const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
 
   const removeButton = document.createElement("span")
@@ -157,12 +161,12 @@ function createButtonElements() {
 }
 
 function createListElement(task) {
-    const liElement = document.createElement("li");
-    liElement.setAttribute("class", "tasklist_node");
-    liElement.setAttribute("id", task.number);
+  const liElement = document.createElement("li");
+  liElement.setAttribute("class", "tasklist_node");
+  liElement.setAttribute("id", task.number);
 
-    liElement.appendChild(createButtonElements());
-    liElement.appendChild(createTaskDataholderElement(task));
-    liElement.appendChild(createTaskCommentElement(task));
-    return liElement;
+  liElement.appendChild(createButtonElements());
+  liElement.appendChild(createTaskDataholderElement(task));
+  liElement.appendChild(createTaskCommentElement(task));
+  return liElement;
 }

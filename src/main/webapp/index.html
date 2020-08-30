@@ -1,33 +1,33 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>To-do map app</title>
-    <link rel="stylesheet" href="style.css">
-    <script src="script.js"></script>
-  </head>
-  <body onload="loadToDos()">
-      <div id = "title-main menu-line">
-        <h4 id="app-title">To-do map app</h4>
-        <div id= "main-menu">
-            <button onclick="loadListPage()" id="list-button">List</button>
-        </div>
-      </div>
+<head>
+  <meta charset="UTF-8">
+  <title>To-do map app</title>
+  <link href="style.css" rel="stylesheet">
+  <script src="script.js"></script>
+</head>
+<body onload="loadToDos()">
+<div id="title-main menu-line">
+  <h4 id="app-title">To-do map app</h4>
+  <div id="main-menu">
+    <button id="list-button" onclick="loadListPage()">List</button>
+  </div>
+</div>
 
-      <div id= "second-menu">
-          <button onclick="loadToDos()" id="add-button">add</button>
-      </div>
+<div id="second-menu">
+  <button id="add-button" onclick="loadToDos()">add</button>
+</div>
 
-      <h5>Create new Task</h5>
-      <form action="/update-local-task-list" id="task-form" method="POST">
-          <span><input type="text" name="task-text"></span>
-          <span><input type="text" name="task-date"></span>
-          <span><input type="text" name="task-place"></span>
-          <span><input type="text" name="task-comment"></span>
-          <span><input type="submit"></span>
-          <span hidden><input type="text" name="type" value="add"></span>
-      </form>
+<h5>Create new Task</h5>
+<form action="/update-local-task-list" id="task-form" method="POST">
+  <span><input name="task-text" type="text"></span>
+  <span><input name="task-date" type="text"></span>
+  <span><input name="task-place" type="text"></span>
+  <span><input name="task-comment" type="text"></span>
+  <span><input type="submit"></span>
+  <span hidden><input name="type" type="text" value="add"></span>
+</form>
 
-      <div id = "task-container" class= "tasks-container"></div>
-  </body>
+<div class="tasks-container" id="task-container"></div>
+</body>
 </html>
