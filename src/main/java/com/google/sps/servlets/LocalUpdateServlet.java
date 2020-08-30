@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/update-local-task-list")
-public class TaskServlet extends HttpServlet {
+public class LocalUpdateServlet extends HttpServlet {
 
   /**
    * An ArrayList which contains all task of the user. All views for tasks in the UI are connected
@@ -26,7 +26,9 @@ public class TaskServlet extends HttpServlet {
    */
   private ArrayList<Task> tasks;
 
-  /** Initialize list of tasks taken from Datastore */
+  /**
+   * Initialize list of tasks taken from Datastore
+   */
   @Override
   public void init() {
     tasks = new ArrayList<Task>();

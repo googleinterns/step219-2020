@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @WebServlet("/update-server-task-list")
-public class RemoveTaskServlet extends HttpServlet {
+public class ServerUpdateServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
