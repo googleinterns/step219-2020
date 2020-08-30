@@ -1,3 +1,4 @@
+/** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
   let response = await fetch('/update-local-task-list');
   let tasksList = await response.json();
@@ -23,6 +24,7 @@ async function loadToDos() {
   }
 }
 
+/** Finds a container with task data where current event was called */
 function findParentListView(event) {
   for (view of event.path) {
     if (view.localName === "li") {
@@ -41,9 +43,7 @@ async function editFieldData(event) {
   if (askResult == null) {
     return;
   }
-
   elementView.innerText = askResult;
-
   const requestParams = "field=" + elementView.className + "&type=edit&"
       + "new_data=" + askResult + "&number=" + taskView.id;
 
@@ -112,6 +112,7 @@ function getConfirmation() {
   return confirm("Do you really want to remove this task?");
 }
 
+/** Removes task which is connected with this view */
 async function removeElement(view) {
   const notificationText = "type=delete&number=" + view.id;
   await fetch('/update-server-task-list', {
