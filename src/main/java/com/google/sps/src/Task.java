@@ -2,14 +2,16 @@ package com.google.sps.src;
 
 public class Task {
 
-  private final TaskText taskText;
   private final long datastoreId;
   private Time time;
   private Place place;
+  private String title;
+  private String comment;
 
-  public Task(Time time, TaskText taskText, Place place, long datastoreId) {
+  public Task(Time time, String title, String comment, Place place, long datastoreId) {
     this.time = time;
-    this.taskText = taskText;
+    this.title = title;
+    this.comment = comment;
     this.place = place;
     this.datastoreId = datastoreId;
   }
@@ -20,9 +22,9 @@ public class Task {
     } else if (fieldName.equals("task_timeData")) {
       time = new Time(data);
     } else if (fieldName.equals("task_titleData")) {
-      taskText.setTitle(data);
+      title = data;
     } else if (fieldName.equals("task_commentData")) {
-      taskText.setComment(data);
+      comment = data;
     } else {
       throw new RuntimeException("Wrong field name");
     }
@@ -33,11 +35,7 @@ public class Task {
   }
 
   public void setComment(String message) {
-    taskText.setComment(message);
-  }
-
-  public TaskText getTaskText() {
-    return taskText;
+    comment = message;
   }
 
   public Time getTime() {

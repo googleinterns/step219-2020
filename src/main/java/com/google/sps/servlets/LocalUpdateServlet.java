@@ -8,7 +8,6 @@ import com.google.appengine.api.datastore.Query;
 import com.google.gson.Gson;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
-import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -43,11 +42,7 @@ public class LocalUpdateServlet extends HttpServlet {
       String place = (String) entity.getProperty("place");
       String comment = (String) entity.getProperty("comment");
       Task task =
-          new Task(
-              new Time(date),
-              new TaskText(text, comment),
-              new Place(place),
-              entity.getKey().getId());
+          new Task(new Time(date), text, comment, new Place(place), entity.getKey().getId());
       tasks.add(task);
     }
   }
@@ -61,9 +56,7 @@ public class LocalUpdateServlet extends HttpServlet {
     return taskEntity;
   }
 
-  /**
-   * Adding task to a Datastore
-   */
+  /** Adding task to a Datastore */
   private void doAddTask(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     try {
@@ -74,7 +67,8 @@ public class LocalUpdateServlet extends HttpServlet {
       Task task =
           new Task(
               new Time(request.getParameter("task-date")),
-              new TaskText(request.getParameter("task-text"), request.getParameter("task-comment")),
+              request.getParameter("task-text"),
+              request.getParameter("task-comment"),
               new Place(request.getParameter("task-place")),
               taskEntity.getKey().getId());
       tasks.add(task);
@@ -108,9 +102,7 @@ public class LocalUpdateServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Delete task from Datastore
-   */
+  /** Delete task from Datastore */
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     try {
