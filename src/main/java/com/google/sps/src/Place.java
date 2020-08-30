@@ -1,12 +1,12 @@
 package com.google.sps.src;
 
 public class Place {
-  private String string;
+  private String name;
   private double lat;
   private double lng;
 
   public Place(String str) {
-    this.string = str;
+    this.name = str;
   }
 
   public Place(double lat, double lng) {
@@ -17,7 +17,7 @@ public class Place {
   public Place(double lat, double lng, String str) {
     this.lat = lat;
     this.lng = lng;
-    this.string = str;
+    this.name = str;
   }
 
   public double getLat() {
@@ -28,7 +28,7 @@ public class Place {
     return lng;
   }
 
-  public String getString() {
-    return string;
+  public String getName() {
+    return name;
   }
 }
