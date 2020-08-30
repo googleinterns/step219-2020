@@ -19,7 +19,11 @@ import com.google.sps.src.Place;
 
 @WebServlet("/send-task")
 public class TaskServlet extends HttpServlet {
-  
+
+  /**
+   * An ArrayList which contains all task of the user.
+   * All views for tasks in the UI are connected with this array
+   */
   private ArrayList<Task> tasks;
 
   /**
@@ -131,7 +135,9 @@ public class TaskServlet extends HttpServlet {
   }
 
 
-
+  /**
+   * Send all user tasks to javascript in json format
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
