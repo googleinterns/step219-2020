@@ -12,21 +12,19 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
-import com.google.appengine.api.datastore.Query.SortDirection;
-import com.google.appengine.api.users.UserService;
-import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.src.Task;
 import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
 import com.google.sps.src.Place;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Key;
 
 @WebServlet("/send-task")
 public class TaskServlet extends HttpServlet {
   
   private ArrayList<Task> tasks;
 
+  /**
+   * Initialize list of tasks taken from Datastore
+   */
   @Override
   public void init() {
     tasks = new ArrayList<Task>();
@@ -48,6 +46,11 @@ public class TaskServlet extends HttpServlet {
     }
   }
 
+  /**
+   * Builds task from request parameters
+   * @param id is primary key of task in Datastore
+   * @return Task built from give parameters
+   */
   private Task getTask(HttpServletRequest request, long id) {
       return new Task(new Time(request.getParameter("task-date")), 
                           new TaskText(request.getParameter("task-text"),
@@ -56,6 +59,10 @@ public class TaskServlet extends HttpServlet {
                           id);
   }
 
+
+  /**
+   * Adding task to a Datastore
+   */
   private void doAddTask(HttpServletRequest request, HttpServletResponse response) {
     Entity taskEntity = new Entity("task");
     taskEntity.setProperty("text", request.getParameter("task-date"));
@@ -71,6 +78,10 @@ public class TaskServlet extends HttpServlet {
     System.out.println("The id of the task is " + taskEntity.getKey().getId());
   }
 
+  /**
+   * Edit one field of specified task
+   * @param request contains id, field which is need to be changed and new data for this field
+   */
   private void doEditTask(HttpServletRequest request, HttpServletResponse response) {
     String fieldName = request.getParameter("field");
     long number = Long.parseLong(request.getParameter("number"));
@@ -93,24 +104,32 @@ public class TaskServlet extends HttpServlet {
     }
   }
 
-  private void doNotifyTask(HttpServletRequest request, HttpServletResponse response) {
+  /**
+   * Delete task from Datastore
+   */
+  private void doDeleteTask(HttpServletRequest request, HttpServletResponse response) {
     long number = Long.parseLong(request.getParameter("number"));
     tasks.removeIf(element -> (element.getNumber() == number));
   }
 
+  /**
+   * Parsing given request.
+   * This function works with updating tasks it calls function which add, delete or edit them.
+   */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println(request.getParameter("type"));
     String type = request.getParameter("type");
     if (type.equals("add")) {
       doAddTask(request, response);
-    } else if (type.equals("notify")) {
-      doNotifyTask(request, response);
+    } else if (type.equals("delete")) {
+      doDeleteTask(request, response);
     } else if (type.equals("edit")) {
       doEditTask(request, response);
     }
     response.sendRedirect("/index.html");
   }
+
 
 
   @Override
