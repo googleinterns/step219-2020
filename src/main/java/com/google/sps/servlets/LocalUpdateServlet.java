@@ -30,7 +30,7 @@ public class LocalUpdateServlet extends HttpServlet {
    */
   @Override
   public void init() {
-    tasks = new ArrayList<Task>();
+    tasks = new ArrayList<>();
 
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 

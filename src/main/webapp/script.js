@@ -1,28 +1,26 @@
 async function loadToDos() {
-  fetch('/update-local-task-list').then(response => response.json()).then(
-      (tasksList) => {
-        const container = document.getElementById('task-container');
-        console.log(tasksList);
-        container.innerText = '';
+  let response = await fetch('/update-local-task-list');
+  let tasksList = await response.json();
 
-        //Debug element
-        container.appendChild(createListElement({
-          place: {
-            string: "place"
-          },
-          time: {
-            date: "date"
-          },
-          taskText: {
-            comment: "comment",
-            title: "debug"
-          }
-        }))
+  const container = document.getElementById('task-container');
+  console.log(tasksList);
+  container.innerText = '';
 
-        for (const task of tasksList) {
-          container.appendChild(createListElement(task));
-        }
-      });
+  //Debug element
+  container.appendChild(createListElement({
+    place: {
+      string: "place"
+    },
+    time: {
+      date: "date"
+    },
+    comment: "comment",
+    title: "debug"
+  }))
+
+  for (const task of tasksList) {
+    container.appendChild(createListElement(task));
+  }
 }
 
 function findParentListView(event) {
@@ -73,7 +71,7 @@ function createTaskCommentElement(task) {
   const taskCommentElement = document.createElement("div");
   taskCommentElement.setAttribute("class", "task_commentData");
   taskCommentElement.addEventListener("click", editFieldData);
-  taskCommentElement.innerText = task.taskText.comment;
+  taskCommentElement.innerText = task.comment;
   return taskCommentElement;
 }
 
@@ -89,7 +87,7 @@ function createTaskTitleElement(task) {
   const taskTitleElement = document.createElement("div");
   taskTitleElement.setAttribute("class", "task_titleData");
   taskTitleElement.addEventListener("click", editFieldData);
-  taskTitleElement.innerText = task.taskText.title;
+  taskTitleElement.innerText = task.title;
   return taskTitleElement;
 }
 
@@ -97,7 +95,7 @@ function createTaskPlaceElement(task) {
   const taskPlaceElement = document.createElement("div");
   taskPlaceElement.setAttribute("class", "task_placeData");
   taskPlaceElement.addEventListener("click", editFieldData);
-  taskPlaceElement.innerText = task.place.string;
+  taskPlaceElement.innerText = task.place.name;
   return taskPlaceElement;
 }
 
@@ -163,7 +161,7 @@ function createButtonElements() {
 function createListElement(task) {
   const liElement = document.createElement("li");
   liElement.setAttribute("class", "tasklist_node");
-  liElement.setAttribute("id", task.number);
+  liElement.setAttribute("id", task.datastoreId);
 
   liElement.appendChild(createButtonElements());
   liElement.appendChild(createTaskDataholderElement(task));
