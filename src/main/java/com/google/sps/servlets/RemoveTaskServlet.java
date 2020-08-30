@@ -13,7 +13,8 @@ import java.util.Map;
 @WebServlet("/update-server-task-list")
 public class RemoveTaskServlet extends HttpServlet {
 
-  private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number) throws IOException {
+  private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
+          throws IOException {
     Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
@@ -27,7 +28,7 @@ public class RemoveTaskServlet extends HttpServlet {
       String newFieldData = request.getParameter("new_data");
       entity.setProperty(viewToProperty.get(request.getParameter("field")), newFieldData);
       datastore.put(entity);
-    } catch (Throwable e) {
+    } catch (Exception e) {
       System.out.println("Key doesn't exists");
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
