@@ -13,7 +13,7 @@ public class Task {
     this.number = number;
   }
 
-  public void setField(String fieldName, String data) {
+  public void setField(String fieldName, String data) throws RuntimeException {
     if (fieldName.equals("task_placeData")) {
       place = new Place(data);
     } else if (fieldName.equals("task_timeData")) {
@@ -22,6 +22,8 @@ public class Task {
       taskText.setTitle(data);
     } else if (fieldName.equals("task_commentData")) {
       taskText.setComment(data);
+    } else {
+      throw new RuntimeException("Wrong field name");
     }
   }
 
