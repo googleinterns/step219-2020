@@ -1,20 +1,16 @@
 package com.google.sps.servlets;
 
-import java.io.IOException;
+import com.google.appengine.api.datastore.*;
+
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.google.appengine.api.datastore.DatastoreService;
-import com.google.appengine.api.datastore.DatastoreServiceFactory;
-import com.google.appengine.api.datastore.Entity;
-import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.Key;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@WebServlet("/remove-task")
+@WebServlet("/update-server-task-list")
 public class RemoveTaskServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number) throws IOException {
@@ -47,7 +43,7 @@ public class RemoveTaskServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long number = Long.parseLong(request.getParameter("number"));
 
-    System.out.println("LOG: doPost /remove-task request");
+    System.out.println("LOG: doPost /update-server-task-list request");
     System.out.println("LOG: number of the item is " + number);
     System.out.println("LOG: type of the request is " + request.getParameter("type"));
 

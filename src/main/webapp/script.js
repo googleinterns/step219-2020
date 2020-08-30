@@ -6,15 +6,15 @@ async function loadToDos() {
 
     //Debug element
     container.appendChild(createListElement({
-      place : {
-        string : "place"
+      place: {
+        string: "place"
       },
-      time : {
-        date : "date"
+      time: {
+        date: "date"
       },
-      taskText : {
-        comment : "comment",
-        title : "debug"
+      taskText: {
+        comment: "comment",
+        title: "debug"
       }
     }))
 
@@ -44,7 +44,7 @@ async function editFieldData(event) {
 
   const requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
 
-  let req1 = fetch('/remove-task', {
+  let req1 = fetch('/update-server-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -112,7 +112,7 @@ function getConfirmation() {
 
 async function removeElement(view) {
   const notificationText = "type=delete&number=" + view.id;
-  await fetch('/remove-task', {
+  await fetch('/update-server-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
