@@ -1,5 +1,5 @@
 async function loadToDos() {
-  fetch('/send-task').then(response => response.json()).then((tasksList) => {
+  fetch('/update-local-task-list').then(response => response.json()).then((tasksList) => {
     const container = document.getElementById('task-container');
     console.log(tasksList);
     container.innerText = '';
@@ -53,7 +53,7 @@ async function editFieldData(event) {
   });
 
 
-  let req2 = fetch('/send-task', {
+  let req2 = fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -120,7 +120,7 @@ async function removeElement(view) {
     body: notificationText
   });
 
-  await fetch('/send-task', {
+  await fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',

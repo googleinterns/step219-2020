@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 
-@WebServlet("/send-task")
+@WebServlet("/update-local-task-list")
 public class TaskServlet extends HttpServlet {
 
   /**
@@ -72,7 +72,6 @@ public class TaskServlet extends HttpServlet {
               new Place(request.getParameter("task-place")),
               taskEntity.getKey().getId());
       tasks.add(task);
-
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
     } catch (Exception e) {
       System.out.println("LOG: error " + e);

@@ -19,13 +19,13 @@
       </div>
 
       <h5>Create new Task</h5>
-      <form id="task-form" action="/send-task" method="POST">
-        <span><input type="text" name="task-text"></span>
-        <span><input type="text" name="task-date"></span>
-        <span><input type="text" name="task-place"></span>
-        <span><input type="text" name="task-comment"></span>
-        <span><input type="submit"></span>
-        <span hidden><input type="text" name="type" value="add"></span>
+      <form action="/update-local-task-list" id="task-form" method="POST">
+          <span><input type="text" name="task-text"></span>
+          <span><input type="text" name="task-date"></span>
+          <span><input type="text" name="task-place"></span>
+          <span><input type="text" name="task-comment"></span>
+          <span><input type="submit"></span>
+          <span hidden><input type="text" name="type" value="add"></span>
       </form>
 
       <div id = "task-container" class= "tasks-container"></div>
