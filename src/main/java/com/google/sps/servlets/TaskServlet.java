@@ -37,44 +37,40 @@ public class TaskServlet extends HttpServlet {
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
       String date = (String)entity.getProperty("date");
-      String place = (String)entity.getProperty("place");
-      String comment = (String)entity.getProperty("comment");
-      Task task = new Task(new Time(date), 
-        new TaskText(text, comment), 
-        new Place(place), 
-        entity.getKey().getId());
+      String place = (String) entity.getProperty("place");
+      String comment = (String) entity.getProperty("comment");
+      Task task = new Task(new Time(date),
+              new TaskText(text, comment),
+              new Place(place),
+              entity.getKey().getId());
       tasks.add(task);
     }
   }
 
-  /**
-   * Builds task from request parameters
-   * @param id is primary key of task in Datastore
-   * @return Task built from give parameters
-   */
-  private Task getTask(HttpServletRequest request, long id) {
-      return new Task(new Time(request.getParameter("task-date")), 
-                          new TaskText(request.getParameter("task-text"),
-                          request.getParameter("task-comment")),
-                          new Place(request.getParameter("task-place")),
-                          id);
-  }
 
+  private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
+    Entity taskEntity = new Entity("task");
+    taskEntity.setProperty("text", request.getParameter("task-date"));
+    taskEntity.setProperty("date", request.getParameter("task-text"));
+    taskEntity.setProperty("comment", request.getParameter("task-comment"));
+    taskEntity.setProperty("place", request.getParameter("task-place"));
+    return taskEntity;
+  }
 
   /**
    * Adding task to a Datastore
    */
   private void doAddTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
     try {
-      Entity taskEntity = new Entity("task");
-      taskEntity.setProperty("text", request.getParameter("task-date"));
-      taskEntity.setProperty("date", request.getParameter("task-text"));
-      taskEntity.setProperty("comment", request.getParameter("task-comment"));
-      taskEntity.setProperty("place", request.getParameter("task-place"));
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Entity taskEntity = buildTaskEntityFromRequest(request);
       datastore.put(taskEntity);
 
-      Task task = getTask(request, taskEntity.getKey().getId());
+      Task task = new Task(new Time(request.getParameter("task-date")),
+              new TaskText(request.getParameter("task-text"),
+                      request.getParameter("task-comment")),
+              new Place(request.getParameter("task-place")),
+              taskEntity.getKey().getId());
       tasks.add(task);
 
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
