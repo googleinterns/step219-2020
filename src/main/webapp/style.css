@@ -37,7 +37,7 @@
   width: 18px;
   border-radius: 50%;
   background: var(--secondary-light);
-  box-shadow: 2px 2px 5px rgba(5, 5, 5, 0.4);
+  box-shadow: 2px 2px 6px rgba(5, 5, 5, 0.4);
 }
 
 .task_button:hover {
@@ -48,8 +48,8 @@
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background: var(--secondary-color);
-  box-shadow: 3px 3px 5px rgba(5, 5, 5, 0.7);
+  background: var(--secondary-light);
+  box-shadow: 2px 2px 8px rgba(5, 5, 5, 0.7);
 }
 
 
@@ -72,14 +72,16 @@
   margin: 3px;
 }
 
+.shadowed_main_element {
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
+}
+
 .tasklist_node {
   padding: 5px;
   list-style-type: none;
   background-color: lightgray;
   margin-top: 10px;
-  border-radius: 15px 1px 15px 15px;
-  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
-
 }
 
 .chosen_tasklist_node {
@@ -97,4 +99,32 @@
 #task_container {
   width: 100%;
 }
+
+#task-composer-button {
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  width: 48px;
+  height: 48px;
+  background-color: red;
+  border-radius: 50%;
+  margin-top: 10px;
+}
+
+#task-composer-button:hover {
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  width: 48px;
+  height: 48px;
+  background-color: red;
+  border-radius: 50%;
+  margin-top: 10px;
+  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.8);
+}
+
+
+
 

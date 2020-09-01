@@ -153,7 +153,7 @@ function createButtonElements() {
   const removeButton = document.createElement("img")
   removeButton.setAttribute("class", "task_button")
   removeButton.addEventListener("click", doRemoveEvent);
-  removeButton.setAttribute("src", "./images/delete-24px.svg");
+  removeButton.setAttribute("src", "./images/clear-48dp.svg");
 
   buttonHolder.appendChild(removeButton);
   return buttonHolder;
@@ -161,7 +161,7 @@ function createButtonElements() {
 
 function createListElement(task) {
   const liElement = document.createElement("li");
-  liElement.setAttribute("class", "tasklist_node");
+  liElement.setAttribute("class", "tasklist_node shadowed_main_element");
   liElement.setAttribute("id", task.datastoreId);
 
   liElement.appendChild(createButtonElements());
