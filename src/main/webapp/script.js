@@ -150,10 +150,10 @@ function createButtonElements() {
   const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
 
-  const removeButton = document.createElement("span")
-  removeButton.innerText = "REMOVE";
+  const removeButton = document.createElement("img")
   removeButton.setAttribute("class", "task_button")
   removeButton.addEventListener("click", doRemoveEvent);
+  removeButton.setAttribute("src", "./images/delete-24px.svg");
 
   buttonHolder.appendChild(removeButton);
   return buttonHolder;

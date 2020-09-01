@@ -1,29 +1,57 @@
+:root {
+  --primary-color: #3d5afe;
+  --primary-light: #8187ff;
+  --primary-dark: #0031ca;
+  --secondary-color: #ff9100;
+  --secondary-light: #ffc246;
+  --secondary-dark: #c56200;
+}
+
 #app-title {
   width: 15%;
   font-family: "Lucida Console", Courier, monospace;
-  background: #4d2c91;
+  background: var(--primary-color);
   padding: 3px;
-  color: #FF5722;
+  color: white;
 }
 
 .task_titleData {
   width: 15%;
   font-family: "Lucida Console", Courier, monospace;
-  background: #7B1FA2;
   margin: 3px;
   padding: 3px;
-  color: #FFFFFF
+  color: black;
 }
 
 .task_buttonHolder {
   float: right;
+  padding: 1px;
 }
 
 .task_button {
+  object-fit: contain;
+  float: bottom;
   margin: 2px;
-  padding: 2px;
-  background: #FF5722;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: var(--secondary-light);
+  box-shadow: 2px 2px 5px rgba(5, 5, 5, 0.4);
 }
+
+.task_button:hover {
+  object-fit: contain;
+  float: bottom;
+  margin: 2px;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: var(--secondary-color);
+  box-shadow: 3px 3px 5px rgba(5, 5, 5, 0.7);
+}
+
 
 .task_placeData {
   margin: 3px;
@@ -47,8 +75,11 @@
 .tasklist_node {
   padding: 5px;
   list-style-type: none;
-  background-color: #ce93d8;
-  margin-top: 7px;
+  background-color: lightgray;
+  margin-top: 10px;
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
+
 }
 
 .chosen_tasklist_node {
