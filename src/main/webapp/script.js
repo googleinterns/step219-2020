@@ -169,3 +169,26 @@ function createListElement(task) {
   liElement.appendChild(createTaskCommentElement(task));
   return liElement;
 }
+
+function buildComposeView() {
+  const composeElement = document.createElement("li");
+  composeElement.setAttribute("class", "tasklist_node shadowed_main_element");
+  composeElement.appendChild(createTaskCommentForm())
+  composeElement.innerText = "Kek";
+  return composeElement;
+}
+
+function addComposeView(event) {
+  const container = document.getElementById('task-container');
+  container.appendChild(buildComposeView())
+}
+
+async function buildComposeButton() {
+  const btnElement = document.getElementById("task-composer-button");
+  btnElement.addEventListener("click", addComposeView);
+}
+
+async function doPreparation() {
+  await loadToDos();
+  await buildComposeButton();
+}
