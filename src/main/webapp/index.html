@@ -13,15 +13,10 @@
       <div id = "title-main menu-line">
         <h4 id="app-title">To-do map app</h4>
         <div id= "main-menu">
-            <button onclick="showMap()" id="list-button">List</button>
-            <button onclick="showMap()" id="add-button">Map</button>
+            <button onclick="showHideMap()" id="list-button">List</button>
+            <button onclick="showHideMap()" id="add-button">Map</button>
         </div>
       </div>
-
-      <div id= "second-menu">
-          <button onclick="addDefaultTask()" id="add-button">add</button>
-      </div>
-
 
      <h5>Create new Task</h5>
       <form id="task-form" action="/send-task" method="POST">

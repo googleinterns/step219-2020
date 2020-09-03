@@ -170,72 +170,77 @@ function createListElement(task) {
 
 function initMap() {
   const map = new google.maps.Map(
-      document.getElementById('map'),
-      {center: {lat: 55.752779, lng: 37.621588},
-      zoom: 6,
-      clickableIcons: true,
-      backgroundColor: "#red"
-    });
+      document.getElementById('map'), {
+        center: {lat: 55.752779, lng: 37.621588},
+        zoom: 6,
+        clickableIcons: true,
+        backgroundColor: "#red"
+      }
+    );
   console.log('map showed');
   getCurrentGeolocation(map);
   console.log('geolocation');
   var mapMarkers = new Object();
   var mapInfos = new Object();
-  showTasksOnMap(map, mapMarkers, mapInfos);
+  fetchTasksOnMap(map, mapMarkers, mapInfos);
 }
 
-async function showTasksOnMap(map, mapMarkers, mapInfos) {
-    fetch('/send-task').then(response => response.json()).then((tasksList) => {
-        for (const task of tasksList) {
-            markerName = "lat" + task.place.lat.toString() + "lng" + task.place.lng.toString();
+async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
+    const response = await fetch('/send-task');
+    const tasksList = await response.json();
+    showTasksOnMap(tasksList, map, mapMarkers, mapInfos);
+}
 
-            if (markerName in mapMarkers) {
-                addInfoContent(task, mapInfos[markerName]);
-                mapMarkers[markerName].addListener('click', function() {
-                    mapInfos[markerName].open(map, mapMarkers[markerName]);
-                });
-            } else {
-                mapInfos[markerName] = new google.maps.InfoWindow({
-                    content: ''});
-                addInfoContent(task, mapInfos[markerName], task);
-                var pos = {lat: task.place.lat, lng: task.place.lng};
-                mapMarkers[markerName] = new google.maps.Marker({
-                    position: pos,
-                    map: map,
-                    title: task.place.string,
-                    icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
-                mapMarkers[markerName].addListener('click', function() {
-                    mapInfos[markerName].open(map, mapMarkers[markerName]);
-                });
-                markerColor(mapMarkers[markerName], task);
-            }
+function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
+    for (const task of tasksList) {
+        markerName = "lat" + task.place.lat.toString() + "lng" + task.place.lng.toString();
+
+        if (markerName in mapMarkers) {
+            mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
+            mapMarkers[markerName].addListener('click', function() {
+                mapInfos[markerName].open(map, mapMarkers[markerName]);
+            });
+        } else {
+            mapInfos[markerName] = new google.maps.InfoWindow({
+                content: ''});
+            mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
+            var pos = {lat: task.place.lat, lng: task.place.lng};
+            mapMarkers[markerName] = new google.maps.Marker({
+                position: pos,
+                map: map,
+                title: task.place.string,
+                icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
+            mapMarkers[markerName].addListener('click', function() {
+                mapInfos[markerName].open(map, mapMarkers[markerName]);
+            });
+            mapMarkers[markerName].setIcon(composeIconUrl(task.time));
+        }
     }
-    });
 }
 
-function markerColor(marker, task) {
+function composeIconUrl(task_time) {
     let urls = "https://maps.google.com/mapfiles/ms/icons/";
     //var curUrl;
     var color ="";
     colorarray = ["red", "green", "orange", "yellow", "green", "blue"];
-    if (task.time < "2") {
+    if (task_time < "2") {
         color = colorarray[0];
-    } else if (task.time < "3") {
+    } else if (task_time < "3") {
         color = colorarray[1];
-    } else if (task.time < "4") {
+    } else if (task_time < "4") {
         color = colorarray[2];
-    } else if (task.time < "5") {
+    } else if (task_time < "5") {
         color = colorarray[3];
     } else {
-        color = "green"
+        color = "purple";
     }
     urls += color + "-dot.png";
-    marker.setIcon(urls);
+    return urls;
 }
 
-function addInfoContent(task, infoW) {
-    innerText = document.getElementById(task.number);
-    infoW.setContent(infoW.getContent() + innerText.innerHTML.toString());
+function composeNewInfoContent(task_number) {
+    innerText = document.getElementById(task_number);
+    return innerText.innerHTML.toString();
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, from, to) {
@@ -294,7 +299,7 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-function showMap() {
+function showHideMap() {
     mapCurState = document.getElementById('map');
     taskForm = document.getElementById('task-form');
     taskContainer = document.getElementById('task-container');
