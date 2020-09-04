@@ -16,7 +16,7 @@
 }
 
 .task_titleData {
-  width: 15%;
+  width: 100%;
   font-family: "Lucida Console", Courier, monospace;
   margin: 3px;
   padding: 3px;
@@ -63,6 +63,7 @@
   padding: 3px;
 }
 
+
 .task_dataholder div {
   height: 100%;
   width: 10%;
@@ -80,6 +81,8 @@
 .tasklist_node {
   padding: 5px;
   list-style-type: none;
+  display: flex;
+  justify-content: space-between;
   background-color: lightgray;
   margin-top: 10px;
 }
@@ -92,8 +95,15 @@
 }
 
 .task_commentData {
+  width: 80%;
   margin: 3px;
-  padding: 3px;
+  padding: 5px;
+  background: lightgray;
+  border-style: inset;
+  border-width: 3px;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 15px;
+  box-shadow: 0 0 4px inset black;
 }
 
 #task_container {
@@ -121,7 +131,7 @@
   background-color: var(--secondary-dark);
   border-radius: 50%;
   margin-top: 10px;
-  box-shadow: 4px 4px 15px rgba(0, 0, 0, 0.8);
+  box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.7);
 }
 
 

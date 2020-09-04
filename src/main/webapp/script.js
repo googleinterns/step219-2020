@@ -76,7 +76,7 @@ function createTaskCommentElement(task) {
 }
 
 function createTaskTimeElement(task) {
-  const taskTimeElement = document.createElement("div");
+  const taskTimeElement = document.createElement("input");
   taskTimeElement.setAttribute("class", "task_timeData");
   taskTimeElement.addEventListener("click", editFieldData);
   taskTimeElement.innerText = task.time.date;
@@ -84,7 +84,7 @@ function createTaskTimeElement(task) {
 }
 
 function createTaskTitleElement(task) {
-  const taskTitleElement = document.createElement("div");
+  const taskTitleElement = document.createElement("h4");
   taskTitleElement.setAttribute("class", "task_titleData");
   taskTitleElement.addEventListener("click", editFieldData);
   taskTitleElement.innerText = task.title;
@@ -97,15 +97,6 @@ function createTaskPlaceElement(task) {
   taskPlaceElement.addEventListener("click", editFieldData);
   taskPlaceElement.innerText = task.place.name;
   return taskPlaceElement;
-}
-
-function createTaskDataholderElement(task) {
-  const taskDataholderElement = document.createElement("div");
-  taskDataholderElement.setAttribute("class", "task_dataholder");
-  taskDataholderElement.appendChild(createTaskTitleElement(task));
-  taskDataholderElement.appendChild(createTaskTimeElement(task));
-  taskDataholderElement.appendChild(createTaskPlaceElement(task));
-  return taskDataholderElement;
 }
 
 function getConfirmation() {
@@ -159,14 +150,31 @@ function createButtonElements() {
   return buttonHolder;
 }
 
+function buildTaskRightPanel(task) {
+  const taskRightPanel = document.createElement("div");
+
+  taskRightPanel.setAttribute("class", "task_rightPanel");
+
+  taskRightPanel.appendChild(createButtonElements());
+  taskRightPanel.appendChild(createTaskTimeElement(task));
+  taskRightPanel.appendChild(createTaskPlaceElement(task));
+  return taskRightPanel;
+}
+
+function buildMainTaskDataPanel(task) {
+  const mainTaskPanel = document.createElement("div");
+  mainTaskPanel.appendChild(createTaskTitleElement(task));
+  mainTaskPanel.appendChild(createTaskCommentElement(task));
+  return mainTaskPanel;
+}
+
 function createListElement(task) {
   const liElement = document.createElement("li");
   liElement.setAttribute("class", "tasklist_node shadowed_main_element");
   liElement.setAttribute("id", task.datastoreId);
 
-  liElement.appendChild(createButtonElements());
-  liElement.appendChild(createTaskDataholderElement(task));
-  liElement.appendChild(createTaskCommentElement(task));
+  liElement.appendChild(buildMainTaskDataPanel(task));
+  liElement.appendChild(buildTaskRightPanel(task))
   return liElement;
 }
 
