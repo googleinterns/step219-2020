@@ -156,14 +156,14 @@ function createButtonElements() {
 }
 
 function createListElement(task) {
-    const liElement = document.createElement("li");
-    liElement.setAttribute("class", "tasklist_node");
-    liElement.setAttribute("id", task.number);
+  const liElement = document.createElement("li");
+  liElement.setAttribute("class", "tasklist_node");
+  liElement.setAttribute("id", task.number);
 
-    liElement.appendChild(createButtonElements());
-    liElement.appendChild(createTaskDataholderElement(task));
-    liElement.appendChild(createTaskCommentElement(task));
-    return liElement;
+  liElement.appendChild(createButtonElements());
+  liElement.appendChild(createTaskDataholderElement(task));
+  liElement.appendChild(createTaskCommentElement(task));
+  return liElement;
 }
 
 
@@ -186,61 +186,60 @@ function initMap() {
 }
 
 async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
-    const response = await fetch('/send-task');
-    const tasksList = await response.json();
-    showTasksOnMap(tasksList, map, mapMarkers, mapInfos);
+  const response = await fetch('/send-task');
+  const tasksList = await response.json();
+  showTasksOnMap(tasksList, map, mapMarkers, mapInfos);
 }
 
 function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
-    for (const task of tasksList) {
-        markerName = "lat" + task.place.lat.toString() + "lng" + task.place.lng.toString();
+  for (const task of tasksList) {
+      markerName = `lat${task.place.lat}lng${task.place.lng}`;
 
-        if (markerName in mapMarkers) {
-            mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
-            mapMarkers[markerName].addListener('click', function() {
-                mapInfos[markerName].open(map, mapMarkers[markerName]);
-            });
-        } else {
-            mapInfos[markerName] = new google.maps.InfoWindow({
-                content: ''});
-            mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
-            var pos = {lat: task.place.lat, lng: task.place.lng};
-            mapMarkers[markerName] = new google.maps.Marker({
-                position: pos,
-                map: map,
-                title: task.place.string,
-                icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
-            mapMarkers[markerName].addListener('click', function() {
-                mapInfos[markerName].open(map, mapMarkers[markerName]);
-            });
-            mapMarkers[markerName].setIcon(composeIconUrl(task.time));
-        }
-    }
+      if (markerName in mapMarkers) {
+          mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
+          mapMarkers[markerName].addListener('click', function() {
+              mapInfos[markerName].open(map, mapMarkers[markerName]);
+          });
+      } else {
+          mapInfos[markerName] = new google.maps.InfoWindow({
+              content: ''});
+          mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
+          var pos = {lat: task.place.lat, lng: task.place.lng};
+          mapMarkers[markerName] = new google.maps.Marker({
+              position: pos,
+              map: map,
+              title: task.place.string,
+              icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
+          mapMarkers[markerName].addListener('click', function() {
+              mapInfos[markerName].open(map, mapMarkers[markerName]);
+          });
+          mapMarkers[markerName].setIcon(composeIconUrl(task.time));
+      }
+  }
 }
 
 function composeIconUrl(task_time) {
-    let urls = "https://maps.google.com/mapfiles/ms/icons/";
-    //var curUrl;
-    var color ="";
-    colorarray = ["red", "green", "orange", "yellow", "green", "blue"];
-    if (task_time < "2") {
-        color = colorarray[0];
-    } else if (task_time < "3") {
-        color = colorarray[1];
-    } else if (task_time < "4") {
-        color = colorarray[2];
-    } else if (task_time < "5") {
-        color = colorarray[3];
-    } else {
-        color = "purple";
-    }
-    urls += color + "-dot.png";
-    return urls;
+  let urls = "https://maps.google.com/mapfiles/ms/icons/";
+  //var curUrl;
+  var color ="";
+  if (task_time < "2") {
+      color = "red";
+  } else if (task_time < "3") {
+      color = "green";
+  } else if (task_time < "4") {
+      color = "orange";
+  } else if (task_time < "5") {
+      color = "yellow";
+  } else {
+      color = "purple";
+  }
+  urls += color + "-dot.png";
+  return urls;
 }
 
 function composeNewInfoContent(task_number) {
-    innerText = document.getElementById(task_number);
-    return innerText.innerHTML.toString();
+  innerText = document.getElementById(task_number);
+  return innerText.innerHTML.toString();
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, from, to) {
@@ -280,16 +279,20 @@ function getCurrentGeolocation(map) {
         map.setCenter(pos);
       },
       () => {
-        handleLocationError(true, infoWindow, map.getCenter());
+        handleLocationError('browser has geolocation', infoWindow, map.getCenter());
       }
     );
   } else {
     // Browser doesn't support Geolocation
-    handleLocationError(false, infoWindow, map.getCenter());
+    handleLocationError('browser does not have geolocation', infoWindow, map.getCenter());
   }
 }
 
-function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+function handleLocationError(browserGeoState, infoWindow, pos) {
+  var browserHasGeolocation = true;
+  if (browserGeoState == 'browser does not have geolocation') {
+      browserHasGeolocation = false;
+  }
   infoWindow.setPosition(pos);
   infoWindow.setContent(
     browserHasGeolocation
@@ -300,18 +303,18 @@ function handleLocationError(browserHasGeolocation, infoWindow, pos) {
 }
 
 function showHideMap() {
-    mapCurState = document.getElementById('map');
-    taskForm = document.getElementById('task-form');
-    taskContainer = document.getElementById('task-container');
-    if (mapCurState.style.display == "none") {
-        initMap();
-        mapCurState.style.display = "block";
-        taskForm.style.display = "none";
-        taskContainer.style.display = "none";
-    } else {
-        mapCurState.style.display = "none";
-        taskForm.style.display = "block";
-        taskContainer.style.display = "block";
+  mapCurState = document.getElementById('map');
+  taskForm = document.getElementById('task-form');
+  taskContainer = document.getElementById('task-container');
+  if (mapCurState.style.display == "none") {
+      initMap();
+      mapCurState.style.display = "block";
+      taskForm.style.display = "none";
+      taskContainer.style.display = "none";
+  } else {
+      mapCurState.style.display = "none";
+      taskForm.style.display = "block";
+      taskContainer.style.display = "block";
     }
 }
 
