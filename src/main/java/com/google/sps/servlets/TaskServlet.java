@@ -91,8 +91,8 @@ public class TaskServlet extends HttpServlet {
     }
 
     Entity taskEntity = new Entity("task");
-    taskEntity.setProperty("text", request.getParameter("task-date"));
-    taskEntity.setProperty("date", request.getParameter("task-text"));
+    taskEntity.setProperty("text", request.getParameter("task-text"));
+    taskEntity.setProperty("date", request.getParameter("task-date"));
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();

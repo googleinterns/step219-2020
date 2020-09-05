@@ -23,6 +23,8 @@ async function loadToDos() {
         container.appendChild(createListElement(task));
     }
   });
+  mapPanel = document.getElementById('floating-panel');
+  mapPanel.style.display = "none";
 }
 
 function findParentListView(event) {
@@ -183,7 +185,29 @@ function initMap() {
   var mapMarkers = new Object();
   var mapInfos = new Object();
   fetchTasksOnMap(map, mapMarkers, mapInfos);
+  addDirections(map, mapMarkers);
 }
+
+function addDirections(map, mapMarkers) {
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+  const directionsService = new google.maps.DirectionsService();
+  directionsRenderer.setMap(map);
+  directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer);
+  document.getElementById("mode").addEventListener("change", () => {
+    directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer);
+  });
+}
+
+function directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer) {
+    for (var marker1 in mapMarkers) {
+      for (var marker2 in mapMarkers) {
+          if (marker1 != marker2) {
+              calculateAndDisplayRoute(directionsService, directionsRenderer, mapMarkers[marker1].position, mapMarkers[marker2].position);
+          }
+      }
+  }
+}
+
 
 async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
   const response = await fetch('/send-task');
@@ -194,35 +218,45 @@ async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
 function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
   for (const task of tasksList) {
       markerName = `lat${task.place.lat}lng${task.place.lng}`;
-
+      console.log(task.taskText.title, markerName);
       if (markerName in mapMarkers) {
-          mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
-          mapMarkers[markerName].addListener('click', function() {
-              mapInfos[markerName].open(map, mapMarkers[markerName]);
-          });
+          mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number));
       } else {
           mapInfos[markerName] = new google.maps.InfoWindow({
               content: ''});
-          mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number))
-          var pos = {lat: task.place.lat, lng: task.place.lng};
+          mapInfos[markerName].setContent(composeNewInfoContent(task.number));
           mapMarkers[markerName] = new google.maps.Marker({
-              position: pos,
+              position: task.place,
               map: map,
-              title: task.place.string,
+              title: markerName,//task.place.string
               icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
-          mapMarkers[markerName].addListener('click', function() {
-              mapInfos[markerName].open(map, mapMarkers[markerName]);
-          });
           mapMarkers[markerName].setIcon(composeIconUrl(task.time));
       }
   }
+  for (var markerName in mapMarkers) {
+    console.log(markerName);
+    console.log(mapInfos[markerName]);
+    //explanation of that code is here https://leewc.com/articles/google-maps-infowindow/
+    //there was a problem with handling several info windows
+    mapMarkers[markerName].infowindow = mapInfos[markerName];
+    mapMarkers[markerName].addListener('click', function() {
+		return this.infowindow.open(map, this);
+	})
+    google.maps.event.addListener(mapMarkers[markerName], 'click', function() {
+	 	this.infowindow.open(map, this); 
+	});
+  }
+  console.log(mapMarkers);
+  console.log(mapInfos);
 }
 
 function composeIconUrl(task_time) {
   let urls = "https://maps.google.com/mapfiles/ms/icons/";
-  //var curUrl;
+  console.log(task_time);
+  str = task_time;
+  console.log(str <"5");
   var color ="";
-  if (task_time < "2") {
+  if (task_time < '2') {
       color = "red";
   } else if (task_time < "3") {
       color = "green";
@@ -242,15 +276,14 @@ function composeNewInfoContent(task_number) {
   return innerText.innerHTML.toString();
 }
 
-function calculateAndDisplayRoute(directionsService, directionsRenderer, from, to) {
+function calculateAndDisplayRoute(directionsService, directionsRenderer, from_pos, to_pos) {
   //from and to are google.maps.Marker class objects
   console.log("entered calculateAndD");
   const selectedMode = document.getElementById("mode").value;
   directionsService.route(
     {
-      origin: {lat: from.position.lat(), lng: from.position.lng() },
-      destination: {lat: to.lat(),
-          lng: to.lng()},
+      origin: from_pos,
+      destination: to_pos,
       travelMode: google.maps.TravelMode[selectedMode]
     },
     (response, status) => {
@@ -304,15 +337,18 @@ function handleLocationError(browserGeoState, infoWindow, pos) {
 
 function showHideMap() {
   mapCurState = document.getElementById('map');
+  mapPanel = document.getElementById('floating-panel');
   taskForm = document.getElementById('task-form');
   taskContainer = document.getElementById('task-container');
   if (mapCurState.style.display == "none") {
       initMap();
       mapCurState.style.display = "block";
+      mapPanel.style.display = "block";
       taskForm.style.display = "none";
       taskContainer.style.display = "none";
   } else {
       mapCurState.style.display = "none";
+      mapPanel.style.display = "none";
       taskForm.style.display = "block";
       taskContainer.style.display = "block";
     }
