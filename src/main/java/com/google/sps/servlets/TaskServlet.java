@@ -18,6 +18,7 @@ import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.src.Task;
 import com.google.sps.src.TaskText;
 import com.google.sps.src.Time;
+import com.google.sps.src.Date;
 import com.google.sps.src.Place;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
@@ -37,11 +38,12 @@ public class TaskServlet extends HttpServlet {
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
+      String time = (String)entity.getProperty("time");
       String date = (String)entity.getProperty("date");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
 
-      Task task = new Task(new Time(date), 
+      Task task = new Task(new Time(time), new Date(date),
         new TaskText(text, comment), 
         new Place(place), 
         entity.getKey().getId());
@@ -50,11 +52,11 @@ public class TaskServlet extends HttpServlet {
   }
 
   private Task getTask(HttpServletRequest request, long id) {
-      return new Task(new Time(request.getParameter("task-date")), 
-                          new TaskText(request.getParameter("task-text"),
-                          request.getParameter("task-comment")),
-                          new Place(request.getParameter("task-place")),
-                          id);
+      return new Task(new Time(request.getParameter("task-time")), 
+                        new Date(request.getParameter("task-date")),
+                        new TaskText(request.getParameter("task-text"),request.getParameter("task-comment")),
+                        new Place(request.getParameter("task-place")),
+                        id);
   }
 
   @Override
@@ -76,8 +78,9 @@ public class TaskServlet extends HttpServlet {
             task.setPlace(new Place(newFieldData));
           } else if (fieldName.equals("task_timeData")) {
             task.setTime(new Time(newFieldData));
-          }
-          else if (fieldName.equals("task_titleData")) {
+          } else if (fieldName.equals("task_dateData")) {
+            task.setDate(new Date(newFieldData));
+          } else if (fieldName.equals("task_titleData")) {
             task.getTaskText().setTitle(newFieldData);
           }
           else if (fieldName.equals("task_commentData")) {
@@ -92,6 +95,7 @@ public class TaskServlet extends HttpServlet {
 
     Entity taskEntity = new Entity("task");
     taskEntity.setProperty("text", request.getParameter("task-text"));
+    taskEntity.setProperty("time", request.getParameter("task-time"));
     taskEntity.setProperty("date", request.getParameter("task-date"));
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));

@@ -11,6 +11,9 @@ async function loadToDos() {
         string : "place"
       },
       time : {
+        time : "time"
+      },
+      date : {
         date : "date"
       },
       taskText : {
@@ -76,8 +79,16 @@ function createTaskTimeElement(task) {
   const taskTimeElement = document.createElement("div");
   taskTimeElement.setAttribute("class", "task_timeData");
   taskTimeElement.addEventListener("click", editFieldData);
-  taskTimeElement.innerText = task.time.date;
+  taskTimeElement.innerText = task.time.time;
   return taskTimeElement;
+}
+
+function createTaskDateElement(task) {
+  const taskDateElement = document.createElement("div");
+  taskDateElement.setAttribute("class", "task_dateData");
+  taskDateElement.addEventListener("click", editFieldData);
+  taskDateElement.innerText = task.date.date;
+  return taskDateElement;
 }
 
 function createTaskTitleElement(task) {
@@ -101,6 +112,7 @@ function createTaskDataholderElement(task) {
     taskDataholderElement.setAttribute("class", "task_dataholder");
     taskDataholderElement.appendChild(createTaskTitleElement(task));
     taskDataholderElement.appendChild(createTaskTimeElement(task));
+    taskDataholderElement.appendChild(createTaskDateElement(task));
     taskDataholderElement.appendChild(createTaskPlaceElement(task));
     return taskDataholderElement;
 }
@@ -181,7 +193,6 @@ function initMap() {
     );
   console.log('map showed');
   getCurrentGeolocation(map);
-  console.log('geolocation');
   var mapMarkers = new Object();
   var mapInfos = new Object();
   fetchTasksOnMap(map, mapMarkers, mapInfos);
@@ -218,7 +229,6 @@ async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
 function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
   for (const task of tasksList) {
       markerName = `lat${task.place.lat}lng${task.place.lng}`;
-      console.log(task.taskText.title, markerName);
       if (markerName in mapMarkers) {
           mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number));
       } else {
@@ -234,8 +244,6 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
       }
   }
   for (var markerName in mapMarkers) {
-    console.log(markerName);
-    console.log(mapInfos[markerName]);
     //explanation of that code is here https://leewc.com/articles/google-maps-infowindow/
     //there was a problem with handling several info windows
     mapMarkers[markerName].infowindow = mapInfos[markerName];
@@ -251,10 +259,8 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
 }
 
 function composeIconUrl(task_time) {
+  //change icon color depend on  time
   let urls = "https://maps.google.com/mapfiles/ms/icons/";
-  console.log(task_time);
-  str = task_time;
-  console.log(str <"5");
   var color ="";
   if (task_time < '2') {
       color = "red";
@@ -272,13 +278,13 @@ function composeIconUrl(task_time) {
 }
 
 function composeNewInfoContent(task_number) {
+  //git innerHTML to add it task to infowindow content
   innerText = document.getElementById(task_number);
   return innerText.innerHTML.toString();
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, from_pos, to_pos) {
-  //from and to are google.maps.Marker class objects
-  console.log("entered calculateAndD");
+  //put direction on the map
   const selectedMode = document.getElementById("mode").value;
   directionsService.route(
     {
