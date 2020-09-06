@@ -73,6 +73,7 @@ public class LocalUpdateServlet extends HttpServlet {
               taskEntity.getKey().getId());
       tasks.add(task);
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
+      response.getWriter().println(new Gson().toJson(task));
     } catch (Exception e) {
       System.out.println("LOG: error " + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);

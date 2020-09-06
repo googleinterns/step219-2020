@@ -1,3 +1,6 @@
+/** Element which is chosen by user for now */
+let toggledElement = null;
+
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
   let response = await fetch('/update-local-task-list');
@@ -37,6 +40,11 @@ async function editFieldData(event) {
   console.log(event)
 
   const taskView = findParentListView(event);
+
+  if (taskView !== toggledElement) {
+    return;
+  }
+
   const elementView = event.path[0];
   const askResult = prompt("Do you want to change this field?",
       elementView.innerText)
@@ -68,34 +76,43 @@ async function editFieldData(event) {
 }
 
 function createTaskCommentElement(task) {
-  const taskCommentElement = document.createElement("div");
+  const taskCommentElement = document.createElement("input");
   taskCommentElement.setAttribute("class", "task_commentData");
-  taskCommentElement.addEventListener("click", editFieldData);
-  taskCommentElement.innerText = task.comment;
+  taskCommentElement.setAttribute("id", "comment" + task.datastoreId);
+  //taskCommentElement.addEventListener("click", editFieldData);
+  taskCommentElement.setAttribute("readonly", "readonly");
+  taskCommentElement.setAttribute("value", task.comment);
   return taskCommentElement;
 }
 
 function createTaskTimeElement(task) {
   const taskTimeElement = document.createElement("input");
   taskTimeElement.setAttribute("class", "task_timeData");
-  taskTimeElement.addEventListener("click", editFieldData);
-  taskTimeElement.innerText = task.time.date;
+  taskTimeElement.setAttribute("id", "time" + task.datastoreId);
+  taskTimeElement.setAttribute("readonly", "readonly");
+  //taskTimeElement.addEventListener("click", editFieldData);
+  taskTimeElement.setAttribute("value", task.time.date);
   return taskTimeElement;
 }
 
 function createTaskTitleElement(task) {
-  const taskTitleElement = document.createElement("h4");
+  const taskTitleElement = document.createElement("input");
   taskTitleElement.setAttribute("class", "task_titleData");
-  taskTitleElement.addEventListener("click", editFieldData);
-  taskTitleElement.innerText = task.title;
+  taskTitleElement.setAttribute("id", "title" + task.datastoreId);
+  taskTitleElement.setAttribute("readonly", "readonly");
+  //taskTitleElement.addEventListener("click", editFieldData);
+  taskTitleElement.setAttribute("value", task.title);
+
   return taskTitleElement;
 }
 
 function createTaskPlaceElement(task) {
-  const taskPlaceElement = document.createElement("div");
+  const taskPlaceElement = document.createElement("input");
   taskPlaceElement.setAttribute("class", "task_placeData");
-  taskPlaceElement.addEventListener("click", editFieldData);
-  taskPlaceElement.innerText = task.place.name;
+  taskPlaceElement.setAttribute("id", "place" + task.datastoreId);
+  taskPlaceElement.setAttribute("readonly", "readonly");
+  //taskPlaceElement.addEventListener("click", editFieldData);
+  taskPlaceElement.setAttribute("value", task.place.name);
   return taskPlaceElement;
 }
 
@@ -105,6 +122,10 @@ function getConfirmation() {
 
 /** Removes task which is connected with this view */
 async function removeElement(view) {
+  if (view === toggledElement) {
+    untoggleElement();
+  }
+
   const notificationText = "type=delete&number=" + view.id;
   await fetch('/update-server-task-list', {
     method: 'POST',
@@ -126,15 +147,11 @@ async function removeElement(view) {
 }
 
 function doRemoveEvent(event) {
-  const elementId = event.path[2].id;
-  const view = document.getElementById(elementId);
-
-  view.setAttribute("class", "chosen_tasklist_node");
+  const view = findParentListView(event);
   const result = getConfirmation();
   if (result) {
     removeElement(view);
   }
-  view.setAttribute("class", "tasklist_node");
 }
 
 function createButtonElements() {
@@ -168,32 +185,117 @@ function buildMainTaskDataPanel(task) {
   return mainTaskPanel;
 }
 
+function toggleElement(element) {
+  const id = element.id;
+  element.setAttribute("class",
+      "tasklist_node_chosen shadowed_chosen_element")
+  toggledElement = element
+
+  const comment = document.getElementById("comment" + id)
+  const title = document.getElementById("title" + id)
+  const place = document.getElementById("place" + id)
+  const time = document.getElementById("time" + id)
+
+  comment.setAttribute("class", "task_commentData_chosen");
+  comment.removeAttribute("readonly");
+
+  title.setAttribute("class", "task_titleData_chosen");
+  title.removeAttribute("readonly");
+
+  place.setAttribute("class", "task_placeData_chosen");
+  place.removeAttribute("readonly");
+
+  time.setAttribute("class", "task_timeData_chosen");
+  time.removeAttribute("readonly");
+}
+
+function untoggleElement() {
+  if (toggledElement === null) {
+    return;
+  }
+
+  const id = toggledElement.id;
+  toggledElement.setAttribute("class",
+      "tasklist_node shadowed_element");
+
+  const comment = document.getElementById("comment" + id)
+  const title = document.getElementById("title" + id)
+  const place = document.getElementById("place" + id)
+  const time = document.getElementById("time" + id)
+
+  comment.setAttribute("class", "task_commentData");
+  comment.setAttribute("readonly", "readonly");
+
+  title.setAttribute("class", "task_titleData");
+  title.setAttribute("readonly", "readonly");
+
+  place.setAttribute("class", "task_placeData");
+  place.setAttribute("readonly", "readonly");
+
+  time.setAttribute("class", "task_timeData");
+  time.setAttribute("readonly", "readonly");
+  toggledElement = null;
+}
+
+function doToggleEvent(event) {
+  console.log(event)
+
+  let currentElement;
+  for (const view of event.path) {
+    if (view.localName === "li") {
+      currentElement = view;
+    }
+  }
+
+  if (toggledElement != null) {
+    if (currentElement === toggledElement) {
+      untoggleElement()
+      return
+    } else {
+      untoggleElement();
+    }
+  }
+
+  toggleElement(currentElement)
+}
+
 function createListElement(task) {
   const liElement = document.createElement("li");
   liElement.setAttribute("class", "tasklist_node shadowed_element");
   liElement.setAttribute("id", task.datastoreId);
+
+  liElement.addEventListener("click", doToggleEvent)
 
   liElement.appendChild(buildMainTaskDataPanel(task));
   liElement.appendChild(buildTaskRightPanel(task))
   return liElement;
 }
 
-function buildComposeView() {
-  const composeElement = document.createElement("li");
-  composeElement.setAttribute("class", "tasklist_node shadowed_element");
-  composeElement.appendChild(createTaskCommentForm())
-  composeElement.innerText = "Kek";
-  return composeElement;
-}
+async function addNewView(event) {
+  untoggleElement();
 
-function addComposeView(event) {
-  const container = document.getElementById('task-container');
-  container.appendChild(buildComposeView())
+  console.log(event);
+  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=date";
+  const response = await fetch('/update-local-task-list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: requestParams
+  });
+
+  const task = await response.json();
+
+  const newListElement = createListElement(task);
+  document.getElementById('task-container')
+  .appendChild(newListElement);
+  toggleElement(newListElement);
 }
 
 async function buildComposeButton() {
   const btnElement = document.getElementById("task-composer-button");
-  btnElement.addEventListener("click", addComposeView);
+  btnElement.addEventListener("click", addNewView);
+
 }
 
 async function doPreparation() {
