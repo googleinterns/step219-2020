@@ -116,9 +116,9 @@
   float: none;
   width: 48px;
   height: 48px;
-  background-color: var(--secondary-dark);
   border-radius: 50%;
   margin-top: 10px;
+  background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
 }
 
 #task-composer-button:hover {
@@ -128,10 +128,10 @@
   float: none;
   width: 48px;
   height: 48px;
-  background-color: var(--secondary-dark);
   border-radius: 50%;
   margin-top: 10px;
   box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.7);
+  background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
 }
 
 
