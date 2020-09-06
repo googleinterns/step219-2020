@@ -170,7 +170,7 @@ function buildMainTaskDataPanel(task) {
 
 function createListElement(task) {
   const liElement = document.createElement("li");
-  liElement.setAttribute("class", "tasklist_node shadowed_main_element");
+  liElement.setAttribute("class", "tasklist_node shadowed_element");
   liElement.setAttribute("id", task.datastoreId);
 
   liElement.appendChild(buildMainTaskDataPanel(task));
@@ -180,7 +180,7 @@ function createListElement(task) {
 
 function buildComposeView() {
   const composeElement = document.createElement("li");
-  composeElement.setAttribute("class", "tasklist_node shadowed_main_element");
+  composeElement.setAttribute("class", "tasklist_node shadowed_element");
   composeElement.appendChild(createTaskCommentForm())
   composeElement.innerText = "Kek";
   return composeElement;

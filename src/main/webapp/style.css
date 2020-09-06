@@ -73,9 +73,49 @@
   margin: 3px;
 }
 
-.shadowed_main_element {
+.task_titleData_chosen {
+  width: 100%;
+  font-family: "Lucida Console", Courier, monospace;
+  margin: 3px;
+  padding: 3px;
+  color: black;
+  background: white;
+}
+
+
+.task_commentData {
+  width: 80%;
+  margin: 3px;
+  padding: 5px;
+  background: lightgray;
+  border-style: inset;
+  border-width: 3px;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 15px;
+  box-shadow: 0 0 4px inset black;
+}
+
+.task_commentData_chosen {
+  width: 80%;
+  margin: 3px;
+  padding: 5px;
+  background: white;
+  border-style: inset;
+  outline: none;
+  border-width: 3px;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 15px;
+  box-shadow: 0 0 4px inset black;
+}
+
+.shadowed_element {
   border-radius: 15px 1px 15px 15px;
   box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
+}
+
+.shadowed_chosen_element {
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.6);
 }
 
 .tasklist_node {
