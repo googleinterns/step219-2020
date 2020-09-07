@@ -210,7 +210,7 @@ function addDirections(map, mapMarkers) {
 }
 
 function directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer) {
-    for (var marker1 in mapMarkers) {
+  for (var marker1 in mapMarkers) {
       for (var marker2 in mapMarkers) {
           if (marker1 != marker2) {
               calculateAndDisplayRoute(directionsService, directionsRenderer, mapMarkers[marker1].position, mapMarkers[marker2].position);
@@ -246,13 +246,13 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
   for (var markerName in mapMarkers) {
     //explanation of that code is here https://leewc.com/articles/google-maps-infowindow/
     //there was a problem with handling several info windows
-    mapMarkers[markerName].infowindow = mapInfos[markerName];
-    mapMarkers[markerName].addListener('click', function() {
-		return this.infowindow.open(map, this);
-	})
-    google.maps.event.addListener(mapMarkers[markerName], 'click', function() {
-	 	this.infowindow.open(map, this); 
-	});
+  mapMarkers[markerName].infowindow = mapInfos[markerName];
+  mapMarkers[markerName].addListener('click', function() {
+	  return this.infowindow.open(map, this);
+  });
+  google.maps.event.addListener(mapMarkers[markerName], 'click', function() {
+	  this.infowindow.open(map, this); 
+  });
   }
   console.log(mapMarkers);
   console.log(mapInfos);
@@ -279,8 +279,8 @@ function composeIconUrl(task_time) {
 
 function composeNewInfoContent(task_number) {
   //git innerHTML to add it task to infowindow content
-  innerText = document.getElementById(task_number);
-  return innerText.innerHTML.toString();
+  let taskElement = document.getElementById(task_number);
+  return taskElement.innerHTML;
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer, from_pos, to_pos) {
@@ -290,7 +290,11 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer, from_po
     {
       origin: from_pos,
       destination: to_pos,
-      travelMode: google.maps.TravelMode[selectedMode]
+      travelMode: google.maps.TravelMode[selectedMode]//,
+      //i will need this in next commit
+      /*transitOptions: {
+          departureTime: Date,
+      }*/
     },
     (response, status) => {
       if (status == "OK") {
