@@ -1,51 +1,53 @@
+/** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
-  fetch('/send-task').then(response => response.json()).then((tasksList) => {
-    container = document.getElementById('task-container');
-    console.log(tasksList);
-    container.innerText = '';
+  const response = await fetch('/update-local-task-list');
+  const tasksList = await response.json();
 
+  const container = document.getElementById('task-container');
+  console.log(tasksList);
+  container.innerText = '';
 
-    //Debug element
-    container.appendChild(createListElement({
-      place : {
-        string : "place"
-      },
-      time : {
-        date : "date"
-      },
-      taskText : {
-        comment : "comment",
-        title : "debug"
-      }
-    }))
+  //Debug element
+  container.appendChild(createListElement({
+    place: {
+      string: "place"
+    },
+    time: {
+      date: "date"
+    },
+    comment: "comment",
+    title: "debug"
+  }))
 
-    for (const task of tasksList) {
-        container.appendChild(createListElement(task));
-    }
-  });
+  for (const task of tasksList) {
+    container.appendChild(createListElement(task));
+  }
 }
 
+/** Finds a container with task data where current event was called */
 function findParentListView(event) {
-  for (view of event.path)
-    if (view.localName == "li") {
+  for (let view of event.path) {
+    if (view.localName === "li") {
       return view;
     }
+  }
 }
 
 async function editFieldData(event) {
   console.log(event)
-  
-  taskView = findParentListView(event);
 
-  elementView = event.path[0];
-  askResult = prompt("Do you want to change this field?", elementView.innerText)
-  if (askResult == null)
+  const taskView = findParentListView(event);
+  const elementView = event.path[0];
+  const askResult = prompt("Do you want to change this field?",
+      elementView.innerText)
+  if (askResult == null) {
     return;
-  
+  }
   elementView.innerText = askResult;
+  const requestParams = "field=" + elementView.className + "&type=edit&"
+      + "new_data=" + askResult + "&number=" + taskView.id;
 
-  requestParams = "field=" + elementView.className + "&type=edit&" + "new_data=" + askResult + "&number=" + taskView.id;
-  await fetch('/remove-task', {
+  const req1 = fetch('/update-server-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -53,20 +55,23 @@ async function editFieldData(event) {
     body: requestParams
   });
 
-  await fetch('/send-task', {
+  const req2 = fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: requestParams
   });
+
+  await req1
+  await req2;
 }
 
 function createTaskCommentElement(task) {
   const taskCommentElement = document.createElement("div");
   taskCommentElement.setAttribute("class", "task_commentData");
   taskCommentElement.addEventListener("click", editFieldData);
-  taskCommentElement.innerText = task.taskText.comment;
+  taskCommentElement.innerText = task.comment;
   return taskCommentElement;
 }
 
@@ -82,7 +87,7 @@ function createTaskTitleElement(task) {
   const taskTitleElement = document.createElement("div");
   taskTitleElement.setAttribute("class", "task_titleData");
   taskTitleElement.addEventListener("click", editFieldData);
-  taskTitleElement.innerText = task.taskText.title;
+  taskTitleElement.innerText = task.title;
   return taskTitleElement;
 }
 
@@ -90,27 +95,27 @@ function createTaskPlaceElement(task) {
   const taskPlaceElement = document.createElement("div");
   taskPlaceElement.setAttribute("class", "task_placeData");
   taskPlaceElement.addEventListener("click", editFieldData);
-  taskPlaceElement.innerText = task.place.string;
+  taskPlaceElement.innerText = task.place.name;
   return taskPlaceElement;
 }
 
 function createTaskDataholderElement(task) {
-    const taskDataholderElement = document.createElement("div");
-    taskDataholderElement.setAttribute("class", "task_dataholder");
-    taskDataholderElement.appendChild(createTaskTitleElement(task));
-    taskDataholderElement.appendChild(createTaskTimeElement(task));
-    taskDataholderElement.appendChild(createTaskPlaceElement(task));
-    return taskDataholderElement;
+  const taskDataholderElement = document.createElement("div");
+  taskDataholderElement.setAttribute("class", "task_dataholder");
+  taskDataholderElement.appendChild(createTaskTitleElement(task));
+  taskDataholderElement.appendChild(createTaskTimeElement(task));
+  taskDataholderElement.appendChild(createTaskPlaceElement(task));
+  return taskDataholderElement;
 }
 
 function getConfirmation() {
-  result = confirm("Do you really want to remove this task?");
-  return result;
+  return confirm("Do you really want to remove this task?");
 }
 
+/** Removes task which is connected with this view */
 async function removeElement(view) {
-  notificationText = "type=notify&number=" + view.id;
-  await fetch('/remove-task', {
+  const notificationText = "type=delete&number=" + view.id;
+  const req1 = fetch('/update-server-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -118,24 +123,26 @@ async function removeElement(view) {
     body: notificationText
   });
 
-  
-  await fetch('/send-task', {
+  const req2 = fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
     body: notificationText
   })
-  
+
+  await req1;
+  await req2;
+
   view.remove();
 }
 
 function doRemoveEvent(event) {
-  elementId = event.path[2].id;
-  view = document.getElementById(elementId);
-  
+  const elementId = event.path[2].id;
+  const view = document.getElementById(elementId);
+
   view.setAttribute("class", "chosen_tasklist_node");
-  result = getConfirmation();
+  const result = getConfirmation();
   if (result) {
     removeElement(view);
   }
@@ -143,7 +150,7 @@ function doRemoveEvent(event) {
 }
 
 function createButtonElements() {
-	const buttonHolder = document.createElement("div");
+  const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
 
   const removeButton = document.createElement("span")
@@ -156,12 +163,12 @@ function createButtonElements() {
 }
 
 function createListElement(task) {
-    const liElement = document.createElement("li");
-    liElement.setAttribute("class", "tasklist_node");
-    liElement.setAttribute("id", task.number);
+  const liElement = document.createElement("li");
+  liElement.setAttribute("class", "tasklist_node");
+  liElement.setAttribute("id", task.datastoreId);
 
-    liElement.appendChild(createButtonElements());
-    liElement.appendChild(createTaskDataholderElement(task));
-    liElement.appendChild(createTaskCommentElement(task));
-    return liElement;
+  liElement.appendChild(createButtonElements());
+  liElement.appendChild(createTaskDataholderElement(task));
+  liElement.appendChild(createTaskCommentElement(task));
+  return liElement;
 }
