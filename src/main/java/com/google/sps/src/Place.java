@@ -1,35 +1,34 @@
 package com.google.sps.src;
 
-
 public class Place {
-  private String string;
+  private String name;
   private double lat;
   private double lng;
 
   public Place(String str) {
-      this.string = str;
+    this.name = str;
   }
 
   public Place(double lat, double lng) {
-      this.lat = lat;
-      this.lng = lng;
+    this.lat = lat;
+    this.lng = lng;
   }
-  
+
   public Place(double lat, double lng, String str) {
-      this.lat = lat;
-      this.lng = lng;
-      this.string = str;
+    this.lat = lat;
+    this.lng = lng;
+    this.name = str;
   }
 
   public double getLat() {
-      return lat;
+    return lat;
   }
 
   public double getLng() {
-      return lng;
+    return lng;
   }
-  
-  public String getString() {
-      return string;
+
+  public String getName() {
+    return name;
   }
 }

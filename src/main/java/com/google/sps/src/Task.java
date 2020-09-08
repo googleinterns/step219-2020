@@ -1,43 +1,56 @@
 package com.google.sps.src;
 
 public class Task {
-  private Time time;
-  private TaskText taskText;
-  private Place place;
-  private long number;
 
-  public Task(Time time, TaskText taskText, Place place, long number) {
+  private final long datastoreId;
+  private Time time;
+  private Place place;
+  private String title;
+  private String comment;
+
+  public Task(Time time, String title, String comment, Place place, long datastoreId) {
     this.time = time;
-    this.taskText = taskText;
+    this.title = title;
+    this.comment = comment;
     this.place = place;
-    this.number = number;
+    this.datastoreId = datastoreId;
   }
 
-  public long getNumber() {
-    return number;
+  public void setField(String fieldName, String data) throws RuntimeException {
+    if (fieldName.equals("task_placeData")) {
+      place = new Place(data);
+    } else if (fieldName.equals("task_timeData")) {
+      time = new Time(data);
+    } else if (fieldName.equals("task_titleData")) {
+      title = data;
+    } else if (fieldName.equals("task_commentData")) {
+      comment = data;
+    } else {
+      throw new RuntimeException("Wrong field name");
+    }
+  }
+
+  public long getDatastoreId() {
+    return datastoreId;
   }
 
   public void setComment(String message) {
-    taskText.setComment(message);
-  }
-
-  public void setPlace(Place place) {
-    this.place = place;
-  }
-
-  public void setTime(Time time) {
-    this.time = time;
-  }
-
-  public TaskText getTaskText() {
-    return taskText;
+    comment = message;
   }
 
   public Time getTime() {
     return time;
   }
 
+  public void setTime(Time time) {
+    this.time = time;
+  }
+
   public Place getPlace() {
     return place;
+  }
+
+  public void setPlace(Place place) {
+    this.place = place;
   }
 }
