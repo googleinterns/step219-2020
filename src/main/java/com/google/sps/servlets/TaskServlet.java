@@ -17,10 +17,13 @@ import com.google.appengine.api.users.UserService;
 import com.google.appengine.api.users.UserServiceFactory;
 import com.google.sps.src.Task;
 import com.google.sps.src.TaskText;
-import com.google.sps.src.Time;
+import com.google.sps.src.DateTime;
 import com.google.sps.src.Place;
 import com.google.appengine.api.datastore.KeyFactory;
 import com.google.appengine.api.datastore.Key;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;    
 
 @WebServlet("/send-task")
 public class TaskServlet extends HttpServlet {
@@ -34,27 +37,28 @@ public class TaskServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     Query query = new Query("task");
+    query = query.addSort("dateTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
-      String date = (String)entity.getProperty("date");
+      Date dateTime = (Date)entity.getProperty("dateTime");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
 
-      Task task = new Task(new Time(date), 
+      Task task = new Task(new DateTime(dateTime),
         new TaskText(text, comment), 
         new Place(place), 
         entity.getKey().getId());
+        System.out.println(task);
         tasks.add(task);
     }
   }
 
   private Task getTask(HttpServletRequest request, long id) {
-      return new Task(new Time(request.getParameter("task-date")), 
-                          new TaskText(request.getParameter("task-text"),
-                          request.getParameter("task-comment")),
-                          new Place(request.getParameter("task-place")),
-                          id);
+      return new Task(new DateTime(request.getParameter("task-date")+" "+request.getParameter("task-time")),
+                        new TaskText(request.getParameter("task-text"),request.getParameter("task-comment")),
+                        new Place(request.getParameter("task-place")),
+                        id);
   }
 
   @Override
@@ -75,9 +79,10 @@ public class TaskServlet extends HttpServlet {
           if (fieldName.equals("task_placeData")) {
             task.setPlace(new Place(newFieldData));
           } else if (fieldName.equals("task_timeData")) {
-            task.setTime(new Time(newFieldData));
-          }
-          else if (fieldName.equals("task_titleData")) {
+            task.setTime(newFieldData);
+          } else if (fieldName.equals("task_dateData")) {
+            task.setDate(newFieldData);
+          } else if (fieldName.equals("task_titleData")) {
             task.getTaskText().setTitle(newFieldData);
           }
           else if (fieldName.equals("task_commentData")) {
@@ -91,8 +96,14 @@ public class TaskServlet extends HttpServlet {
     }
 
     Entity taskEntity = new Entity("task");
-    taskEntity.setProperty("text", request.getParameter("task-date"));
-    taskEntity.setProperty("date", request.getParameter("task-text"));
+    taskEntity.setProperty("text", request.getParameter("task-text"));
+    String dateString = request.getParameter("task-date")+" "+request.getParameter("task-time");
+    Date calendarDate = new Date();
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        calendarDate = sdf.parse(dateString);
+    } catch (Exception e) {}
+    taskEntity.setProperty("dateTime", calendarDate);
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -108,6 +119,7 @@ public class TaskServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
+    System.out.println(tasks);
     response.getWriter().println(gson.toJson(tasks));
   }
 }

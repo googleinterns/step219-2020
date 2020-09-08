@@ -21,7 +21,8 @@
      <h5>Create new Task</h5>
       <form id="task-form" action="/send-task" method="POST">
         <span><input type="text" name="task-text" value="Task Title"></span>
-        <span><input type="text" name="task-date" value="Date"></span>
+        <span><input type="time" name="task-time"></span>
+        <span><input type="date" name="task-date"></span>
         <span><input type="text" name="task-place" value="Place"></span>
         <span><input type="text" name="task-comment" value="Comment"></span>
         <span><input type="submit"></span>
@@ -31,6 +32,15 @@
       
       <div id = "task-container" class= "tasks-container"></div>
 
+      <div id="floating-panel">
+      <b>Mode of Travel: </b>
+      <select id="mode">
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+      </select>
+    </div>
       <div id="map"></div>
   </body>
 </html>

@@ -6,14 +6,14 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;  
 
 public class Time {
-  private String date;
+  private String time;
   
-  public Time(String date) {
-    this.date = date;
+  public Time(String time) {
+    this.time = time;
   }
   
-  public String getDate() {
-    return date;
+  public String getTime()  {
+    return time;
   }
 }
 
