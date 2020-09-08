@@ -37,10 +37,11 @@ public class TaskServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     Query query = new Query("task");
+    query = query.addSort("dateTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
-      String dateTime = (String)entity.getProperty("dateTime");
+      Date dateTime = (Date)entity.getProperty("dateTime");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
 
@@ -97,7 +98,12 @@ public class TaskServlet extends HttpServlet {
     Entity taskEntity = new Entity("task");
     taskEntity.setProperty("text", request.getParameter("task-text"));
     String dateString = request.getParameter("task-date")+" "+request.getParameter("task-time");
-    taskEntity.setProperty("dateTime", dateString);
+    Date calendarDate = new Date();
+    try {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        calendarDate = sdf.parse(dateString);
+    } catch (Exception e) {}
+    taskEntity.setProperty("dateTime", calendarDate);
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
