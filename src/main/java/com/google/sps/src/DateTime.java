@@ -16,7 +16,6 @@ public class DateTime {
     try {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         calendarDate = sdf.parse(dateStr);
-        System.out.println(calendarDate);
     } catch (Exception e) {}
   }
 
@@ -53,7 +52,7 @@ public class DateTime {
   }
 
   public String getDateAsString() {
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-mm-dd");  
+      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
       String strDate = dateFormat.format(calendarDate.getTime());  
     return strDate;
   }
