@@ -8,6 +8,10 @@ public class Task {
   private String title;
   private String comment;
 
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
   public Task(Time time, String title, String comment, Place place, long datastoreId) {
     this.time = time;
     this.title = title;

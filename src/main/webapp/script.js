@@ -154,7 +154,7 @@ function doRemoveEvent(event) {
   }
 }
 
-function createButtonElements() {
+function createButtonElements(task) {
   const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
 
@@ -162,6 +162,8 @@ function createButtonElements() {
   removeButton.setAttribute("class", "task_button")
   removeButton.addEventListener("click", doRemoveEvent);
   removeButton.setAttribute("src", "./images/clear-48dp.svg");
+  removeButton.setAttribute("id", "remove_btn" + task.datastoreId);
+  removeButton.setAttribute("hidden", "hidden");
 
   buttonHolder.appendChild(removeButton);
   return buttonHolder;
@@ -172,7 +174,7 @@ function buildTaskRightPanel(task) {
 
   taskRightPanel.setAttribute("class", "task_rightPanel");
 
-  taskRightPanel.appendChild(createButtonElements());
+  taskRightPanel.appendChild(createButtonElements(task));
   taskRightPanel.appendChild(createTaskTimeElement(task));
   taskRightPanel.appendChild(createTaskPlaceElement(task));
   return taskRightPanel;
@@ -186,6 +188,7 @@ function buildMainTaskDataPanel(task) {
 }
 
 function toggleElement(element) {
+
   const id = element.id;
   element.setAttribute("class",
       "tasklist_node_chosen shadowed_chosen_element")
@@ -195,6 +198,9 @@ function toggleElement(element) {
   const title = document.getElementById("title" + id)
   const place = document.getElementById("place" + id)
   const time = document.getElementById("time" + id)
+  const removeButton = document.getElementById("remove_btn" + id);
+
+  removeButton.removeAttribute("hidden");
 
   comment.setAttribute("class", "task_commentData_chosen");
   comment.removeAttribute("readonly");
@@ -209,7 +215,7 @@ function toggleElement(element) {
   time.removeAttribute("readonly");
 }
 
-function untoggleElement() {
+async function untoggleElement() {
   if (toggledElement === null) {
     return;
   }
@@ -223,6 +229,9 @@ function untoggleElement() {
   const place = document.getElementById("place" + id)
   const time = document.getElementById("time" + id)
 
+  const removeButton = document.getElementById("remove_btn" + id);
+  removeButton.setAttribute("hidden", "hidden");
+
   comment.setAttribute("class", "task_commentData");
   comment.setAttribute("readonly", "readonly");
 
@@ -234,17 +243,51 @@ function untoggleElement() {
 
   time.setAttribute("class", "task_timeData");
   time.setAttribute("readonly", "readonly");
+
+  const changeRequestText = "type=change&number=" + id
+      + "&title=" + title.value
+      + "&comment=" + comment.value
+      + "&place=" + place.value
+      + "&time=" + time.value;
+
+  const req1 = fetch('/update-server-task-list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: changeRequestText
+  })
+
+  /* const req2 = ('/update-local-task-list', {
+     method: 'POST',
+     headers: {
+       'Content-Type': 'application/x-www-form-urlencoded',
+     },
+     body: changeRequestText
+   })*/
+
+  await req1;
   toggledElement = null;
 }
 
 function doToggleEvent(event) {
   console.log(event)
 
+  if (event.target.localName === "img") {
+    console.log("click on remove");
+    return;
+  }
+
   let currentElement;
   for (const view of event.path) {
     if (view.localName === "li") {
       currentElement = view;
     }
+  }
+
+  if (toggledElement === currentElement && event.target.localName === "input") {
+    console.log("input click");
+    return;
   }
 
   if (toggledElement != null) {

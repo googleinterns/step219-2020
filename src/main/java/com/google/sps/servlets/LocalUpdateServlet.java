@@ -127,15 +127,42 @@ public class LocalUpdateServlet extends HttpServlet {
     String type = request.getParameter("type");
     if (type.equals("add")) {
       doAddTask(request, response);
+      return;
     } else if (type.equals("delete")) {
       doDeleteTask(request, response);
     } else if (type.equals("edit")) {
       doEditTask(request, response);
+    } else if (type.equals("change")) {
+      doChangeTask(request, response);
     }
     response.sendRedirect("/index.html");
   }
 
-  /** Send all user tasks to javascript in json format */
+  /**
+   * Changing all fields of the task
+   */
+  private void doChangeTask(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    try {
+      long number = Long.parseLong(request.getParameter("number"));
+      for (Task task : tasks) {
+        if (task.getDatastoreId() == number) {
+          task.setComment(request.getParameter("comment"));
+          task.setPlace(new Place(request.getParameter("place")));
+          task.setTime(new Time(request.getParameter("time")));
+          task.setTitle(request.getParameter("title"));
+          return;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("LOG: error " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
+  }
+
+  /**
+   * Send all user tasks to javascript in json format
+   */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();

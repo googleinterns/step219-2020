@@ -51,11 +51,32 @@ public class ServerUpdateServlet extends HttpServlet {
     System.out.println("LOG: number of the item is " + number);
     System.out.println("LOG: type of the request is " + request.getParameter("type"));
 
-    if (request.getParameter("type").equals("edit")) {
+    String type = request.getParameter("type");
+    if (type.equals("edit")) {
       doEditTask(request, response, number);
-    } else if (request.getParameter("type").equals("delete")) {
+    } else if (type.equals("delete")) {
       doDeleteTask(request, response, number);
+    } else if (type.equals("change")) {
+      doChangeTask(request, response, number);
     }
     response.sendRedirect("/index.html");
+  }
+
+  private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)
+      throws IOException {
+    Key key = KeyFactory.createKey("task", number);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    try {
+      Entity entity = datastore.get(key);
+      entity.setProperty("text", request.getParameter("title"));
+      entity.setProperty("comment", request.getParameter("comment"));
+      entity.setProperty("place", request.getParameter("place"));
+      entity.setProperty("date", request.getParameter("date"));
+      datastore.put(entity);
+
+    } catch (Exception e) {
+      System.out.println("Key doesn't exists");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
   }
 }
