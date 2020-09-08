@@ -67,53 +67,32 @@ async function editFieldData(event) {
   });
 }
 
-function createTaskCommentElement(task) {
-  const taskCommentElement = document.createElement("div");
-  taskCommentElement.setAttribute("class", "task_commentData");
-  taskCommentElement.addEventListener("click", editFieldData);
-  taskCommentElement.innerText = task.taskText.comment;
-  return taskCommentElement;
+function createTaskFeatureElement(task, feature) {
+  const taskElement = document.createElement("div");
+  taskElement.setAttribute("class", "task_"+feature+"Data");
+  taskElement.addEventListener("click", editFieldData);
+  if (feature == "comment") {
+      taskElement.innerText = task.taskText.comment;
+  } else if (feature == "time") {
+      taskElement.innerText = task.time.time;
+  } else if (feature == "date") {
+      taskElement.innerText = task.date.date;
+  } else if (feature == "title") {
+      taskElement.innerText = task.taskText.title;
+  } else if (feature == "place") {
+      taskElement.innerText = task.place.string;
+  }
+  return taskElement;
 }
 
-function createTaskTimeElement(task) {
-  const taskTimeElement = document.createElement("div");
-  taskTimeElement.setAttribute("class", "task_timeData");
-  taskTimeElement.addEventListener("click", editFieldData);
-  taskTimeElement.innerText = task.time.time;
-  return taskTimeElement;
-}
-
-function createTaskDateElement(task) {
-  const taskDateElement = document.createElement("div");
-  taskDateElement.setAttribute("class", "task_dateData");
-  taskDateElement.addEventListener("click", editFieldData);
-  taskDateElement.innerText = task.date.date;
-  return taskDateElement;
-}
-
-function createTaskTitleElement(task) {
-  const taskTitleElement = document.createElement("div");
-  taskTitleElement.setAttribute("class", "task_titleData");
-  taskTitleElement.addEventListener("click", editFieldData);
-  taskTitleElement.innerText = task.taskText.title;
-  return taskTitleElement;
-}
-
-function createTaskPlaceElement(task) {
-  const taskPlaceElement = document.createElement("div");
-  taskPlaceElement.setAttribute("class", "task_placeData");
-  taskPlaceElement.addEventListener("click", editFieldData);
-  taskPlaceElement.innerText = task.place.string;
-  return taskPlaceElement;
-}
 
 function createTaskDataholderElement(task) {
     const taskDataholderElement = document.createElement("div");
     taskDataholderElement.setAttribute("class", "task_dataholder");
-    taskDataholderElement.appendChild(createTaskTitleElement(task));
-    taskDataholderElement.appendChild(createTaskTimeElement(task));
-    taskDataholderElement.appendChild(createTaskDateElement(task));
-    taskDataholderElement.appendChild(createTaskPlaceElement(task));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task, "title"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task, "time"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task, "date"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task, "place"));
     return taskDataholderElement;
 }
 
@@ -176,7 +155,7 @@ function createListElement(task) {
 
   liElement.appendChild(createButtonElements());
   liElement.appendChild(createTaskDataholderElement(task));
-  liElement.appendChild(createTaskCommentElement(task));
+  liElement.appendChild(createTaskFeatureElement(task, "comment"));
   return liElement;
 }
 
