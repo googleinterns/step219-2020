@@ -66,7 +66,7 @@ public class LocalUpdateServlet extends HttpServlet {
 
       Task task =
           new Task(
-              new Time(request.getParameter("task-date")),
+              new Time(request.getParameter("task-time")),
               request.getParameter("task-text"),
               request.getParameter("task-comment"),
               new Place(request.getParameter("task-place")),

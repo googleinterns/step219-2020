@@ -71,7 +71,7 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty("text", request.getParameter("title"));
       entity.setProperty("comment", request.getParameter("comment"));
       entity.setProperty("place", request.getParameter("place"));
-      entity.setProperty("date", request.getParameter("date"));
+      entity.setProperty("time", request.getParameter("time"));
       datastore.put(entity);
 
     } catch (Exception e) {

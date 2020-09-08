@@ -55,7 +55,7 @@ async function editFieldData(event) {
   const requestParams = "field=" + elementView.className + "&type=edit&"
       + "new_data=" + askResult + "&number=" + taskView.id;
 
-  let req1 = fetch('/update-server-task-list', {
+  const req1 = fetch('/update-server-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -63,7 +63,7 @@ async function editFieldData(event) {
     body: requestParams
   });
 
-  let req2 = fetch('/update-local-task-list', {
+  const req2 = fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -71,8 +71,8 @@ async function editFieldData(event) {
     body: requestParams
   });
 
-  await req1
   await req2;
+  await req1;
 }
 
 function createTaskCommentElement(task) {
@@ -318,7 +318,7 @@ async function addNewView(event) {
   untoggleElement();
 
   console.log(event);
-  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=date";
+  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=date&task-time=time";
   const response = await fetch('/update-local-task-list', {
     method: 'POST',
     headers: {
