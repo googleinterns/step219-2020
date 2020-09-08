@@ -67,21 +67,11 @@ async function editFieldData(event) {
   });
 }
 
-function createTaskFeatureElement(task, feature) {
+function createTaskFeatureElement(taskFeature, feature) {
   const taskElement = document.createElement("div");
   taskElement.setAttribute("class", "task_"+feature+"Data");
   taskElement.addEventListener("click", editFieldData);
-  if (feature == "comment") {
-      taskElement.innerText = task.taskText.comment;
-  } else if (feature == "time") {
-      taskElement.innerText = task.time.time;
-  } else if (feature == "date") {
-      taskElement.innerText = task.date.date;
-  } else if (feature == "title") {
-      taskElement.innerText = task.taskText.title;
-  } else if (feature == "place") {
-      taskElement.innerText = task.place.string;
-  }
+  taskElement.innerText = taskFeature;
   return taskElement;
 }
 
@@ -89,10 +79,10 @@ function createTaskFeatureElement(task, feature) {
 function createTaskDataholderElement(task) {
     const taskDataholderElement = document.createElement("div");
     taskDataholderElement.setAttribute("class", "task_dataholder");
-    taskDataholderElement.appendChild(createTaskFeatureElement(task, "title"));
-    taskDataholderElement.appendChild(createTaskFeatureElement(task, "time"));
-    taskDataholderElement.appendChild(createTaskFeatureElement(task, "date"));
-    taskDataholderElement.appendChild(createTaskFeatureElement(task, "place"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.taskText.title, "title"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.time.time, "time"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.date.date, "date"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.place.string, "place"));
     return taskDataholderElement;
 }
 
@@ -155,7 +145,7 @@ function createListElement(task) {
 
   liElement.appendChild(createButtonElements());
   liElement.appendChild(createTaskDataholderElement(task));
-  liElement.appendChild(createTaskFeatureElement(task, "comment"));
+  liElement.appendChild(createTaskFeatureElement(task.taskText.comment, "comment"));
   return liElement;
 }
 

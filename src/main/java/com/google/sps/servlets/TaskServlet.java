@@ -37,12 +37,12 @@ public class TaskServlet extends HttpServlet {
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     
     Query query = new Query("task");
+    query = query.addSort("dateTime", SortDirection.ASCENDING);;
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String)entity.getProperty("text");
-      //String time = (String)entity.getProperty("time");
-      //String date = (String)entity.getProperty("date");
-      String dateTime = (String)entity.getProperty("dateTime");
+      //String dateTime = (String)entity.getProperty("dateTime");
+      Date dateTime = (Date)entity.getProperty("dateTime");
       String place = (String)entity.getProperty("place");
       String comment = (String)entity.getProperty("comment");
 
@@ -50,6 +50,7 @@ public class TaskServlet extends HttpServlet {
         new TaskText(text, comment), 
         new Place(place), 
         entity.getKey().getId());
+        System.out.println(task);
         tasks.add(task);
     }
   }
@@ -98,14 +99,12 @@ public class TaskServlet extends HttpServlet {
     Entity taskEntity = new Entity("task");
     taskEntity.setProperty("text", request.getParameter("task-text"));
     String dateString = request.getParameter("task-date")+" "+request.getParameter("task-time");
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-mm-dd hh:mm");
     try {
-        Date date = sdf.parse(dateString);
-        System.out.println(date);
-        taskEntity.setProperty("datetime", date);
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date dateTime = sdf.parse(dateString);
+        taskEntity.setProperty("dateTime", dateTime);
     } catch (Exception e) {}
-    //taskEntity.setProperty("time", request.getParameter("task-time"));
-    //taskEntity.setProperty("date", request.getParameter("task-date"));
+    //taskEntity.setProperty("dateTime", dateString);
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
