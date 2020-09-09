@@ -55,21 +55,8 @@ async function editFieldData(event) {
   const requestParams = "field=" + elementView.className + "&type=edit&"
       + "new_data=" + askResult + "&number=" + taskView.id;
 
-  const req1 = fetch('/update-server-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: requestParams
-  });
-
-  const req2 = fetch('/update-local-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: requestParams
-  });
+  const req1 = fetchHelper("/update-server-task-list", requestParams);
+  const req2 = fetchHelper("/update-local-task-list", requestParams);
 
   await req2;
   await req1;
@@ -120,6 +107,16 @@ function getConfirmation() {
   return confirm("Do you really want to remove this task?");
 }
 
+async function fetchHelper(servletName, requestBody) {
+  return fetch(servletName, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: requestBody
+  });
+}
+
 /** Removes task which is connected with this view */
 async function removeElement(view) {
   if (view === toggledElement) {
@@ -127,21 +124,8 @@ async function removeElement(view) {
   }
 
   const notificationText = "type=delete&number=" + view.id;
-  const req1 = fetch('/update-server-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: notificationText
-  });
-
-  const req2 = fetch('/update-local-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: notificationText
-  })
+  const req1 = fetchHelper("/update-server-task-list", notificationText);
+  const req2 = fetchHelper("/update-local-task-list", notificationText);
 
   await req1;
   await req2;
@@ -255,21 +239,8 @@ async function untoggleElement() {
       + "&place=" + place.value
       + "&time=" + time.value;
 
-  const req1 = fetch('/update-server-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: changeRequestText
-  })
-
-  const req2 = fetch('/update-local-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: changeRequestText
-  })
+  const req1 = fetchHelper("/update-server-task-list", changeRequestText);
+  const req2 = fetchHelper("/update-local-task-list", changeRequestText);
 
   await req1;
   await req2;
@@ -333,13 +304,7 @@ async function addNewView(event) {
 
   console.log(event);
   const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=date&task-time=time";
-  const response = await fetch('/update-local-task-list', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: requestParams
-  });
+  const response = await fetchHelper("/update-local-task-list", requestParams);
 
   const task = await response.json();
 
