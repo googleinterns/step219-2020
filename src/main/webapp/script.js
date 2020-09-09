@@ -69,45 +69,22 @@ async function editFieldData(event) {
   await req2;
 }
 
-function createTaskCommentElement(task) {
-  const taskCommentElement = document.createElement("div");
-  taskCommentElement.setAttribute("class", "task_commentData");
-  taskCommentElement.addEventListener("click", editFieldData);
-  taskCommentElement.innerText = task.comment;
-  return taskCommentElement;
+function createTaskFeatureElement(taskFeature, feature) {
+  const taskElement = document.createElement("div");
+  taskElement.setAttribute("class", "task_"+feature+"Data");
+  taskElement.addEventListener("click", editFieldData);
+  taskElement.innerText = taskFeature;
+  return taskElement;
 }
 
-function createTaskTimeElement(task) {
-  const taskTimeElement = document.createElement("div");
-  taskTimeElement.setAttribute("class", "task_timeData");
-  taskTimeElement.addEventListener("click", editFieldData);
-  taskTimeElement.innerText = task.dateTime.calendarDate;
-  return taskTimeElement;
-}
-
-function createTaskTitleElement(task) {
-  const taskTitleElement = document.createElement("div");
-  taskTitleElement.setAttribute("class", "task_titleData");
-  taskTitleElement.addEventListener("click", editFieldData);
-  taskTitleElement.innerText = task.title;
-  return taskTitleElement;
-}
-
-function createTaskPlaceElement(task) {
-  const taskPlaceElement = document.createElement("div");
-  taskPlaceElement.setAttribute("class", "task_placeData");
-  taskPlaceElement.addEventListener("click", editFieldData);
-  taskPlaceElement.innerText = task.place.name;
-  return taskPlaceElement;
-}
 
 function createTaskDataholderElement(task) {
-  const taskDataholderElement = document.createElement("div");
-  taskDataholderElement.setAttribute("class", "task_dataholder");
-  taskDataholderElement.appendChild(createTaskTitleElement(task));
-  taskDataholderElement.appendChild(createTaskTimeElement(task));
-  taskDataholderElement.appendChild(createTaskPlaceElement(task));
-  return taskDataholderElement;
+    const taskDataholderElement = document.createElement("div");
+    taskDataholderElement.setAttribute("class", "task_dataholder");
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.title, "title"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.dateTime.calendarDate, "time"));
+    taskDataholderElement.appendChild(createTaskFeatureElement(task.place.name, "place"));
+    return taskDataholderElement;
 }
 
 function getConfirmation() {
@@ -168,10 +145,10 @@ function createListElement(task) {
   const liElement = document.createElement("li");
   liElement.setAttribute("class", "tasklist_node");
   liElement.setAttribute("id", task.datastoreId);
-
-  liElement.appendChild(createButtonElements());
-  liElement.appendChild(createTaskDataholderElement(task));
-  liElement.appendChild(createTaskCommentElement(task));
+  //creation of a task as a part of html list element, adding different fields and
+  liElement.appendChild(createButtonElements()); //adding remove button
+  liElement.appendChild(createTaskDataholderElement(task)); //main task creation
+  liElement.appendChild(createTaskFeatureElement(task.comment, "comment")); //adding comment
   return liElement;
 }
 
@@ -213,7 +190,7 @@ function directionsBetweenMarkers(mapMarkers, directionsService, directionsRende
 }
 
 async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
-  const response = await fetch('/send-task');
+  const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
   showTasksOnMap(tasksList, map, mapMarkers, mapInfos);
 }
@@ -324,16 +301,8 @@ function getCurrentGeolocation(map) {
 }
 
 function handleLocationError(browserGeoState, infoWindow, pos) {
-  var browserHasGeolocation = true;
-  if (browserGeoState == 'browser does not have geolocation') {
-    browserHasGeolocation = false;
-  }
   infoWindow.setPosition(pos);
-  infoWindow.setContent(
-      browserHasGeolocation
-          ? "Error: The Geolocation service failed."
-          : "Error: Your browser doesn't support geolocation."
-  );
+  infoWindow.setContent(`Error: ${browserGeoState}`);
   infoWindow.open(map);
 }
 

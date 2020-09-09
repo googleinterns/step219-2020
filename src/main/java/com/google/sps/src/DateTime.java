@@ -58,7 +58,7 @@ public class DateTime {
   }
 
   public String getTimeAsString() {
-      DateFormat dateFormat = new SimpleDateFormat("hh:mm");  
+      DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
       String strDate = dateFormat.format(calendarDate.getTime());  
     return strDate;
   }
