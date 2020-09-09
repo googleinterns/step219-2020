@@ -317,7 +317,6 @@ async function addNewView(event) {
 async function buildComposeButton() {
   const btnElement = document.getElementById("task-composer-button");
   btnElement.addEventListener("click", addNewView);
-
 }
 
 async function doPreparation() {
