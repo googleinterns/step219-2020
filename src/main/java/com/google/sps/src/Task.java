@@ -1,9 +1,10 @@
 package com.google.sps.src;
 
+
 public class Task {
 
   private final long datastoreId;
-  private Time time;
+  private DateTime dateTime;
   private Place place;
   private String title;
   private String comment;
@@ -12,8 +13,8 @@ public class Task {
     this.title = title;
   }
 
-  public Task(Time time, String title, String comment, Place place, long datastoreId) {
-    this.time = time;
+  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId) {
+    this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;
     this.place = place;
@@ -24,7 +25,9 @@ public class Task {
     if (fieldName.equals("task_placeData")) {
       place = new Place(data);
     } else if (fieldName.equals("task_timeData")) {
-      time = new Time(data);
+      this.dateTime = new DateTime(data);
+    } else if (fieldName.equals("task_dateData")) {
+      setDate(data);
     } else if (fieldName.equals("task_titleData")) {
       title = data;
     } else if (fieldName.equals("task_commentData")) {
@@ -42,19 +45,28 @@ public class Task {
     comment = message;
   }
 
-  public Time getTime() {
-    return time;
+  public void setPlace(Place place) {
+    this.place = place;
   }
 
-  public void setTime(Time time) {
-    this.time = time;
+  public void setTime(String time) {
+    this.dateTime.setTime(time);
   }
+
+  public void setDate(String date) {
+    this.dateTime.setDate(date);
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public DateTime getTime() {
+    return dateTime;
+  }
+
 
   public Place getPlace() {
     return place;
-  }
-
-  public void setPlace(Place place) {
-    this.place = place;
   }
 }

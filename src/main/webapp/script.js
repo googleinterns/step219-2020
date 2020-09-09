@@ -9,14 +9,13 @@ async function loadToDos() {
   const container = document.getElementById('task-container');
   console.log(tasksList);
   container.innerText = '';
-
   //Debug element
   container.appendChild(createListElement({
     place: {
       string: "place"
     },
-    time: {
-      date: "date"
+    dateTime: {
+      calendarDate: "Jan 1, 2020 12:00:00 AM"
     },
     comment: "comment",
     title: "debug"
@@ -25,6 +24,9 @@ async function loadToDos() {
   for (const task of tasksList) {
     container.appendChild(createListElement(task));
   }
+
+  mapPanel = document.getElementById('floating-panel');
+  mapPanel.style.display = "none";
 }
 
 /** Finds a container with task data where current event was called */
@@ -323,3 +325,177 @@ async function doPreparation() {
   await loadToDos();
   await buildComposeButton();
 }
+
+function initMap() {
+  const map = new google.maps.Map(
+      document.getElementById('map'), {
+        center: {lat: 55.752779, lng: 37.621588},
+        zoom: 6,
+        clickableIcons: true,
+        backgroundColor: "#red"
+      }
+  );
+  console.log('map showed');
+  getCurrentGeolocation(map);
+  var mapMarkers = {};
+  var mapInfos = {};
+  fetchTasksOnMap(map, mapMarkers, mapInfos);
+  addDirections(map, mapMarkers);
+}
+
+function addDirections(map, mapMarkers) {
+  const directionsRenderer = new google.maps.DirectionsRenderer();
+  const directionsService = new google.maps.DirectionsService();
+  directionsRenderer.setMap(map);
+  directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer);
+  document.getElementById("mode").addEventListener("change", () => {
+    directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer);
+  });
+}
+
+function directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer) {
+  for (var marker1 in mapMarkers) {
+    for (var marker2 in mapMarkers) {
+      if (marker1 != marker2) {
+        calculateAndDisplayRoute(directionsService, directionsRenderer, mapMarkers[marker1].position, mapMarkers[marker2].position);
+      }
+    }
+  }
+}
+
+async function fetchTasksOnMap(map, mapMarkers, mapInfos) {
+  const response = await fetch('/update-local-task-list');
+  const tasksList = await response.json();
+  showTasksOnMap(tasksList, map, mapMarkers, mapInfos);
+}
+
+function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
+  for (const task of tasksList) {
+    markerName = `lat${task.place.lat}lng${task.place.lng}`;
+    if (markerName in mapMarkers) {
+      mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number));
+    } else {
+      mapInfos[markerName] = new google.maps.InfoWindow({
+        content: ''});
+      mapInfos[markerName].setContent(composeNewInfoContent(task.number));
+      mapMarkers[markerName] = new google.maps.Marker({
+        position: task.place,
+        map: map,
+        title: markerName,//task.place.string
+        icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
+      mapMarkers[markerName].setIcon(composeIconUrl(task.time));
+    }
+  }
+  for (var markerName in mapMarkers) {
+    //explanation of that code is here https://leewc.com/articles/google-maps-infowindow/
+    //there was a problem with handling several info windows
+    mapMarkers[markerName].infowindow = mapInfos[markerName];
+    mapMarkers[markerName].addListener('click', function() {
+      return this.infowindow.open(map, this);
+    });
+    google.maps.event.addListener(mapMarkers[markerName], 'click', function() {
+      this.infowindow.open(map, this);
+    });
+  }
+  console.log(mapMarkers);
+  console.log(mapInfos);
+}
+
+function composeIconUrl(task_time) {
+  //change icon color depend on  time
+  let urls = "https://maps.google.com/mapfiles/ms/icons/";
+  var color ="";
+  if (task_time < '2') {
+    color = "red";
+  } else if (task_time < "3") {
+    color = "green";
+  } else if (task_time < "4") {
+    color = "orange";
+  } else if (task_time < "5") {
+    color = "yellow";
+  } else {
+    color = "purple";
+  }
+  urls += color + "-dot.png";
+  return urls;
+}
+
+function composeNewInfoContent(task_number) {
+  //git innerHTML to add it task to infowindow content
+  let taskElement = document.getElementById(task_number);
+  return taskElement.innerHTML;
+}
+
+function calculateAndDisplayRoute(directionsService, directionsRenderer, from_pos, to_pos) {
+  //put direction on the map
+  const selectedMode = document.getElementById("mode").value;
+  directionsService.route(
+      {
+        origin: from_pos,
+        destination: to_pos,
+        travelMode: google.maps.TravelMode[selectedMode]//,
+        //i will need this in next commit
+        /*transitOptions: {
+            departureTime: Date,
+        }*/
+      },
+      (response, status) => {
+        if (status == "OK") {
+          directionsRenderer.setDirections(response);
+        } else {
+          window.alert("Directions request failed due to " + status);
+        }
+      }
+  );
+}
+
+function getCurrentGeolocation(map) {
+  infoWindow = new google.maps.InfoWindow();
+
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+        position => {
+          const pos = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          infoWindow.setPosition(pos);
+          infoWindow.setContent("Location found.");
+          infoWindow.open(map);
+          map.setCenter(pos);
+        },
+        () => {
+          handleLocationError('The Geolocation service failed.', infoWindow, map.getCenter());
+        }
+    );
+  } else {
+    // Browser doesn't support Geolocation
+    handleLocationError('Your browser does not support geolocation', infoWindow, map.getCenter());
+  }
+}
+
+function handleLocationError(browserGeoState, infoWindow, pos) {
+  infoWindow.setPosition(pos);
+  infoWindow.setContent(`Error: ${browserGeoState}`);
+  infoWindow.open(map);
+}
+
+function showHideMap() {
+  mapCurState = document.getElementById('map');
+  mapPanel = document.getElementById('floating-panel');
+  taskForm = document.getElementById('task-form');
+  taskContainer = document.getElementById('task-container');
+  if (mapCurState.style.display == "none") {
+    initMap();
+    mapCurState.style.display = "block";
+    mapPanel.style.display = "block";
+    taskForm.style.display = "none";
+    taskContainer.style.display = "none";
+  } else {
+    mapCurState.style.display = "none";
+    mapPanel.style.display = "none";
+    taskForm.style.display = "block";
+    taskContainer.style.display = "block";
+  }
+}
+

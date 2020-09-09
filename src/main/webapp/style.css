@@ -16,7 +16,6 @@
 }
 
 
-
 .task_buttonHolder {
   float: right;
   padding: 1px;
@@ -239,6 +238,7 @@
   background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
 }
 
-
-
-
+#map {
+  height: 400px;
+  width: 400px;
+}
