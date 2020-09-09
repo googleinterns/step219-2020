@@ -261,15 +261,16 @@ async function untoggleElement() {
     body: changeRequestText
   })
 
-  /* const req2 = ('/update-local-task-list', {
-     method: 'POST',
-     headers: {
-       'Content-Type': 'application/x-www-form-urlencoded',
-     },
-     body: changeRequestText
-   })*/
+  const req2 = fetch('/update-local-task-list', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: changeRequestText
+  })
 
   await req1;
+  await req2;
   toggledElement = null;
 }
 
