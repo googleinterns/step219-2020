@@ -69,22 +69,45 @@ async function editFieldData(event) {
   await req2;
 }
 
-function createTaskFeatureElement(taskFeature, feature) {
-  const taskElement = document.createElement("div");
-  taskElement.setAttribute("class", "task_"+feature+"Data");
-  taskElement.addEventListener("click", editFieldData);
-  taskElement.innerText = taskFeature;
-  return taskElement;
+function createTaskCommentElement(task) {
+  const taskCommentElement = document.createElement("div");
+  taskCommentElement.setAttribute("class", "task_commentData");
+  taskCommentElement.addEventListener("click", editFieldData);
+  taskCommentElement.innerText = task.comment;
+  return taskCommentElement;
 }
 
+function createTaskTimeElement(task) {
+  const taskTimeElement = document.createElement("div");
+  taskTimeElement.setAttribute("class", "task_timeData");
+  taskTimeElement.addEventListener("click", editFieldData);
+  taskTimeElement.innerText = task.dateTime.calendarDate;
+  return taskTimeElement;
+}
+
+function createTaskTitleElement(task) {
+  const taskTitleElement = document.createElement("div");
+  taskTitleElement.setAttribute("class", "task_titleData");
+  taskTitleElement.addEventListener("click", editFieldData);
+  taskTitleElement.innerText = task.title;
+  return taskTitleElement;
+}
+
+function createTaskPlaceElement(task) {
+  const taskPlaceElement = document.createElement("div");
+  taskPlaceElement.setAttribute("class", "task_placeData");
+  taskPlaceElement.addEventListener("click", editFieldData);
+  taskPlaceElement.innerText = task.place.name;
+  return taskPlaceElement;
+}
 
 function createTaskDataholderElement(task) {
-    const taskDataholderElement = document.createElement("div");
-    taskDataholderElement.setAttribute("class", "task_dataholder");
-    taskDataholderElement.appendChild(createTaskFeatureElement(task.title, "title"));
-    taskDataholderElement.appendChild(createTaskFeatureElement(task.dateTime.calendarDate, "time"));
-    taskDataholderElement.appendChild(createTaskFeatureElement(task.place.name, "place"));
-    return taskDataholderElement;
+  const taskDataholderElement = document.createElement("div");
+  taskDataholderElement.setAttribute("class", "task_dataholder");
+  taskDataholderElement.appendChild(createTaskTitleElement(task));
+  taskDataholderElement.appendChild(createTaskTimeElement(task));
+  taskDataholderElement.appendChild(createTaskPlaceElement(task));
+  return taskDataholderElement;
 }
 
 function getConfirmation() {
@@ -148,7 +171,7 @@ function createListElement(task) {
   //creation of a task as a part of html list element, adding different fields and
   liElement.appendChild(createButtonElements()); //adding remove button
   liElement.appendChild(createTaskDataholderElement(task)); //main task creation
-  liElement.appendChild(createTaskFeatureElement(task.comment, "comment")); //adding comment
+  liElement.appendChild(createTaskCommentElement(task)); //adding comment
   return liElement;
 }
 
@@ -291,12 +314,12 @@ function getCurrentGeolocation(map) {
           map.setCenter(pos);
         },
         () => {
-          handleLocationError('browser has geolocation', infoWindow, map.getCenter());
+          handleLocationError('The Geolocation service failed.', infoWindow, map.getCenter());
         }
     );
   } else {
     // Browser doesn't support Geolocation
-    handleLocationError('browser does not have geolocation', infoWindow, map.getCenter());
+    handleLocationError('Your browser does not support geolocation', infoWindow, map.getCenter());
   }
 }
 
