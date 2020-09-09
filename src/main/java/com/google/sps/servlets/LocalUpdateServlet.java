@@ -167,7 +167,7 @@ public class LocalUpdateServlet extends HttpServlet {
         if (task.getDatastoreId() == number) {
           task.setComment(request.getParameter("comment"));
           task.setPlace(new Place(request.getParameter("place")));
-          task.setTime(new Time(request.getParameter("time")));
+          task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           return;
         }
