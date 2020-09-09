@@ -80,7 +80,7 @@ function createTaskTimeElement(task) {
   taskTimeElement.setAttribute("id", "time" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
   //taskTimeElement.addEventListener("click", editFieldData);
-  taskTimeElement.setAttribute("value", task.time.date);
+  taskTimeElement.setAttribute("value", task.dateTime.calendarDate);
   return taskTimeElement;
 }
 
@@ -305,7 +305,7 @@ async function addNewView(event) {
   untoggleElement();
 
   console.log(event);
-  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=date&task-time=time";
+  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2019-15-13&task-time=11:20";
   const response = await fetchHelper("/update-local-task-list", requestParams);
 
   const task = await response.json();
@@ -485,7 +485,7 @@ function showHideMap() {
   mapPanel = document.getElementById('floating-panel');
   taskForm = document.getElementById('task-form');
   taskContainer = document.getElementById('task-container');
-  if (mapCurState.style.display == "none") {
+  if (mapCurState.style.display === "none") {
     initMap();
     mapCurState.style.display = "block";
     mapPanel.style.display = "block";
