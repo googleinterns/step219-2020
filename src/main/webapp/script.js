@@ -190,6 +190,7 @@ function buildMainTaskDataPanel(task) {
   return mainTaskPanel;
 }
 
+/** Changes the state of given element to toggled */
 function toggleElement(element) {
 
   const id = element.id;
@@ -218,6 +219,7 @@ function toggleElement(element) {
   time.removeAttribute("readonly");
 }
 
+/** Changes the state of "toggledElement" to untoggled */
 async function untoggleElement() {
   if (toggledElement === null) {
     return;
@@ -274,6 +276,10 @@ async function untoggleElement() {
   toggledElement = null;
 }
 
+/** Process click on the element of the list.
+ If no element chosen yet, current becomes more dark to show user that this one is chosen.
+ If something is already chosen, it becomes unchosen, all information from this sends to a server.
+ Clicking means that the user want to edit this task or remove it. */
 function doToggleEvent(event) {
   console.log(event)
 
@@ -289,16 +295,20 @@ function doToggleEvent(event) {
     }
   }
 
+  /** Clicks on input shouldn't untoggle the task */
   if (toggledElement === currentElement && event.target.localName === "input") {
     console.log("input click");
     return;
   }
 
+  /** If any task is already chosen, it should be untoggled */
   if (toggledElement != null) {
+    /** If user click the task which is already chosen, it becomes not chosen */
     if (currentElement === toggledElement) {
       untoggleElement()
       return
     } else {
+
       untoggleElement();
     }
   }
