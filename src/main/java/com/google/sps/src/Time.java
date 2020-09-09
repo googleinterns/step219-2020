@@ -2,13 +2,13 @@ package com.google.sps.src;
 
 public class Time {
 
-  private final String date;
+  private final String time;
 
-  public Time(String date) {
-    this.date = date;
+  public Time(String time) {
+    this.time = time;
   }
 
-  public String getDate() {
-    return date;
+  public String getTime() {
+    return time;
   }
 }

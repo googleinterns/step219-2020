@@ -1,33 +1,46 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="UTF-8">
-  <title>To-do map app</title>
-  <link href="style.css" rel="stylesheet">
-  <script src="script.js"></script>
-</head>
-<body onload="loadToDos()">
-<div id="title-main menu-line">
-  <h4 id="app-title">To-do map app</h4>
-  <div id="main-menu">
-    <button id="list-button" onclick="loadListPage()">List</button>
-  </div>
-</div>
+  <head>
+    <meta charset="UTF-8">
+    <title>To-do map app</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMzLfvWOGTvwbgpzB7YT4_M5nuPcSFMhc"
+    defer
+    ></script>
+  </head>
+  <body onload="loadToDos()">
+      <div id = "title-main menu-line">
+        <h4 id="app-title">To-do map app</h4>
+        <div id= "main-menu">
+            <button onclick="showHideMap()" id="list-button">List</button>
+            <button onclick="showHideMap()" id="add-button">Map</button>
+        </div>
+      </div>
 
-<div id="second-menu">
-  <button id="add-button" onclick="loadToDos()">add</button>
-</div>
+     <h5>Create new Task</h5>
+      <form action="/update-local-task-list" id="task-form" method="POST">
+        <span><input type="text" name="task-text" value="Task Title"></span>
+        <span><input name="task-time" type="time" value="00:00:00"></span>
+        <span><input name="task-date" type="date" value="2020-01-01"></span>
+        <span><input type="text" name="task-place" value="Place"></span>
+        <span><input type="text" name="task-comment" value="Comment"></span>
+        <span><input type="submit"></span>
+        <span hidden><input name="type" type="text" value="add"></span>
+      </form>
 
-<h5>Create new Task</h5>
-<form action="/update-local-task-list" id="task-form" method="POST">
-  <span><input name="task-text" type="text"></span>
-  <span><input name="task-date" type="text"></span>
-  <span><input name="task-place" type="text"></span>
-  <span><input name="task-comment" type="text"></span>
-  <span><input type="submit"></span>
-  <span hidden><input name="type" type="text" value="add"></span>
-</form>
 
-<div class="tasks-container" id="task-container"></div>
-</body>
+      <div id = "task-container" class= "tasks-container"></div>
+
+      <div id="floating-panel">
+      <b>Mode of Travel: </b>
+      <select id="mode">
+        <option value="DRIVING">Driving</option>
+        <option value="WALKING">Walking</option>
+        <option value="BICYCLING">Bicycling</option>
+        <option value="TRANSIT">Transit</option>
+      </select>
+    </div>
+      <div id="map"></div>
+  </body>
 </html>
