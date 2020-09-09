@@ -19,17 +19,17 @@
       </div>
 
      <h5>Create new Task</h5>
-      <form id="task-form" action="/send-task" method="POST">
+      <form action="/update-local-task-list" id="task-form" method="POST">
         <span><input type="text" name="task-text" value="Task Title"></span>
-        <span><input type="time" name="task-time"></span>
-        <span><input type="date" name="task-date"></span>
+        <span><input name="task-time" type="time" value="00:00:00"></span>
+        <span><input name="task-date" type="date" value="2020-01-01"></span>
         <span><input type="text" name="task-place" value="Place"></span>
         <span><input type="text" name="task-comment" value="Comment"></span>
         <span><input type="submit"></span>
-        <span hidden><input type="text" name="type" ></span>
-      </form> 
+        <span hidden><input name="type" type="text" value="add"></span>
+      </form>
 
-      
+
       <div id = "task-container" class= "tasks-container"></div>
 
       <div id="floating-panel">

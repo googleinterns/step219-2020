@@ -2,28 +2,47 @@ package com.google.sps.src;
 
 
 public class Task {
-  private DateTime dateTime;
+
+  private final long datastoreId;
+  private final DateTime dateTime;
   private Time time;
   private Date date;
-  private TaskText taskText;
   private Place place;
-  private long number;
+  private String title;
+  private String comment;
 
-  public Task(DateTime dateTime, TaskText taskText, Place place, long number) {
+  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId) {
     this.dateTime = dateTime;
-    this.taskText = taskText;
+    this.title = title;
+    this.comment = comment;
     this.place = place;
-    this.number = number;
     this.date = new Date(dateTime.getDateAsString());
     this.time = new Time(dateTime.getTimeAsString());
+    this.datastoreId = datastoreId;
   }
 
-  public long getNumber() {
-    return number;
+  public void setField(String fieldName, String data) throws RuntimeException {
+    if (fieldName.equals("task_placeData")) {
+      place = new Place(data);
+    } else if (fieldName.equals("task_timeData")) {
+      time = new Time(data);
+    } else if (fieldName.equals("task_dateData")) {
+      setDate(data);
+    } else if (fieldName.equals("task_titleData")) {
+      title = data;
+    } else if (fieldName.equals("task_commentData")) {
+      comment = data;
+    } else {
+      throw new RuntimeException("Wrong field name");
+    }
+  }
+
+  public long getDatastoreId() {
+    return datastoreId;
   }
 
   public void setComment(String message) {
-    taskText.setComment(message);
+    comment = message;
   }
 
   public void setPlace(Place place) {
@@ -40,8 +59,16 @@ public class Task {
     this.date = new Date(this.dateTime.getDateAsString());
   }
 
-  public TaskText getTaskText() {
-    return taskText;
+  public void setTitle(String title) {
+    this.title = title;
+  }
+
+  public Time getTime() {
+    return time;
+  }
+
+  public void setTime(Time time) {
+    this.time = time;
   }
 
   public Place getPlace() {
