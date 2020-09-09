@@ -58,8 +58,10 @@ public class ServerUpdateServlet extends HttpServlet {
       doDeleteTask(request, response, number);
     } else if (type.equals("change")) {
       doChangeTask(request, response, number);
+    } else {
+      System.out.println("There is no needed type of request");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
-    response.sendRedirect("/index.html");
   }
 
   private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)

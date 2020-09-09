@@ -127,15 +127,16 @@ public class LocalUpdateServlet extends HttpServlet {
     String type = request.getParameter("type");
     if (type.equals("add")) {
       doAddTask(request, response);
-      return;
     } else if (type.equals("delete")) {
       doDeleteTask(request, response);
     } else if (type.equals("edit")) {
       doEditTask(request, response);
     } else if (type.equals("change")) {
       doChangeTask(request, response);
+    } else {
+      System.out.println("There is no needed type of request");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
-    response.sendRedirect("/index.html");
   }
 
   /**
