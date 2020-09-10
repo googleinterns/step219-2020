@@ -45,23 +45,16 @@
   box-shadow: 2px 2px 8px rgba(5, 5, 5, 0.7);
 }
 
-.task_placeData {
+.task_placeData, .task_placeData:focus {
   margin: 3px;
   border: none;
   cursor: default;
+  tab-index: -1;
   outline: none;
   background-color: rgba(0, 0, 0, 0);
   padding: 3px;
 }
 
-.task_placeData:focus {
-  margin: 3px;
-  border: none;
-  cursor: default;
-  outline: none;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 3px;
-}
 
 .task_placeData_chosen {
   margin: 3px;
@@ -73,6 +66,7 @@
   margin: 3px;
   border: none;
   outline: none;
+  tab-index: -1;
   cursor: default;
   background-color: rgba(0, 0, 0, 0);
   padding: 3px;
@@ -99,19 +93,7 @@
   background: white;
 }
 
-.task_titleData {
-  width: 100%;
-  font-family: "Lucida Console", Courier, monospace;
-  margin: 3px;
-  border: none;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 3px;
-  outline: none;
-  cursor: default;
-  color: black;
-}
-
-.task_titleData:focus {
+.task_titleData, .task_titleData:focus {
   width: 100%;
   font-family: "Lucida Console", Courier, monospace;
   margin: 3px;
@@ -134,37 +116,23 @@
 }
 
 
-.task_commentData {
-  width: 80%;
+.task_commentData, .task_commentData:focus {
+  width: fit-content;
   margin: 3px;
   padding: 5px;
   background: lightgray;
   border-style: inset;
   border-width: 3px;
   outline: none;
+  tab-index: -1;
   cursor: default;
   border-color: var(--primary-dark);
   border-radius: 4px 4px 4px 15px;
   box-shadow: 0 0 4px inset black;
 }
-
-.task_commentData:focus {
-  width: 80%;
-  margin: 3px;
-  padding: 5px;
-  background: lightgray;
-  border-style: inset;
-  border-width: 3px;
-  outline: none;
-  cursor: default;
-  border-color: var(--primary-dark);
-  border-radius: 4px 4px 4px 15px;
-  box-shadow: 0 0 4px inset black;
-}
-
 
 .task_commentData_chosen {
-  width: 80%;
+  width: fit-content;
   margin: 3px;
   padding: 5px;
   background: white;
@@ -174,6 +142,10 @@
   border-color: var(--primary-dark);
   border-radius: 4px 4px 4px 15px;
   box-shadow: 0 0 4px inset black;
+}
+
+.task_mainPanel {
+  width: 70%;
 }
 
 .shadowed_element {

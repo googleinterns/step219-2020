@@ -40,47 +40,24 @@ function findParentListView(event) {
   }
 }
 
-async function editFieldData(event) {
-  console.log(event)
-
-  const taskView = findParentListView(event);
-
-  if (taskView !== toggledElement) {
-    return;
-  }
-
-  const elementView = event.path[0];
-  const askResult = prompt("Do you want to change this field?",
-      elementView.innerText)
-  if (askResult == null) {
-    return;
-  }
-  elementView.innerText = askResult;
-  const requestParams = "field=" + elementView.className + "&type=edit&"
-      + "new_data=" + askResult + "&number=" + taskView.id;
-
-  const req1 = fetchHelper("/update-server-task-list", requestParams);
-  const req2 = fetchHelper("/update-local-task-list", requestParams);
-
-  await req2;
-  await req1;
-}
-
 function createTaskCommentElement(task) {
-  const taskCommentElement = document.createElement("input");
+  const taskCommentElement = document.createElement("div");
   taskCommentElement.setAttribute("class", "task_commentData");
   taskCommentElement.setAttribute("id", "comment" + task.datastoreId);
-  taskCommentElement.setAttribute("readonly", "readonly");
   taskCommentElement.setAttribute("value", task.comment);
+  taskCommentElement.innerText = task.comment;
+  taskCommentElement.setAttribute("contentEditable", "false")
+
   return taskCommentElement;
 }
 
 function createTaskTimeElement(task) {
   const taskTimeElement = document.createElement("input");
   taskTimeElement.setAttribute("class", "task_timeData");
+  taskTimeElement.setAttribute("type", "time");
   taskTimeElement.setAttribute("id", "time" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
-  taskTimeElement.setAttribute("value", task.dateTime.calendarDate);
+  taskTimeElement.setAttribute("value", task.dateTime.time);
   return taskTimeElement;
 }
 
@@ -88,6 +65,8 @@ function createTaskDateElement(task) {
   const taskTimeElement = document.createElement("input");
   taskTimeElement.setAttribute("class", "task_dateData");
   taskTimeElement.setAttribute("type", "date");
+  taskTimeElement.setAttribute("max", "2031-01-01")
+  taskTimeElement.setAttribute("min", "2000-01-01")
   taskTimeElement.setAttribute("id", "date" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
   taskTimeElement.setAttribute("value", task.dateTime.date);
@@ -180,6 +159,8 @@ function buildTaskRightPanel(task) {
 
 function buildMainTaskDataPanel(task) {
   const mainTaskPanel = document.createElement("div");
+  mainTaskPanel.classList.add("task_mainPanel");
+
   mainTaskPanel.appendChild(createTaskTitleElement(task));
   mainTaskPanel.appendChild(createTaskCommentElement(task));
   return mainTaskPanel;
@@ -203,7 +184,7 @@ function toggleElement(element) {
   removeButton.removeAttribute("hidden");
 
   comment.setAttribute("class", "task_commentData_chosen");
-  comment.removeAttribute("readonly");
+  comment.contentEditable = "true";
 
   title.setAttribute("class", "task_titleData_chosen");
   title.removeAttribute("readonly");
@@ -238,7 +219,7 @@ async function untoggleElement() {
   removeButton.setAttribute("hidden", "hidden");
 
   comment.setAttribute("class", "task_commentData");
-  comment.setAttribute("readonly", "readonly");
+  comment.contentEditable = "false";
 
   title.setAttribute("class", "task_titleData");
   title.setAttribute("readonly", "readonly");
@@ -254,7 +235,7 @@ async function untoggleElement() {
 
   const changeRequestText = "type=change&number=" + id
       + "&title=" + title.value
-      + "&comment=" + comment.value
+      + "&comment=" + comment.innerText
       + "&place=" + place.value
       + "&time=" + time.value
       + "&date=" + date.value;
@@ -287,7 +268,9 @@ function doToggleEvent(event) {
   }
 
   /** Clicks on input shouldn't untoggle the task */
-  if (toggledElement === currentElement && event.target.localName === "input") {
+  if (toggledElement === currentElement
+      && (event.target.isContentEditable || event.target.localName
+          === "input")) {
     console.log("input click");
     return;
   }
@@ -323,7 +306,7 @@ async function addNewView(event) {
   untoggleElement();
 
   console.log(event);
-  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2019-15-13&task-time=11:20";
+  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2020-01-01&task-time=00:00";
   const response = await fetchHelper("/update-local-task-list", requestParams);
 
   const task = await response.json();
