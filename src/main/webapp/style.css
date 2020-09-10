@@ -69,16 +69,7 @@
   background: white;
 }
 
-.task_timeData {
-  margin: 3px;
-  border: none;
-  outline: none;
-  cursor: default;
-  background-color: rgba(0, 0, 0, 0);
-  padding: 3px;
-}
-
-.task_timeData:focus {
+.task_timeData, .task_timeData:focus {
   margin: 3px;
   border: none;
   outline: none;
@@ -88,6 +79,21 @@
 }
 
 .task_timeData_chosen {
+  margin: 3px;
+  padding: 3px;
+  background: white;
+}
+
+.task_dateData, .task_dateData:focus {
+  margin: 3px;
+  border: none;
+  outline: none;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0);
+  padding: 3px;
+}
+
+.task_dateData_chosen {
   margin: 3px;
   padding: 3px;
   background: white;

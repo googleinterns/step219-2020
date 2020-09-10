@@ -6,6 +6,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -74,10 +76,17 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty("comment", request.getParameter("comment"));
       entity.setProperty("place", request.getParameter("place"));
       entity.setProperty("time", request.getParameter("time"));
+      entity.setProperty("date", request.getParameter("date"));
+
+      Date calendarDate = new Date();
+      calendarDate =
+          new SimpleDateFormat("yyyy-MM-dd HH:mm")
+              .parse(request.getParameter("date") + " " + request.getParameter("time"));
+      entity.setProperty("dateTime", calendarDate);
       datastore.put(entity);
 
     } catch (Exception e) {
-      System.out.println("Key doesn't exists");
+      System.out.println("Request error: " + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
   }

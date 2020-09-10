@@ -15,7 +15,9 @@ async function loadToDos() {
       string: "place"
     },
     dateTime: {
-      calendarDate: "Jan 1, 2020 12:00:00 AM"
+      calendarDate: "Jan 1, 2020 12:00:00 AM",
+      time: "13:33",
+      date: "2020-01-01"
     },
     comment: "comment",
     title: "debug"
@@ -68,7 +70,6 @@ function createTaskCommentElement(task) {
   const taskCommentElement = document.createElement("input");
   taskCommentElement.setAttribute("class", "task_commentData");
   taskCommentElement.setAttribute("id", "comment" + task.datastoreId);
-  //taskCommentElement.addEventListener("click", editFieldData);
   taskCommentElement.setAttribute("readonly", "readonly");
   taskCommentElement.setAttribute("value", task.comment);
   return taskCommentElement;
@@ -79,8 +80,17 @@ function createTaskTimeElement(task) {
   taskTimeElement.setAttribute("class", "task_timeData");
   taskTimeElement.setAttribute("id", "time" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
-  //taskTimeElement.addEventListener("click", editFieldData);
   taskTimeElement.setAttribute("value", task.dateTime.calendarDate);
+  return taskTimeElement;
+}
+
+function createTaskDateElement(task) {
+  const taskTimeElement = document.createElement("input");
+  taskTimeElement.setAttribute("class", "task_dateData");
+  taskTimeElement.setAttribute("type", "date");
+  taskTimeElement.setAttribute("id", "date" + task.datastoreId);
+  taskTimeElement.setAttribute("readonly", "readonly");
+  taskTimeElement.setAttribute("value", task.dateTime.date);
   return taskTimeElement;
 }
 
@@ -89,7 +99,6 @@ function createTaskTitleElement(task) {
   taskTitleElement.setAttribute("class", "task_titleData");
   taskTitleElement.setAttribute("id", "title" + task.datastoreId);
   taskTitleElement.setAttribute("readonly", "readonly");
-  //taskTitleElement.addEventListener("click", editFieldData);
   taskTitleElement.setAttribute("value", task.title);
 
   return taskTitleElement;
@@ -100,7 +109,6 @@ function createTaskPlaceElement(task) {
   taskPlaceElement.setAttribute("class", "task_placeData");
   taskPlaceElement.setAttribute("id", "place" + task.datastoreId);
   taskPlaceElement.setAttribute("readonly", "readonly");
-  //taskPlaceElement.addEventListener("click", editFieldData);
   taskPlaceElement.setAttribute("value", task.place.name);
   return taskPlaceElement;
 }
@@ -165,6 +173,7 @@ function buildTaskRightPanel(task) {
 
   taskRightPanel.appendChild(createButtonElements(task));
   taskRightPanel.appendChild(createTaskTimeElement(task));
+  taskRightPanel.appendChild(createTaskDateElement(task));
   taskRightPanel.appendChild(createTaskPlaceElement(task));
   return taskRightPanel;
 }
@@ -188,6 +197,7 @@ function toggleElement(element) {
   const title = document.getElementById("title" + id)
   const place = document.getElementById("place" + id)
   const time = document.getElementById("time" + id)
+  const date = document.getElementById("date" + id);
   const removeButton = document.getElementById("remove_btn" + id);
 
   removeButton.removeAttribute("hidden");
@@ -203,6 +213,9 @@ function toggleElement(element) {
 
   time.setAttribute("class", "task_timeData_chosen");
   time.removeAttribute("readonly");
+
+  date.setAttribute("class", "task_dateData_chosen");
+  date.removeAttribute("readonly");
 }
 
 /** Changes the state of "toggledElement" to untoggled */
@@ -219,6 +232,7 @@ async function untoggleElement() {
   const title = document.getElementById("title" + id)
   const place = document.getElementById("place" + id)
   const time = document.getElementById("time" + id)
+  const date = document.getElementById("date" + id);
 
   const removeButton = document.getElementById("remove_btn" + id);
   removeButton.setAttribute("hidden", "hidden");
@@ -235,11 +249,15 @@ async function untoggleElement() {
   time.setAttribute("class", "task_timeData");
   time.setAttribute("readonly", "readonly");
 
+  date.setAttribute("class", "task_dateData");
+  date.setAttribute("readonly", "readonly");
+
   const changeRequestText = "type=change&number=" + id
       + "&title=" + title.value
       + "&comment=" + comment.value
       + "&place=" + place.value
-      + "&time=" + time.value;
+      + "&time=" + time.value
+      + "&date=" + date.value;
 
   const req1 = fetchHelper("/update-server-task-list", changeRequestText);
   const req2 = fetchHelper("/update-local-task-list", changeRequestText);
@@ -353,11 +371,13 @@ function addDirections(map, mapMarkers) {
   });
 }
 
-function directionsBetweenMarkers(mapMarkers, directionsService, directionsRenderer) {
+function directionsBetweenMarkers(mapMarkers, directionsService,
+    directionsRenderer) {
   for (var marker1 in mapMarkers) {
     for (var marker2 in mapMarkers) {
       if (marker1 != marker2) {
-        calculateAndDisplayRoute(directionsService, directionsRenderer, mapMarkers[marker1].position, mapMarkers[marker2].position);
+        calculateAndDisplayRoute(directionsService, directionsRenderer,
+            mapMarkers[marker1].position, mapMarkers[marker2].position);
       }
     }
   }
@@ -373,16 +393,20 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
   for (const task of tasksList) {
     markerName = `lat${task.place.lat}lng${task.place.lng}`;
     if (markerName in mapMarkers) {
-      mapInfos[markerName].setContent(mapInfos[markerName].getContent() + composeNewInfoContent(task.number));
+      mapInfos[markerName].setContent(
+          mapInfos[markerName].getContent() + composeNewInfoContent(
+          task.number));
     } else {
       mapInfos[markerName] = new google.maps.InfoWindow({
-        content: ''});
+        content: ''
+      });
       mapInfos[markerName].setContent(composeNewInfoContent(task.number));
       mapMarkers[markerName] = new google.maps.Marker({
         position: task.place,
         map: map,
         title: markerName,//task.place.string
-        icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}});
+        icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
+      });
       mapMarkers[markerName].setIcon(composeIconUrl(task.time));
     }
   }
@@ -390,10 +414,10 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
     //explanation of that code is here https://leewc.com/articles/google-maps-infowindow/
     //there was a problem with handling several info windows
     mapMarkers[markerName].infowindow = mapInfos[markerName];
-    mapMarkers[markerName].addListener('click', function() {
+    mapMarkers[markerName].addListener('click', function () {
       return this.infowindow.open(map, this);
     });
-    google.maps.event.addListener(mapMarkers[markerName], 'click', function() {
+    google.maps.event.addListener(mapMarkers[markerName], 'click', function () {
       this.infowindow.open(map, this);
     });
   }
@@ -404,7 +428,7 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
 function composeIconUrl(task_time) {
   //change icon color depend on  time
   let urls = "https://maps.google.com/mapfiles/ms/icons/";
-  var color ="";
+  var color = "";
   if (task_time < '2') {
     color = "red";
   } else if (task_time < "3") {
@@ -426,7 +450,8 @@ function composeNewInfoContent(task_number) {
   return taskElement.innerHTML;
 }
 
-function calculateAndDisplayRoute(directionsService, directionsRenderer, from_pos, to_pos) {
+function calculateAndDisplayRoute(directionsService, directionsRenderer,
+    from_pos, to_pos) {
   //put direction on the map
   const selectedMode = document.getElementById("mode").value;
   directionsService.route(
@@ -465,12 +490,14 @@ function getCurrentGeolocation(map) {
           map.setCenter(pos);
         },
         () => {
-          handleLocationError('The Geolocation service failed.', infoWindow, map.getCenter());
+          handleLocationError('The Geolocation service failed.', infoWindow,
+              map.getCenter());
         }
     );
   } else {
     // Browser doesn't support Geolocation
-    handleLocationError('Your browser does not support geolocation', infoWindow, map.getCenter());
+    handleLocationError('Your browser does not support geolocation', infoWindow,
+        map.getCenter());
   }
 }
 

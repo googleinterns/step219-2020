@@ -1,26 +1,41 @@
 package com.google.sps.src;
 
-import java.util.Date;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;  
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class DateTime {
+
   private Date calendarDate;
+
+  /**
+   * To variables below are needed to be used in javascript
+   */
+  private String time;
+
+  private String date;
 
   public DateTime() {
     calendarDate = new Date();
+    this.time = getTimeAsString();
+    this.date = getDateAsString();
   }
-
 
   public DateTime(String dateStr) {
     try {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        calendarDate = sdf.parse(dateStr);
-    } catch (Exception e) {}
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+      calendarDate = sdf.parse(dateStr);
+      this.time = getTimeAsString();
+      this.date = getDateAsString();
+    } catch (Exception e) {
+      System.out.println("ERROR: " + e);
+    }
   }
 
   public DateTime(Date date) {
     calendarDate = date;
+    this.time = getTimeAsString();
+    this.date = getDateAsString();
   }
 
   public Date getTime() {
@@ -28,38 +43,41 @@ public class DateTime {
   }
 
   public void setTime(String time) {
-    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     String strDate = dateFormat.format(calendarDate.getTime());
     try {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        calendarDate = sdf.parse(strDate + " "+time);
-    } catch (Exception e) {}
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+      calendarDate = sdf.parse(strDate + " " + time);
+      this.time = getTimeAsString();
+    } catch (Exception e) {
+      System.out.println("ERROR: " + e);
+    }
   }
 
   public void setDate(String newDate) {
-    DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
+    DateFormat dateFormat = new SimpleDateFormat("HH:mm");
     String strDate = dateFormat.format(calendarDate.getTime());
     try {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        calendarDate = sdf.parse(newDate +" "+ strDate);
-    } catch (Exception e) {}
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+      calendarDate = sdf.parse(newDate + " " + strDate);
+      this.date = getDateAsString();
+    } catch (Exception e) {
+      System.out.println("ERROR: " + e);
+    }
   }
 
   public String getTimeDateAsString() {
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");  
-      String strDate = dateFormat.format(calendarDate.getTime());  
-    return strDate;
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    return dateFormat.format(calendarDate.getTime());
   }
 
   public String getDateAsString() {
-      DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");  
-      String strDate = dateFormat.format(calendarDate.getTime());  
-    return strDate;
+    DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    return dateFormat.format(calendarDate.getTime());
   }
 
   public String getTimeAsString() {
-      DateFormat dateFormat = new SimpleDateFormat("HH:mm");  
-      String strDate = dateFormat.format(calendarDate.getTime());  
-    return strDate;
+    DateFormat dateFormat = new SimpleDateFormat("HH:mm");
+    return dateFormat.format(calendarDate.getTime());
   }
 }

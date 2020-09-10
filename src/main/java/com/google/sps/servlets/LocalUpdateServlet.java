@@ -170,6 +170,7 @@ public class LocalUpdateServlet extends HttpServlet {
           task.setPlace(new Place(request.getParameter("place")));
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
+          task.setDate(request.getParameter("date"));
           return;
         }
       }
