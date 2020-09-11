@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.sps.src.DateTime;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
@@ -185,7 +186,8 @@ public class LocalUpdateServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder()
+        .setDateFormat("yyyy-MM-dd HH:mm").create();
     response.getWriter().println(gson.toJson(tasks));
   }
 }

@@ -57,7 +57,8 @@ function createTaskTimeElement(task) {
   taskTimeElement.setAttribute("type", "time");
   taskTimeElement.setAttribute("id", "time" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
-  taskTimeElement.setAttribute("value", task.dateTime.time);
+  taskTimeElement.setAttribute("value",
+      task.dateTime.calendarDate.split(" ")[1]);
   return taskTimeElement;
 }
 
@@ -69,7 +70,8 @@ function createTaskDateElement(task) {
   taskTimeElement.setAttribute("min", "2000-01-01")
   taskTimeElement.setAttribute("id", "date" + task.datastoreId);
   taskTimeElement.setAttribute("readonly", "readonly");
-  taskTimeElement.setAttribute("value", task.dateTime.date);
+  taskTimeElement.setAttribute("value",
+      task.dateTime.calendarDate.split(" ")[0]);
   return taskTimeElement;
 }
 

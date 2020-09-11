@@ -11,22 +11,15 @@ public class DateTime {
   /**
    * To variables below are needed to be used in javascript
    */
-  private String time;
-
-  private String date;
 
   public DateTime() {
     calendarDate = new Date();
-    this.time = getTimeAsString();
-    this.date = getDateAsString();
   }
 
   public DateTime(String dateStr) {
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       calendarDate = sdf.parse(dateStr);
-      this.time = getTimeAsString();
-      this.date = getDateAsString();
     } catch (Exception e) {
       System.out.println("ERROR: " + e);
     }
@@ -34,8 +27,6 @@ public class DateTime {
 
   public DateTime(Date date) {
     calendarDate = date;
-    this.time = getTimeAsString();
-    this.date = getDateAsString();
   }
 
   public Date getTime() {
@@ -48,7 +39,6 @@ public class DateTime {
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       calendarDate = sdf.parse(strDate + " " + time);
-      this.time = getTimeAsString();
     } catch (Exception e) {
       System.out.println("ERROR: " + e);
     }
@@ -60,7 +50,6 @@ public class DateTime {
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
       calendarDate = sdf.parse(newDate + " " + strDate);
-      this.date = getDateAsString();
     } catch (Exception e) {
       System.out.println("ERROR: " + e);
     }
