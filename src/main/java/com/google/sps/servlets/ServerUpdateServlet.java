@@ -6,6 +6,8 @@ import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.annotation.WebServlet;
@@ -51,11 +53,41 @@ public class ServerUpdateServlet extends HttpServlet {
     System.out.println("LOG: number of the item is " + number);
     System.out.println("LOG: type of the request is " + request.getParameter("type"));
 
-    if (request.getParameter("type").equals("edit")) {
+    String type = request.getParameter("type");
+    if (type.equals("edit")) {
       doEditTask(request, response, number);
-    } else if (request.getParameter("type").equals("delete")) {
+    } else if (type.equals("delete")) {
       doDeleteTask(request, response, number);
+    } else if (type.equals("change")) {
+      doChangeTask(request, response, number);
+    } else {
+      System.out.println("There is no needed type of request");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
-    response.sendRedirect("/index.html");
+  }
+
+  private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)
+      throws IOException {
+    Key key = KeyFactory.createKey("task", number);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    try {
+      Entity entity = datastore.get(key);
+      entity.setProperty("text", request.getParameter("title"));
+      entity.setProperty("comment", request.getParameter("comment"));
+      entity.setProperty("place", request.getParameter("place"));
+      entity.setProperty("time", request.getParameter("time"));
+      entity.setProperty("date", request.getParameter("date"));
+
+      Date calendarDate = new Date();
+      calendarDate =
+          new SimpleDateFormat("yyyy-MM-dd HH:mm")
+              .parse(request.getParameter("date") + " " + request.getParameter("time"));
+      entity.setProperty("dateTime", calendarDate);
+      datastore.put(entity);
+
+    } catch (Exception e) {
+      System.out.println("Request error: " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
   }
 }

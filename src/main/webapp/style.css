@@ -1,73 +1,225 @@
+:root {
+  --primary-color: #3d5afe;
+  --primary-light: #8187ff;
+  --primary-dark: #0031ca;
+  --secondary-color: #ff9100;
+  --secondary-light: #ffc246;
+  --secondary-dark: #c56200;
+  --2dp_shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 4px 0 rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+  --6dp_shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px 0 rgba(0, 0, 0, 0.20);
+  --8dp_shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 3px rgba(0, 0, 0, 0.12), 0 4px 5px 0 rgba(0, 0, 0, 0.20);
+}
+
 #app-title {
   width: 15%;
   font-family: "Lucida Console", Courier, monospace;
-  background: #4d2c91;
+  background: var(--primary-color);
   padding: 3px;
-  color: #FF5722;
+  color: white;
 }
 
-.task_titleData {
-  width: 15%;
-  font-family: "Lucida Console", Courier, monospace;
-  background: #7B1FA2;
-  margin: 3px;
-  padding: 3px;
-  color: #FFFFFF
-}
 
 .task_buttonHolder {
   float: right;
+  padding: 1px;
 }
 
 .task_button {
+  object-fit: contain;
+  float: bottom;
   margin: 2px;
-  padding: 2px;
-  background: #FF5722;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
+  box-shadow: var(--2dp_shadow);
 }
 
-.task_placeData {
+.task_button:hover {
+  object-fit: contain;
+  float: bottom;
+  margin: 2px;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
+  box-shadow: var(--8dp_shadow)
+}
+
+.task_placeData, .task_placeData:focus {
   margin: 3px;
+  border: none;
+  cursor: default;
+  tab-index: -1;
+  outline: none;
+  background-color: rgba(0, 0, 0, 0);
   padding: 3px;
 }
 
-.task_timeData {
+
+.task_placeData_chosen {
   margin: 3px;
+  padding: 3px;
+  background: white;
+}
+
+.task_timeData, .task_timeData:focus {
+  margin: 3px;
+  border: none;
+  outline: none;
+  tab-index: -1;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0);
   padding: 3px;
 }
 
-.task_dataholder div {
-  height: 100%;
-  width: 10%;
-  display: inline-block;
-  border: 1px solid #dff1ee;
-  padding: 3px;
+.task_timeData_chosen {
   margin: 3px;
+  padding: 3px;
+  background: white;
+}
+
+.task_dateData, .task_dateData:focus {
+  margin: 3px;
+  border: none;
+  outline: none;
+  cursor: default;
+  background-color: rgba(0, 0, 0, 0);
+  padding: 3px;
+}
+
+.task_dateData_chosen {
+  margin: 3px;
+  padding: 3px;
+  background: white;
+}
+
+.task_titleData, .task_titleData:focus {
+  width: 100%;
+  font-family: "Lucida Console", Courier, monospace;
+  margin: 3px;
+  border: none;
+  background-color: rgba(0, 0, 0, 0);
+  padding: 3px;
+  outline: none;
+  cursor: default;
+  color: black;
+}
+
+
+.task_titleData_chosen {
+  width: 100%;
+  font-family: "Lucida Console", Courier, monospace;
+  margin: 3px;
+  padding: 3px;
+  color: black;
+  background: white;
+}
+
+
+.task_commentData, .task_commentData:focus {
+  width: fit-content;
+  margin: 3px;
+  padding: 5px;
+  background: lightgray;
+  border-style: inset;
+  border-width: 3px;
+  outline: none;
+  tab-index: -1;
+  cursor: default;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 15px;
+  box-shadow: 0 0 4px inset black;
+}
+
+.task_commentData_chosen {
+  width: fit-content;
+  margin: 3px;
+  padding: 5px;
+  background: white;
+  border-style: inset;
+  outline: none;
+  border-width: 3px;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 15px;
+  box-shadow: 0 0 4px inset black;
+}
+
+.task_mainPanel {
+  width: 70%;
+}
+
+.shadowed_element {
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: var(--2dp_shadow);
+}
+
+.shadowed_chosen_element {
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node {
   padding: 5px;
   list-style-type: none;
-  background-color: #ce93d8;
-  margin-top: 7px;
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
+  margin-top: 10px;
 }
 
-.chosen_tasklist_node {
+.tasklist_node:hover {
   padding: 5px;
   list-style-type: none;
-  background-color: #ff0000;
-  margin-top: 7px;
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
+  margin-top: 10px;
+  border-radius: 15px 1px 15px 15px;
+  box-shadow: var(--8dp_shadow)
 }
 
-.task_commentData {
-  margin: 3px;
-  padding: 3px;
+.tasklist_node_chosen {
+  padding: 5px;
+  list-style-type: none;
+  display: flex;
+  justify-content: space-between;
+  background: linear-gradient(to right, #9da0a4, #b3b5b9);
+  margin-top: 10px;
 }
+
 
 #task_container {
   width: 100%;
 }
 
+#task-composer-button {
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-top: 10px;
+  background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
+}
+
+#task-composer-button:hover {
+  align-content: center;
+  margin-left: auto;
+  margin-right: auto;
+  float: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  margin-top: 10px;
+  box-shadow: var(--8dp_shadow);
+  background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
+}
+
 #map {
-    height: 400px;
-    width: 400px;
+  height: 400px;
+  width: 400px;
 }

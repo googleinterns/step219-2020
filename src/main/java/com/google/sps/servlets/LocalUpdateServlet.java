@@ -7,6 +7,7 @@ import com.google.appengine.api.datastore.PreparedQuery;
 import com.google.appengine.api.datastore.Query;
 import com.google.appengine.api.datastore.Query.SortDirection;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.sps.src.DateTime;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
@@ -28,9 +29,7 @@ public class LocalUpdateServlet extends HttpServlet {
    */
   private ArrayList<Task> tasks;
 
-  /**
-   * Initialize list of tasks taken from Datastore
-   */
+  /** Initialize list of tasks taken from Datastore */
   @Override
   public void init() {
     tasks = new ArrayList<>();
@@ -48,10 +47,7 @@ public class LocalUpdateServlet extends HttpServlet {
 
       Task task =
           new Task(
-              new DateTime(dateTime),
-              text, comment,
-              new Place(place),
-              entity.getKey().getId());
+              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId());
       System.out.println(task);
       tasks.add(task);
     }
@@ -77,26 +73,13 @@ public class LocalUpdateServlet extends HttpServlet {
     return taskEntity;
   }
 
-  private Task getTask(HttpServletRequest request, long id) {
-    return new Task(
-        new DateTime(request.getParameter("task-date") + " " + request.getParameter("task-time")),
-        request.getParameter("task-text"), request.getParameter("task-comment"),
-        new Place(request.getParameter("task-place")),
-        id);
-  }
-
-  /**
-   * Adding task to a Datastore
-   */
+  /** Adding task to a Datastore */
   private void doAddTask(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     try {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity taskEntity = buildTaskEntityFromRequest(request);
       datastore.put(taskEntity);
-
-      System.out.println(request.getParameter("task-date"));
-      System.out.println(request.getParameter("task-time"));
 
       Task task =
           new Task(
@@ -109,6 +92,7 @@ public class LocalUpdateServlet extends HttpServlet {
 
       tasks.add(task);
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
+      response.getWriter().println(new Gson().toJson(task));
     } catch (Exception e) {
       System.out.println("LOG: error " + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -138,9 +122,7 @@ public class LocalUpdateServlet extends HttpServlet {
     }
   }
 
-  /**
-   * Delete task from Datastore
-   */
+  /** Delete task from Datastore */
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     try {
@@ -168,8 +150,35 @@ public class LocalUpdateServlet extends HttpServlet {
       doDeleteTask(request, response);
     } else if (type.equals("edit")) {
       doEditTask(request, response);
+    } else if (type.equals("change")) {
+      doChangeTask(request, response);
+    } else {
+      System.out.println("There is no needed type of request");
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
-    response.sendRedirect("/index.html");
+  }
+
+  /**
+   * Changing all fields of the task
+   */
+  private void doChangeTask(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    try {
+      long number = Long.parseLong(request.getParameter("number"));
+      for (Task task : tasks) {
+        if (task.getDatastoreId() == number) {
+          task.setComment(request.getParameter("comment"));
+          task.setPlace(new Place(request.getParameter("place")));
+          task.setTime(request.getParameter("time"));
+          task.setTitle(request.getParameter("title"));
+          task.setDate(request.getParameter("date"));
+          return;
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("LOG: error " + e);
+      response.sendError(HttpServletResponse.SC_BAD_REQUEST);
+    }
   }
 
   /**
@@ -177,7 +186,8 @@ public class LocalUpdateServlet extends HttpServlet {
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    Gson gson = new Gson();
+    Gson gson = new GsonBuilder()
+        .setDateFormat("yyyy-MM-dd HH:mm").create();
     response.getWriter().println(gson.toJson(tasks));
   }
 }

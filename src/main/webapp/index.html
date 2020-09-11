@@ -9,7 +9,7 @@
     defer
     ></script>
   </head>
-  <body onload="loadToDos()">
+  <body onload="doPreparation()">
       <div id = "title-main menu-line">
         <h4 id="app-title">To-do map app</h4>
         <div id= "main-menu">
@@ -18,29 +18,23 @@
         </div>
       </div>
 
-     <h5>Create new Task</h5>
-      <form action="/update-local-task-list" id="task-form" method="POST">
-        <span><input type="text" name="task-text" value="Task Title"></span>
-        <span><input name="task-time" type="time" value="00:00:00"></span>
-        <span><input name="task-date" type="date" value="2020-01-01"></span>
-        <span><input type="text" name="task-place" value="Place"></span>
-        <span><input type="text" name="task-comment" value="Comment"></span>
-        <span><input type="submit"></span>
-        <span hidden><input name="type" type="text" value="add"></span>
-      </form>
+<div>
+  <div class="tasks-container" id="task-container"></div>
+  <div class="shadowed_element" id="task-composer-button">
+    <img alt="Compose a task" id="task-composer" src="images/add-48dp.svg">
+  </div>
+</div>
 
+<div id="floating-panel">
+  <b>Mode of Travel: </b>
+  <select id="mode">
+    <option value="DRIVING">Driving</option>
+    <option value="WALKING">Walking</option>
+    <option value="BICYCLING">Bicycling</option>
+    <option value="TRANSIT">Transit</option>
+  </select>
+</div>
 
-      <div id = "task-container" class= "tasks-container"></div>
-
-      <div id="floating-panel">
-      <b>Mode of Travel: </b>
-      <select id="mode">
-        <option value="DRIVING">Driving</option>
-        <option value="WALKING">Walking</option>
-        <option value="BICYCLING">Bicycling</option>
-        <option value="TRANSIT">Transit</option>
-      </select>
-    </div>
-      <div id="map"></div>
-  </body>
+<div id="map"></div>
+</body>
 </html>
