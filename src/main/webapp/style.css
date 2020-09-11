@@ -5,6 +5,9 @@
   --secondary-color: #ff9100;
   --secondary-light: #ffc246;
   --secondary-dark: #c56200;
+  --2dp_shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.14), 0 3px 4px 0 rgba(0, 0, 0, 0.12), 0 1px 5px 0 rgba(0, 0, 0, 0.20);
+  --6dp_shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.14), 0 1px 18px 0 rgba(0, 0, 0, 0.12), 0 3px 5px 0 rgba(0, 0, 0, 0.20);
+  --8dp_shadow: 0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 3px rgba(0, 0, 0, 0.12), 0 4px 5px 0 rgba(0, 0, 0, 0.20);
 }
 
 #app-title {
@@ -30,7 +33,7 @@
   width: 18px;
   border-radius: 50%;
   background: linear-gradient(to top, #ff9f46, var(--secondary-light));
-  box-shadow: 2px 2px 6px rgba(5, 5, 5, 0.4);
+  box-shadow: var(--2dp_shadow);
 }
 
 .task_button:hover {
@@ -42,7 +45,7 @@
   width: 18px;
   border-radius: 50%;
   background: linear-gradient(to top, #ff9f46, var(--secondary-light));
-  box-shadow: 2px 2px 8px rgba(5, 5, 5, 0.7);
+  box-shadow: var(--8dp_shadow)
 }
 
 .task_placeData, .task_placeData:focus {
@@ -150,12 +153,12 @@
 
 .shadowed_element {
   border-radius: 15px 1px 15px 15px;
-  box-shadow: 3px 3px 7px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--2dp_shadow);
 }
 
 .shadowed_chosen_element {
   border-radius: 15px 1px 15px 15px;
-  box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node {
@@ -175,7 +178,7 @@
   background: linear-gradient(to right, #c8c8c8, #c9c9c9);
   margin-top: 10px;
   border-radius: 15px 1px 15px 15px;
-  box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.6);
+  box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node_chosen {
@@ -212,7 +215,7 @@
   height: 48px;
   border-radius: 50%;
   margin-top: 10px;
-  box-shadow: 3px 6px 13px rgba(0, 0, 0, 0.7);
+  box-shadow: var(--8dp_shadow);
   background: linear-gradient(to top, var(--secondary-dark), var(--secondary-color));
 }
 
