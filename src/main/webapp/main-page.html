@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>To-do map app</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMzLfvWOGTvwbgpzB7YT4_M5nuPcSFMhc"
+    defer
+    ></script>
+  </head>
+  <body onload="doPreparation()">
+      <div id = "title-main menu-line">
+        <h4 id="app-title">To-do map app</h4>
+        <div id= "main-menu">
+            <button onclick="showHideMap()" id="list-button">List</button>
+            <button onclick="showHideMap()" id="add-button">Map</button>
+        </div>
+      </div>
+
+<div id="task-list-full-container">
+  <div class="tasks-container" id="task-container"></div>
+  <div class="shadowed_element" id="task-composer-button">
+    <img alt="Compose a task" id="task-composer" src="images/add-48dp.svg">
+  </div>
+</div>
+
+<div id="floating-panel">
+  <b>Mode of Travel: </b>
+  <select id="mode">
+    <option value="DRIVING">Driving</option>
+    <option value="WALKING">Walking</option>
+    <option value="BICYCLING">Bicycling</option>
+    <option value="TRANSIT">Transit</option>
+  </select>
+</div>
+
+<div id="map"></div>
+</body>
+</html>
