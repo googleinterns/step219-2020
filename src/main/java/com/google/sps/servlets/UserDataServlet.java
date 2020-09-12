@@ -44,32 +44,35 @@ public class UserDataServlet extends HttpServlet {
     System.out.println("LOG: doPost() function");
     user_id = request.getParameter("id-token");
     System.out.println("LOG: user id=" + user_id);
-    /*Key key = KeyFactory.createKey("user", user_id);
+    Key key = KeyFactory.createKey("user", user_id);
     System.out.println("Key key = KeyFactory");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
       user_key_id = entity.getKey().getId();
+      System.out.println("User " + user_id + " exists");
     } catch (Exception e) {
       Entity entity = new Entity("user", key);
       user_key_id = entity.getKey().getId();
+      System.out.println("User " + user_id +" NOT exists");
+      datastore.put(entity);
     }
     response.getWriter().println(new Gson().toJson(user_key_id));
-    System.out.println("Key_id"+ user_key_id);*/
+    System.out.println("Key_id"+ user_key_id);
 
-
+/*
 
     Entity entity = new Entity("user", user_id);
     user_key_id = entity.getKey().getId();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.put(entity);
-    System.out.println("Key_id"+ user_key_id);
+    System.out.println("Key_id"+ user_key_id);*/
   }
 
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    //response.getWriter().println(gson.toJson(user_key_id));
-    response.getWriter().println(gson.toJson(user_id));
+    response.getWriter().println(gson.toJson(user_key_id));
+    //response.getWriter().println(gson.toJson(user_id));
   }
 }
