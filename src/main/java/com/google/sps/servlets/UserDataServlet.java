@@ -50,7 +50,7 @@ public class UserDataServlet extends HttpServlet {
     try {
       Entity entity = datastore.get(key);
       user_key_id = entity.getKey().getId();
-      System.out.println("User " + user_id + " exists");
+      System.out.println("User " + user_id+ " exists");
     } catch (Exception e) {
       Entity entity = new Entity("user", key);
       user_key_id = entity.getKey().getId();
@@ -58,7 +58,7 @@ public class UserDataServlet extends HttpServlet {
       datastore.put(entity);
     }
     response.getWriter().println(new Gson().toJson(user_key_id));
-    System.out.println("Key_id"+ user_key_id);
+    System.out.println("Key_id "+ user_key_id);
 
 /*
 

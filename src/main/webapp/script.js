@@ -3,6 +3,16 @@ let toggledElement = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
+  //user_key_id = fetchUserData();
+  //const response = await fetch('/update-local-task-list');
+  /*, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: "user-key-id="+user_key_id
+  });*/
+  fetchHelper('/update-local-task-list', "type=loadtasks");
   const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
 
@@ -99,12 +109,21 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
+  var userKeyId = 6473924464345088//fetchUserData();
+  console.log("request body string 109 "+ requestBody);
+  var rq = requestBody;
+  if (requestBody == "") {
+      rq = "user-key-id="+userKeyId;
+  } else {
+      rq = requestBody+"&user-key-id="+userKeyId;
+  }
+  console.log("request body string 109 :"+ rq);
   return fetch(servletName, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: requestBody
+    body: rq
   });
 }
 
@@ -532,6 +551,60 @@ function onSignIn(googleUser) {
   // The ID token you need to pass to your backend:
   var id_token = googleUser.getAuthResponse().id_token;
   console.log("ID Token: " + id_token);
- window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  sendUserData(id_token);
+  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
 }
 
+async function sendUserData(id_token) {
+  const req = fetchHelper("/user-data", "id-token==" + id_token);
+  await req;
+}
+
+function getBasicProfile() {
+  if (auth2.isSignedIn.get()) {
+  var profile = auth2.currentUser.get().getBasicProfile();
+  console.log('ID: ' + profile.getId());
+  console.log('Full Name: ' + profile.getName());
+  console.log('Given Name: ' + profile.getGivenName());
+  console.log('Family Name: ' + profile.getFamilyName());
+  console.log('Image URL: ' + profile.getImageUrl());
+  console.log('Email: ' + profile.getEmail());
+}
+}
+
+async function trial() {
+  const req = fetchHelper("/user-data", "id-token=hihello");
+  await req;
+  console.log("successful request");
+  user_key_id = fetchUserData();
+  //const response = await fetch('/user-data');
+  //const user_key_id = await response.json();
+  console.log(user_key_id);
+  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+}
+
+async function trial2() {
+  console.log("trial2 request");
+  user_key_id = fetchUserData().then();
+  //const response = await fetch('/user-data');
+  //const user_key_id = await response.json();
+  //const user_key_id = await response.json();
+  console.log(user_key_id);
+  //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+
+}
+
+async function fetchUserData() {
+  var userKeyId;
+  fetch('/user-data').then(response => response.json()).then((user_key_id) => {
+      userKeyId = user_key_id;
+      console.log(userKeyId);
+      console.log(typeof(userKeyId));
+  });
+  return userKeyId;
+  //const response = await fetch('/user-data');
+  //const user_key_id = await response.json().then((user_key_id)=> {userKeyId = user_key_id});
+  //console.log(userKeyId);
+  //console.log(typeof(userKeyId));
+  //return parseFloat(userKeyId);
+}
