@@ -139,32 +139,30 @@
 }
 
 
-.task_commentData, .task_commentData:focus {
+.task_commentData, .task_commentData:focus, .task_commentData_chosen {
   width: fit-content;
   margin: 3px;
   padding: 5px;
-  background: rgba(0, 0, 0, 0.0);
   border-style: inset;
   border-width: 3px;
   outline: none;
+  line-break: anywhere;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 12px;
+  box-shadow: 0 0 4px inset black;
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+
+.task_commentData, .task_commentData:focus {
+  background: rgba(0, 0, 0, 0.0);
   tab-index: -1;
   cursor: default;
-  border-color: var(--primary-dark);
-  border-radius: 4px 4px 4px 15px;
-  box-shadow: 0 0 4px inset black;
 }
 
 .task_commentData_chosen {
-  width: fit-content;
-  margin: 3px;
-  padding: 5px;
   background: white;
-  border-style: inset;
-  outline: none;
-  border-width: 3px;
-  border-color: var(--primary-dark);
-  border-radius: 4px 4px 4px 15px;
-  box-shadow: 0 0 4px inset black;
+  width: 90%;
 }
 
 .task_mainPanel {
@@ -197,6 +195,7 @@
 
 .tasklist_node_chosen {
   background: linear-gradient(to right, #9da0a4, #b3b5b9);
+  box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node_done {
@@ -205,6 +204,7 @@
 
 .tasklist_node_done_chosen {
   background: linear-gradient(to right, #eaeaea, #ededed);
+  box-shadow: var(--2dp_shadow)
 }
 
 #task_container {

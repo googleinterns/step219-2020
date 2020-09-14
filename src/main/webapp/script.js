@@ -16,11 +16,10 @@ async function loadToDos() {
     },
     dateTime: {
       calendarDate: "Jan 1, 2020 12:00:00 AM",
-      time: "13:33",
-      date: "2020-01-01"
     },
     comment: "comment",
-    title: "debug"
+    title: "debug",
+    state: "true"
   }))
 
   for (const task of tasksList) {
@@ -162,13 +161,18 @@ function createButtonElements(task) {
 
   const toggleButton = document.createElement("img")
   toggleButton.classList.add("done_button");
+
+  if (task.state === "true") {
+    toggleButton.classList.add("marked_done_button");
+  }
+
   toggleButton.addEventListener("click", doDoneEvent);
   toggleButton.setAttribute("src", "./images/done-24px.svg");
   toggleButton.setAttribute("id", "done_btn" + task.datastoreId);
   toggleButton.setAttribute("hidden", "hidden");
 
-  buttonHolder.appendChild(removeButton);
   buttonHolder.appendChild(toggleButton);
+  buttonHolder.appendChild(removeButton);
   return buttonHolder;
 }
 
@@ -333,7 +337,13 @@ async function doToggleEvent(event) {
 
 function createListElement(task) {
   const liElement = document.createElement("li");
-  liElement.setAttribute("class", "tasklist_node_default shadowed_element");
+
+  if (task.state === "true") {
+    liElement.setAttribute("class", "tasklist_node_done");
+  } else {
+    liElement.setAttribute("class", "tasklist_node_default shadowed_element");
+  }
+
   liElement.setAttribute("id", task.datastoreId);
 
   liElement.addEventListener("click", doToggleEvent)
