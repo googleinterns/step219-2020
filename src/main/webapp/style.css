@@ -24,6 +24,30 @@
   padding: 1px;
 }
 
+.done_button {
+  object-fit: contain;
+  float: bottom;
+  margin: 2px;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
+  box-shadow: var(--2dp_shadow);
+}
+
+.done_button:hover {
+  object-fit: contain;
+  float: bottom;
+  margin: 2px;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
+  box-shadow: var(--8dp_shadow)
+}
+
 .task_button {
   object-fit: contain;
   float: bottom;

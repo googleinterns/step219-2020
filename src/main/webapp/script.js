@@ -132,6 +132,12 @@ function doRemoveEvent(event) {
   }
 }
 
+function doDoneEvent(event) {
+  console.log(event)
+  const listView = findParentListView(event);
+
+}
+
 function createButtonElements(task) {
   const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
@@ -143,7 +149,15 @@ function createButtonElements(task) {
   removeButton.setAttribute("id", "remove_btn" + task.datastoreId);
   removeButton.setAttribute("hidden", "hidden");
 
+  const toggleButton = document.createElement("img")
+  toggleButton.classList.add("done_button");
+  toggleButton.addEventListener("click", doDoneEvent);
+  toggleButton.setAttribute("src", "./images/done-24px.svg");
+  toggleButton.setAttribute("id", "done_btn" + task.datastoreId);
+  toggleButton.setAttribute("hidden", "hidden");
+
   buttonHolder.appendChild(removeButton);
+  buttonHolder.appendChild(toggleButton);
   return buttonHolder;
 }
 
@@ -151,6 +165,7 @@ function buildTaskRightPanel(task) {
   const taskRightPanel = document.createElement("div");
 
   taskRightPanel.setAttribute("class", "task_rightPanel");
+
 
   taskRightPanel.appendChild(createButtonElements(task));
   taskRightPanel.appendChild(createTaskTimeElement(task));
@@ -182,8 +197,10 @@ function toggleElement(element) {
   const time = document.getElementById("time" + id)
   const date = document.getElementById("date" + id);
   const removeButton = document.getElementById("remove_btn" + id);
+  const doneButton = document.getElementById("done_btn" + id);
 
   removeButton.removeAttribute("hidden");
+  doneButton.removeAttribute("hidden");
 
   comment.setAttribute("class", "task_commentData_chosen");
   comment.contentEditable = "true";
@@ -218,7 +235,10 @@ async function untoggleElement() {
   const date = document.getElementById("date" + id);
 
   const removeButton = document.getElementById("remove_btn" + id);
+  const doneButton = document.getElementById("done_btn" + id);
+
   removeButton.setAttribute("hidden", "hidden");
+  doneButton.setAttribute("hidden", "hidden");
 
   comment.setAttribute("class", "task_commentData");
   comment.contentEditable = "false";
