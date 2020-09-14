@@ -200,11 +200,12 @@
 
 .tasklist_node_done {
   background: linear-gradient(to right, #eaeaea, #ededed);
+  opacity: 0.5;
 }
 
 .tasklist_node_done_chosen {
   background: linear-gradient(to right, #eaeaea, #ededed);
-  box-shadow: var(--2dp_shadow)
+  opacity: 0.5;
 }
 
 #task_container {
