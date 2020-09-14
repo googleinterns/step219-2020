@@ -111,7 +111,7 @@ async function fetchHelper(servletName, requestBody) {
 /** Removes task which is connected with this view */
 async function removeElement(view) {
   if (view === toggledElement) {
-    untoggleElement();
+    await untoggleElement();
   }
 
   const notificationText = "type=delete&number=" + view.id;
@@ -132,10 +132,21 @@ function doRemoveEvent(event) {
   }
 }
 
-function doDoneEvent(event) {
+async function doDoneEvent(event) {
   console.log(event)
   const listView = findParentListView(event);
 
+  const doneAlready = event.target.classList.contains("marked_done_button")
+
+  if (!doneAlready) {
+    event.target.classList.add("marked_done_button");
+    listView.setAttribute("class", "tasklist_node_done_chosen");
+    await untoggleElement();
+  } else {
+    event.target.classList.remove("marked_done_button");
+    listView.setAttribute("class", "tasklist_node_chosen shadowed_element");
+
+  }
 }
 
 function createButtonElements(task) {
@@ -166,7 +177,6 @@ function buildTaskRightPanel(task) {
 
   taskRightPanel.setAttribute("class", "task_rightPanel");
 
-
   taskRightPanel.appendChild(createButtonElements(task));
   taskRightPanel.appendChild(createTaskTimeElement(task));
   taskRightPanel.appendChild(createTaskDateElement(task));
@@ -187,8 +197,10 @@ function buildMainTaskDataPanel(task) {
 function toggleElement(element) {
 
   const id = element.id;
-  element.setAttribute("class",
-      "tasklist_node_chosen shadowed_chosen_element")
+
+  element.classList.replace("tasklist_node_default", "tasklist_node_chosen");
+  element.classList.replace("tasklist_node_done", "tasklist_node_done_chosen");
+
   toggledElement = element
 
   const comment = document.getElementById("comment" + id)
@@ -225,8 +237,10 @@ async function untoggleElement() {
   }
 
   const id = toggledElement.id;
-  toggledElement.setAttribute("class",
-      "tasklist_node shadowed_element");
+  toggledElement.classList.replace("tasklist_node_chosen",
+      "tasklist_node_default");
+  toggledElement.classList.replace("tasklist_node_done_chosen",
+      "tasklist_node_done");
 
   const comment = document.getElementById("comment" + id)
   const title = document.getElementById("title" + id)
@@ -260,7 +274,10 @@ async function untoggleElement() {
       + "&comment=" + comment.innerText
       + "&place=" + place.value
       + "&time=" + time.value
-      + "&date=" + date.value;
+      + "&date=" + date.value
+      + "&isDone=" + doneButton.classList.contains("marked_done_button");
+
+  console.log(changeRequestText);
 
   const req1 = fetchHelper("/update-server-task-list", changeRequestText);
   const req2 = fetchHelper("/update-local-task-list", changeRequestText);
@@ -274,11 +291,13 @@ async function untoggleElement() {
  If no element chosen yet, current becomes more dark to show user that this one is chosen.
  If something is already chosen, it becomes unchosen, all information from this sends to a server.
  Clicking means that the user want to edit this task or remove it. */
-function doToggleEvent(event) {
+async function doToggleEvent(event) {
+  console.log("Toggling event")
   console.log(event)
 
+  /** Clicks on buttons in right corner shouldn't untoggle the task */
   if (event.target.localName === "img") {
-    console.log("click on remove");
+    console.log("click on remove or done");
     return;
   }
 
@@ -301,20 +320,20 @@ function doToggleEvent(event) {
   if (toggledElement != null) {
     /** If user click the task which is already chosen, it becomes not chosen */
     if (currentElement === toggledElement) {
-      untoggleElement()
+      await untoggleElement()
       return
     } else {
 
-      untoggleElement();
+      await untoggleElement();
     }
   }
 
-  toggleElement(currentElement)
+  await toggleElement(currentElement)
 }
 
 function createListElement(task) {
   const liElement = document.createElement("li");
-  liElement.setAttribute("class", "tasklist_node shadowed_element");
+  liElement.setAttribute("class", "tasklist_node_default shadowed_element");
   liElement.setAttribute("id", task.datastoreId);
 
   liElement.addEventListener("click", doToggleEvent)
@@ -325,7 +344,7 @@ function createListElement(task) {
 }
 
 async function addNewView(event) {
-  untoggleElement();
+  await untoggleElement();
 
   console.log(event);
   const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2020-01-01&task-time=00:00";
@@ -336,7 +355,7 @@ async function addNewView(event) {
   const newListElement = createListElement(task);
   document.getElementById('task-container')
   .appendChild(newListElement);
-  toggleElement(newListElement);
+  await toggleElement(newListElement);
 }
 
 async function buildComposeButton() {

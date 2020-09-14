@@ -24,7 +24,7 @@
   padding: 1px;
 }
 
-.done_button {
+.done_button, .done_button:hover {
   object-fit: contain;
   float: bottom;
   margin: 2px;
@@ -32,19 +32,15 @@
   height: 18px;
   width: 18px;
   border-radius: 50%;
-  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
+  background: linear-gradient(to top, #0a6e00, #148a09);
   box-shadow: var(--2dp_shadow);
 }
 
+.marked_done_button, .marked_done_button:hover {
+  background: linear-gradient(to top, #c25555, #ff4646);
+}
+
 .done_button:hover {
-  object-fit: contain;
-  float: bottom;
-  margin: 2px;
-  padding: 3px;
-  height: 18px;
-  width: 18px;
-  border-radius: 50%;
-  background: linear-gradient(to top, #ff9f46, var(--secondary-light));
   box-shadow: var(--8dp_shadow)
 }
 
@@ -147,7 +143,7 @@
   width: fit-content;
   margin: 3px;
   padding: 5px;
-  background: lightgray;
+  background: rgba(0, 0, 0, 0.0);
   border-style: inset;
   border-width: 3px;
   outline: none;
@@ -176,12 +172,10 @@
 }
 
 .shadowed_element {
-  border-radius: 15px 1px 15px 15px;
   box-shadow: var(--2dp_shadow);
 }
 
 .shadowed_chosen_element {
-  border-radius: 15px 1px 15px 15px;
   box-shadow: var(--8dp_shadow)
 }
 
@@ -191,6 +185,8 @@
   display: flex;
   justify-content: space-between;
   margin-top: 10px;
+  border-radius: 15px 1px 15px 15px;
+  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
 }
 
 .tasklist_node_default:hover {
@@ -210,7 +206,6 @@
 .tasklist_node_done_chosen {
   background: linear-gradient(to right, #eaeaea, #ededed);
 }
-
 
 #task_container {
   width: 100%;
