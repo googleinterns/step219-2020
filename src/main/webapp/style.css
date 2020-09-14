@@ -185,33 +185,30 @@
   box-shadow: var(--8dp_shadow)
 }
 
-.tasklist_node {
+.tasklist_node_default, .tasklist_node_chosen, .tasklist_node_done, .tasklist_node_done_chosen {
   padding: 5px;
   list-style-type: none;
   display: flex;
   justify-content: space-between;
-  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
   margin-top: 10px;
 }
 
-.tasklist_node:hover {
-  padding: 5px;
-  list-style-type: none;
-  display: flex;
-  justify-content: space-between;
+.tasklist_node_default:hover {
   background: linear-gradient(to right, #c8c8c8, #c9c9c9);
-  margin-top: 10px;
   border-radius: 15px 1px 15px 15px;
   box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node_chosen {
-  padding: 5px;
-  list-style-type: none;
-  display: flex;
-  justify-content: space-between;
   background: linear-gradient(to right, #9da0a4, #b3b5b9);
-  margin-top: 10px;
+}
+
+.tasklist_node_done {
+  background: linear-gradient(to right, #eaeaea, #ededed);
+}
+
+.tasklist_node_done_chosen {
+  background: linear-gradient(to right, #eaeaea, #ededed);
 }
 
 
