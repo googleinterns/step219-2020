@@ -44,10 +44,12 @@ public class LocalUpdateServlet extends HttpServlet {
       Date dateTime = (Date) entity.getProperty("dateTime");
       String place = (String) entity.getProperty("place");
       String comment = (String) entity.getProperty("comment");
+      String state = (String) entity.getProperty("isDone");
 
       Task task =
           new Task(
-              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId());
+              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId(),
+              state);
       System.out.println(task);
       tasks.add(task);
     }
@@ -88,11 +90,12 @@ public class LocalUpdateServlet extends HttpServlet {
               request.getParameter("task-text"),
               request.getParameter("task-comment"),
               new Place(request.getParameter("task-place")),
-              taskEntity.getKey().getId());
+              taskEntity.getKey().getId(), "false");
 
       tasks.add(task);
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
-      response.getWriter().println(new Gson().toJson(task));
+      response.getWriter().println(new GsonBuilder()
+          .setDateFormat("yyyy-MM-dd HH:mm").create().toJson(task));
     } catch (Exception e) {
       System.out.println("LOG: error " + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
@@ -172,6 +175,7 @@ public class LocalUpdateServlet extends HttpServlet {
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           task.setDate(request.getParameter("date"));
+          task.setState(request.getParameter("isDone"));
           return;
         }
       }
