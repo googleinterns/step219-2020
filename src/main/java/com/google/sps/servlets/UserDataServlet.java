@@ -42,7 +42,7 @@ public class UserDataServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     System.out.println("LOG: doPost() function");
-    user_id = request.getParameter("id-token");
+    user_id = request.getParameter("user-id");
     System.out.println("LOG: user id=" + user_id);
     Key key = KeyFactory.createKey("user", user_id);
     System.out.println("Key key = KeyFactory");
@@ -52,13 +52,19 @@ public class UserDataServlet extends HttpServlet {
       user_key_id = entity.getKey().getId();
       System.out.println("User " + user_id+ " exists");
     } catch (Exception e) {
-      Entity entity = new Entity("user", key);
+      Entity entity = new Entity("user", user_id);
+      entity.setProperty("user_id", user_id);
+      entity.setProperty("key_name", entity.getKey().getName());
+      entity.setProperty("key_id", entity.getKey().getId());
       user_key_id = entity.getKey().getId();
       System.out.println("User " + user_id +" NOT exists");
+      System.out.println("User key " + entity.getKey().getName());
       datastore.put(entity);
     }
+    user_id = key.getName();
     response.getWriter().println(new Gson().toJson(user_key_id));
     System.out.println("Key_id "+ user_key_id);
+    System.out.println("User_id "+ user_id);
 
 /*
 
@@ -72,7 +78,7 @@ public class UserDataServlet extends HttpServlet {
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
     Gson gson = new Gson();
-    response.getWriter().println(gson.toJson(user_key_id));
-    //response.getWriter().println(gson.toJson(user_id));
+    //response.getWriter().println(gson.toJson(user_key_id));
+    response.getWriter().println(gson.toJson(user_id));
   }
 }

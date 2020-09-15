@@ -8,9 +8,10 @@ public class Task {
   private Place place;
   private String title;
   private String comment;
-  private final long userDatastoreId;
+  //private final long userDatastoreId;
+  private String userDatastoreId;
 
-  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId, long userDatastoreId) {
+  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId, String userDatastoreId) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;

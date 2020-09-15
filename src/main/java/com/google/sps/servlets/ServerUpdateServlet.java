@@ -5,6 +5,7 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyFactory.Builder;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -20,7 +21,12 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    Key key = KeyFactory.createKey("task", number);
+    String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
+    System.out.println("LOG: key created");
+    //Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -40,7 +46,10 @@ public class ServerUpdateServlet extends HttpServlet {
   }
 
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response, long number) {
-    Key key = KeyFactory.createKey("task", number);
+    String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(key);
   }
@@ -68,7 +77,13 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    Key key = KeyFactory.createKey("task", number);
+    String user_id = request.getParameter("user-id");
+    System.out.println("LOG: key not created");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
+    //Key key = KeyFactory.createKey("task", number);
+    System.out.println("LOG: doChange servlet key created ");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);

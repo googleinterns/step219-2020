@@ -109,15 +109,15 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
-  var userKeyId = 6473924464345088//fetchUserData();
-  console.log("request body string 109 "+ requestBody);
+  //var userKeyId = dbaranovska//fetchUserData();
+  var user_id = "newuser";
   var rq = requestBody;
   if (requestBody == "") {
-      rq = "user-key-id="+userKeyId;
+      rq = "user-id="+user_id;
   } else {
-      rq = requestBody+"&user-key-id="+userKeyId;
+      rq = requestBody+"&user-id="+user_id;
   }
-  console.log("request body string 109 :"+ rq);
+  console.log("request body string 112 :"+ rq);
   return fetch(servletName, {
     method: 'POST',
     headers: {
@@ -573,35 +573,41 @@ function getBasicProfile() {
 }
 
 async function trial() {
-  const req = fetchHelper("/user-data", "id-token=hihello");
+  const req = fetchHelper("/user-data", "");
   await req;
-  console.log("successful request");
-  user_key_id = fetchUserData();
+  //console.log("successful request");
+  var user_id = await fetchUserData();
   //const response = await fetch('/user-data');
   //const user_key_id = await response.json();
-  console.log(user_key_id);
+  console.log(user_id);
   window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
 }
 
 async function trial2() {
   console.log("trial2 request");
-  user_key_id = fetchUserData().then();
+  var user_id = fetchUserData().then();
   //const response = await fetch('/user-data');
   //const user_key_id = await response.json();
   //const user_key_id = await response.json();
-  console.log(user_key_id);
+  console.log(user_id);
   //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
 
 }
 
 async function fetchUserData() {
-  var userKeyId;
+  const response = await fetch('/user-data');
+  const user_id = await response.json();
+  console.log(user_id);
+  console.log(typeof(user_id));
+  return user_id;
+  /*var userKeyId;
   fetch('/user-data').then(response => response.json()).then((user_key_id) => {
       userKeyId = user_key_id;
       console.log(userKeyId);
       console.log(typeof(userKeyId));
   });
   return userKeyId;
+  */
   //const response = await fetch('/user-data');
   //const user_key_id = await response.json().then((user_key_id)=> {userKeyId = user_key_id});
   //console.log(userKeyId);
