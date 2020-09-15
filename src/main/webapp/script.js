@@ -285,18 +285,21 @@ async function untoggleElement() {
   date.setAttribute("class", "task_dateData");
   date.setAttribute("readonly", "readonly");
 
-  const changeRequestText = "type=change&number=" + id
-      + "&title=" + title.value
-      + "&comment=" + comment.innerText
-      + "&place=" + place.value
-      + "&time=" + time.value
-      + "&date=" + date.value
-      + "&isDone=" + doneButton.classList.contains("marked_done_button");
+  const changeRequestParams2 = new URLSearchParams({
+    'type': 'change',
+    'number': id,
+    'title': title.value,
+    'comment': comment.innerText,
+    'place': place.value,
+    'time': time.value,
+    'date': date.value,
+    'isDone': doneButton.classList.contains("marked_done_button"),
+  });
+  const changeRequestText2 = changeRequestParams2.toString();
+  console.log(changeRequestText2)
 
-  console.log(changeRequestText);
-
-  const req1 = fetchHelper("/update-server-task-list", changeRequestText);
-  const req2 = fetchHelper("/update-local-task-list", changeRequestText);
+  const req1 = fetchHelper("/update-server-task-list", changeRequestText2);
+  const req2 = fetchHelper("/update-local-task-list", changeRequestText2);
 
   await req1;
   await req2;
