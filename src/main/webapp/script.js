@@ -151,12 +151,12 @@ async function doDoneEvent(event) {
 
   if (!doneAlready) {
     event.target.classList.add("marked_done_button");
-    listView.setAttribute("class", "tasklist_node_done_chosen");
+    listView.className = "tasklist_node_done_chosen";
+
     await untoggleElement();
   } else {
     event.target.classList.remove("marked_done_button");
     listView.setAttribute("class", "tasklist_node_chosen shadowed_element");
-
   }
 }
 
