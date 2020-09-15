@@ -19,7 +19,7 @@ async function loadToDos() {
     },
     comment: "comment",
     title: "debug",
-    state: "true"
+    isDone: true
   }))
 
   for (const task of tasksList) {
@@ -131,6 +131,18 @@ function doRemoveEvent(event) {
   }
 }
 
+async function doSomethingWithAPI() {
+  const url = new URL(
+      "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?language=en&key=key&input=input");
+  url.searchParams.set("key", "AIzaSyBb2GMjAS9VVPXbVH8a6kCKTcpsIBt1h_0");
+  url.searchParams.set("input", "Chelyabinsk, Molodo");
+  console.log(url.toString());
+  return fetch(url.toString(), {
+    method: 'GET',
+    mode: "no-cors"
+  })
+}
+
 async function doDoneEvent(event) {
   console.log(event)
   const listView = findParentListView(event);
@@ -162,7 +174,7 @@ function createButtonElements(task) {
   const toggleButton = document.createElement("img")
   toggleButton.classList.add("done_button");
 
-  if (task.state === "true") {
+  if (task.isDone) {
     toggleButton.classList.add("marked_done_button");
   }
 
@@ -338,7 +350,7 @@ async function doToggleEvent(event) {
 function createListElement(task) {
   const liElement = document.createElement("li");
 
-  if (task.state === "true") {
+  if (task.isDone) {
     liElement.setAttribute("class", "tasklist_node_done");
   } else {
     liElement.setAttribute("class", "tasklist_node_default shadowed_element");

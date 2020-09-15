@@ -175,7 +175,7 @@ public class LocalUpdateServlet extends HttpServlet {
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           task.setDate(request.getParameter("date"));
-          task.setState(request.getParameter("isDone"));
+          task.setIsDone(request.getParameter("isDone"));
           return;
         }
       }

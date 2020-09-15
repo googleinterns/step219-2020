@@ -8,16 +8,16 @@ public class Task {
   private Place place;
   private String title;
   private String comment;
-  private String state;
+  private Boolean isDone;
 
   public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
-      String state) {
+      String isDone) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;
     this.place = place;
     this.datastoreId = datastoreId;
-    this.state = state;
+    this.isDone = Boolean.valueOf(isDone);
   }
 
   public void setField(String fieldName, String data) throws RuntimeException {
@@ -69,11 +69,11 @@ public class Task {
     return place;
   }
 
-  public String getState() {
-    return state;
+  public Boolean getIsDone() {
+    return isDone;
   }
 
-  public void setState(String isDone) {
-    this.state = isDone;
+  public void setIsDone(String isDone) {
+    this.isDone = Boolean.valueOf(isDone);
   }
 }
