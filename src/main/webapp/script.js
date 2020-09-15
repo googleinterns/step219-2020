@@ -109,8 +109,12 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
-  //var userKeyId = dbaranovska//fetchUserData();
-  var user_id = "newuser";
+  //fetchUserDataSchould be
+  const response = await fetch('/user-data');
+  const user_id = await response.json();
+  //const user_id = USERID;
+  console.log("got user id inside fetchHelper" + user_id);
+  //var user_id = "newuser";
   var rq = requestBody;
   if (requestBody == "") {
       rq = "user-id="+user_id;
@@ -551,8 +555,20 @@ function onSignIn(googleUser) {
   // The ID token you need to pass to your backend:
   var id_token = googleUser.getAuthResponse().id_token;
   console.log("ID Token: " + id_token);
-  sendUserData(id_token);
+  sendSignInData(profile.getEmail());
   window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+}
+
+async function sendSignInData(id_token) {
+    const response = await fetch('/user-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: "user-id==" + id_token
+  });
+  const user_id = await response.json();
+  console.log(user_id);
 }
 
 async function sendUserData(id_token) {
@@ -575,10 +591,7 @@ function getBasicProfile() {
 async function trial() {
   const req = fetchHelper("/user-data", "");
   await req;
-  //console.log("successful request");
   var user_id = await fetchUserData();
-  //const response = await fetch('/user-data');
-  //const user_key_id = await response.json();
   console.log(user_id);
   window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
 }
@@ -586,9 +599,6 @@ async function trial() {
 async function trial2() {
   console.log("trial2 request");
   var user_id = fetchUserData().then();
-  //const response = await fetch('/user-data');
-  //const user_key_id = await response.json();
-  //const user_key_id = await response.json();
   console.log(user_id);
   //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
 
@@ -599,18 +609,6 @@ async function fetchUserData() {
   const user_id = await response.json();
   console.log(user_id);
   console.log(typeof(user_id));
+  USERID = user_id;
   return user_id;
-  /*var userKeyId;
-  fetch('/user-data').then(response => response.json()).then((user_key_id) => {
-      userKeyId = user_key_id;
-      console.log(userKeyId);
-      console.log(typeof(userKeyId));
-  });
-  return userKeyId;
-  */
-  //const response = await fetch('/user-data');
-  //const user_key_id = await response.json().then((user_key_id)=> {userKeyId = user_key_id});
-  //console.log(userKeyId);
-  //console.log(typeof(userKeyId));
-  //return parseFloat(userKeyId);
 }
