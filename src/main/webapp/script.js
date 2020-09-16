@@ -12,8 +12,8 @@ async function loadToDos() {
     },
     body: "user-key-id="+user_key_id
   });*/
-  fetchHelper('/update-local-task-list', "type=loadtasks");
-  fetchUserData();
+  await fetchHelper('/update-local-task-list', "type=loadtasks");
+  await fetchUserData();
   const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
 
@@ -112,9 +112,10 @@ function getConfirmation() {
 async function fetchHelper(servletName, requestBody) {
   //fetchUserDataSchould be
   const response = await fetch('/userapi');
-  const user_id = await response.json();
+  const resp = await response.json();
+  const user_id = resp[0];
   //const user_id = USERID;
-  console.log("got user id inside fetchHelper " + user_id);
+  console.log("got user id inside fetchHelper" + user_id);
   //var user_id = "newuser";
   var rq = requestBody;
   if (requestBody == "") {
@@ -566,32 +567,30 @@ async function sendSignInData(id_token) {
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: "user-id==" + id_token
+    body: "user-id=" + id_token
   });
   const user_id = await response.json();
   console.log(user_id);
 }
 
 async function sendUserData(id_token) {
-  const req = fetchHelper("/user-data", "id-token==" + id_token);
-  await req;
+  await fetchHelper("/user-data", "id-token=" + id_token);
 }
 
 function getBasicProfile() {
   if (auth2.isSignedIn.get()) {
-  var profile = auth2.currentUser.get().getBasicProfile();
-  console.log('ID: ' + profile.getId());
-  console.log('Full Name: ' + profile.getName());
-  console.log('Given Name: ' + profile.getGivenName());
-  console.log('Family Name: ' + profile.getFamilyName());
-  console.log('Image URL: ' + profile.getImageUrl());
-  console.log('Email: ' + profile.getEmail());
-}
+      var profile = auth2.currentUser.get().getBasicProfile();
+      console.log('ID: ' + profile.getId());
+      console.log('Full Name: ' + profile.getName());
+      console.log('Given Name: ' + profile.getGivenName());
+      console.log('Family Name: ' + profile.getFamilyName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail());
+  }
 }
 
 async function trial() {
-  const req = fetchHelper("/user-data", "");
-  await req;
+  await fetchHelper("/user-data", "");
   var user_id = await fetchUserData();
   console.log(user_id);
   window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
@@ -606,21 +605,11 @@ async function trial2() {
 }
 
 async function fetchUserData() {
-  /*
-  const response = await fetch('/user-data');
-  const user_id = await response.json();
-  console.log(user_id);
-  console.log(typeof(user_id));
-  USERID = user_id;
-  */
   const response = await fetch('/userapi');
-  const user_id = await response.json();
-  //document.getElementById("signed-in").innerHTML = user_id;
+  const resp = await response.json();
+  const user_id = resp[0];
+  const sign_button = resp[1];
   console.log(user_id);
-  if (user_id[0] == "<") {
-      document.getElementById("signed-in").innerHTML = user_id;
-      console.log("sign in page should appear");
-      //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
-  }
+  document.getElementById("signed-in").innerHTML = sign_button;
   return user_id;
 }

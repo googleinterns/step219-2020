@@ -39,28 +39,8 @@ public class LocalUpdateServlet extends HttpServlet {
   @Override
   public void init() {
     tasks = new ArrayList<>();
-
-    /*String url="https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/user-data";
-    HttpGet get=new HttpGet(url);
-    System.out.println("After get we got " +get);
-    HttpResponse response = httpClient.execute(get);
-    user_key_id = response.getParameter("user-key-id");*/
-    //long user_key_id = 0;
     String user_id = "";
     System.out.println("inside createTaskList");
-    /*try {
-        URL oracle = new URL("https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/user-data");
-        BufferedReader in = new BufferedReader(
-        new InputStreamReader(oracle.openStream()));
-
-        String inputLine;
-        while ((inputLine = in.readLine()) != null)
-            user_key_id = Long.parseLong(inputLine);
-            System.out.println(inputLine);
-        in.close();
-    } catch (Exception e){
-        System.out.println("url mistake");
-    }*/
 }
 
 private void doLoadTasksList(HttpServletRequest request, HttpServletResponse response)
@@ -69,7 +49,7 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
     tasks = new ArrayList<>();
     String user_id = request.getParameter("user-id");
     Key ancestorKey = KeyFactory.createKey("user", user_id);
-    System.out.println("key created "+ancestorKey);
+    System.out.println("key created: "+ancestorKey);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("task").setAncestor(ancestorKey);
@@ -97,10 +77,8 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
     String user_id = request.getParameter("user-id");
     Key parentKey = KeyFactory.createKey("user", user_id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    //Key taskKey = datastore.newKeyFactory().setKind("task").newKey(); //.addAncestors(PathElement.of("user", id_token)).setKind("task").newKey();
     Entity taskEntity = new Entity("task", parentKey);//Entity.newBuilder(taskKey);
     taskEntity.setProperty("text", request.getParameter("task-text"));
-    taskEntity.setProperty("date", request.getParameter("task-date"));
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
     taskEntity.setProperty("user_id", user_id);
@@ -234,9 +212,6 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    //long user_key_id = Long.parseLong(request.getParameter("user-key-id"));
-    //System.out.println("Creating tasks list for user"+user_key_id);
-    //createTaskList();
     Gson gson = new GsonBuilder()
         .setDateFormat("yyyy-MM-dd HH:mm").create();
     response.getWriter().println(gson.toJson(tasks));

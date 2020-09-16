@@ -26,7 +26,6 @@ public class ServerUpdateServlet extends HttpServlet {
         .addChild("task", number)
         .getKey();
     System.out.println("LOG: key created");
-    //Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -90,8 +89,6 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty("text", request.getParameter("title"));
       entity.setProperty("comment", request.getParameter("comment"));
       entity.setProperty("place", request.getParameter("place"));
-      entity.setProperty("time", request.getParameter("time"));
-      entity.setProperty("date", request.getParameter("date"));
 
       Date calendarDate = new Date();
       calendarDate =

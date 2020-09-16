@@ -14,6 +14,8 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import java.util.ArrayList;
+import java.io.PrintWriter;
 
 // With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
 @WebServlet(
@@ -32,19 +34,28 @@ public class UsersServlet extends HttpServlet {
     String login_page = "https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html";
     Gson gson = new Gson();
     String user_id = "none";
+    String sign_button = "";
+    PrintWriter out = response.getWriter();
     if (request.getUserPrincipal() != null) {
         user_id = userService.getCurrentUser().getUserId();
         doStoreUserInfo(user_id, userService.getCurrentUser().getEmail());
+        sign_button = "<a href=\""
+                  + userService.createLogoutURL(login_page)
+                  + "\">sign out</a>.</p>";
         System.out.println("user loged in");
         //System.out.println(userService.getCurrentUser().getName());
         System.out.println(userService.getCurrentUser().getUserId());
     } else {
-        user_id = "<p>Please <a href=\"" + userService.createLoginURL(login_page) + "\">sign in</a>.</p>";
+        user_id = "none";
+        sign_button = "<p>Please <a href=\"" + userService.createLoginURL(login_page) + "\">sign in</a>.</p>";
         System.out.println("user not loged in");
         //userService.createLoginURL(login_page);
     }
-    response.getWriter().println(gson.toJson(user_id));
-    
+    ArrayList<String> JSONRequest = new ArrayList<String>(2);
+    JSONRequest.add(gson.toJson(user_id));
+    JSONRequest.add(gson.toJson(sign_button));
+    out.println(JSONRequest);
+    //response.getWriter().println(new Gson().toJson(user_id));
   }
 
   private void doStoreUserInfo(String user_id, String email) {
