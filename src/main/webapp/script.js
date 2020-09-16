@@ -13,6 +13,7 @@ async function loadToDos() {
     body: "user-key-id="+user_key_id
   });*/
   fetchHelper('/update-local-task-list', "type=loadtasks");
+  fetchUserData();
   const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
 
@@ -110,10 +111,10 @@ function getConfirmation() {
 
 async function fetchHelper(servletName, requestBody) {
   //fetchUserDataSchould be
-  const response = await fetch('/user-data');
+  const response = await fetch('/userapi');
   const user_id = await response.json();
   //const user_id = USERID;
-  console.log("got user id inside fetchHelper" + user_id);
+  console.log("got user id inside fetchHelper " + user_id);
   //var user_id = "newuser";
   var rq = requestBody;
   if (requestBody == "") {
@@ -555,8 +556,8 @@ function onSignIn(googleUser) {
   // The ID token you need to pass to your backend:
   var id_token = googleUser.getAuthResponse().id_token;
   console.log("ID Token: " + id_token);
-  sendSignInData(profile.getEmail());
-  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  //sendSignInData(profile.getEmail());
+  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
 }
 
 async function sendSignInData(id_token) {
@@ -593,7 +594,7 @@ async function trial() {
   await req;
   var user_id = await fetchUserData();
   console.log(user_id);
-  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
 }
 
 async function trial2() {
@@ -605,10 +606,21 @@ async function trial2() {
 }
 
 async function fetchUserData() {
+  /*
   const response = await fetch('/user-data');
   const user_id = await response.json();
   console.log(user_id);
   console.log(typeof(user_id));
   USERID = user_id;
+  */
+  const response = await fetch('/userapi');
+  const user_id = await response.json();
+  //document.getElementById("signed-in").innerHTML = user_id;
+  console.log(user_id);
+  if (user_id[0] == "<") {
+      document.getElementById("signed-in").innerHTML = user_id;
+      console.log("sign in page should appear");
+      //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  }
   return user_id;
 }
