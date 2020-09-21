@@ -110,29 +110,13 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
-  //fetchUserDataSchould be
-  const response = await fetch('/userapi');
-  const resp = await response.json();
-  const user_id = resp[0];
-  //const user_id = USERID;
-  console.log("got user id inside fetchHelper" + user_id);
-  //var user_id = "newuser";
-  var rq = requestBody;
-  var new_rq = new URLSearchParams({
-      'user-id':user_id,
-  })
-  if (requestBody == "") {
-      rq = new_rq.toString();
-  } else {
-      rq = requestBody+"&"+new_rq.toString();
-  }
-  console.log("request body string 112 :"+ rq);
+  console.log("request body string 112 :"+ requestBody);
   return fetch(servletName, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
     },
-    body: rq
+    body: requestBody
   });
 }
 
