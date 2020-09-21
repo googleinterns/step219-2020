@@ -76,12 +76,15 @@
   outline: none;
   background-color: rgba(0, 0, 0, 0);
   padding: 3px;
+  width: 90%;
+  height: 25px;
 }
-
 
 .task_placeData_chosen {
   margin: 3px;
-  padding: 3px;
+  width: 90%;
+  padding: 1px;
+  height: 25px;
   background: white;
 }
 
@@ -171,6 +174,10 @@
 
 .shadowed_element {
   box-shadow: var(--2dp_shadow);
+}
+
+.task_rightPanel {
+  width: 20%;
 }
 
 .shadowed_chosen_element {

@@ -195,9 +195,13 @@ function buildTaskRightPanel(task) {
 
   taskRightPanel.setAttribute("class", "task_rightPanel");
 
-  taskRightPanel.appendChild(createButtonElements(task));
-  taskRightPanel.appendChild(createTaskTimeElement(task));
-  taskRightPanel.appendChild(createTaskDateElement(task));
+  const upPart = document.createElement("div");
+
+  upPart.appendChild(createButtonElements(task));
+  upPart.appendChild(createTaskTimeElement(task));
+  upPart.appendChild(createTaskDateElement(task));
+
+  taskRightPanel.appendChild(upPart);
   taskRightPanel.appendChild(createTaskPlaceElement(task));
   return taskRightPanel;
 }
