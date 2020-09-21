@@ -11,7 +11,7 @@ public class Task {
   private Boolean isDone;
 
   public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
-      String isDone) {
+      Boolean isDone) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;

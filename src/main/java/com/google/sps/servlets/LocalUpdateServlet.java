@@ -49,7 +49,7 @@ public class LocalUpdateServlet extends HttpServlet {
       Task task =
           new Task(
               new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId(),
-              state);
+              Boolean.valueOf(state));
       System.out.println(task);
       tasks.add(task);
     }
@@ -90,7 +90,7 @@ public class LocalUpdateServlet extends HttpServlet {
               request.getParameter("task-text"),
               request.getParameter("task-comment"),
               new Place(request.getParameter("task-place")),
-              taskEntity.getKey().getId(), "false");
+              taskEntity.getKey().getId(), false);
 
       tasks.add(task);
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
