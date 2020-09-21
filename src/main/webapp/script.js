@@ -1,5 +1,6 @@
 /** Element which is chosen by user for now */
 let toggledElement = null;
+let autocompleteForm = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
@@ -227,6 +228,8 @@ function toggleElement(element) {
   const removeButton = document.getElementById("remove_btn" + id);
   const doneButton = document.getElementById("done_btn" + id);
 
+  autocompleteForm = new google.maps.places.Autocomplete(place)
+
   removeButton.removeAttribute("hidden");
   doneButton.removeAttribute("hidden");
 
@@ -251,7 +254,6 @@ async function untoggleElement() {
   if (toggledElement === null) {
     return;
   }
-
   const id = toggledElement.id;
   toggledElement.classList.replace("tasklist_node_chosen",
       "tasklist_node_default");
@@ -285,6 +287,15 @@ async function untoggleElement() {
   date.setAttribute("class", "task_dateData");
   date.setAttribute("readonly", "readonly");
 
+  let lat = 0;
+  let lng = 0;
+  let areChanged = false;
+  if (autocompleteForm.getPlace() !== undefined) {
+    lat = autocompleteForm.getPlace().geometry.location.lat()
+    lng = autocompleteForm.getPlace().geomerty.location.lng()
+    areChanged = true
+  }
+
   const changeRequestParams2 = new URLSearchParams({
     'type': 'change',
     'number': id,
@@ -294,7 +305,13 @@ async function untoggleElement() {
     'time': time.value,
     'date': date.value,
     'isDone': doneButton.classList.contains("marked_done_button"),
+    'lat': lat,
+    'lng': lng,
+    'coordinates_changed': areChanged
   });
+
+  autocompleteForm = null;
+
   const changeRequestText2 = changeRequestParams2.toString();
   console.log(changeRequestText2)
 
@@ -399,10 +416,11 @@ async function addScript() {
 async function doPreparation() {
   await loadToDos();
   await buildComposeButton();
-  await addScript();
+  // await addScript();
 }
 
-function initMap() {
+async function initMap() {
+
   const map = new google.maps.Map(
       document.getElementById('map'), {
         center: {lat: 55.752779, lng: 37.621588},
@@ -566,20 +584,17 @@ function handleLocationError(browserGeoState, infoWindow, pos) {
 }
 
 function showHideMap() {
-  mapCurState = document.getElementById('map');
-  mapPanel = document.getElementById('floating-panel');
-  taskForm = document.getElementById('task-form');
-  taskContainer = document.getElementById('task-container');
+  const mapCurState = document.getElementById('map');
+  const mapPanel = document.getElementById('floating-panel');
+  const taskContainer = document.getElementById('task-list-view');
   if (mapCurState.style.display === "none") {
     initMap();
     mapCurState.style.display = "block";
     mapPanel.style.display = "block";
-    taskForm.style.display = "none";
     taskContainer.style.display = "none";
   } else {
     mapCurState.style.display = "none";
     mapPanel.style.display = "none";
-    taskForm.style.display = "block";
     taskContainer.style.display = "block";
   }
 }
