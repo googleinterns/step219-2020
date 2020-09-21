@@ -291,7 +291,7 @@ async function untoggleElement() {
   let lat = 0;
   let lng = 0;
   let areChanged = false;
-  if (autocompleteForm.getPlace() !== undefined) {
+  if (autocompleteForm !== null && autocompleteForm.getPlace() !== undefined) {
     lat = autocompleteForm.getPlace().geometry.location.lat()
     lng = autocompleteForm.getPlace().geometry.location.lng()
     areChanged = true
