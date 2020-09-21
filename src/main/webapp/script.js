@@ -1,6 +1,7 @@
 /** Element which is chosen by user for now */
 let toggledElement = null;
 let autocompleteForm = null;
+let pos = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
@@ -389,7 +390,17 @@ async function addNewView(event) {
   await untoggleElement();
 
   console.log(event);
-  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2020-01-01&task-time=00:00";
+  const requestParams = new URLSearchParams({
+    'type': 'add',
+    'task-text': 'title',
+    'task-comment': 'comment',
+    'task-date': '2020-01-01',
+    'task-time': '00:00',
+    'task-place': 'My location',
+    'lat': pos.lat,
+    'lng': pos.lng
+  }).toString();
+
   const response = await fetchHelper("/update-local-task-list", requestParams);
 
   const task = await response.json();
@@ -405,12 +416,12 @@ async function buildComposeButton() {
   btnElement.addEventListener("click", addNewView);
 }
 
-
 async function doPreparation() {
   const first = loadToDos();
   const second = buildComposeButton();
   await first;
   await second;
+  await initMap();
 }
 
 async function initMap() {
@@ -427,8 +438,8 @@ async function initMap() {
   getCurrentGeolocation(map);
   var mapMarkers = {};
   var mapInfos = {};
-  fetchTasksOnMap(map, mapMarkers, mapInfos);
-  addDirections(map, mapMarkers);
+  await fetchTasksOnMap(map, mapMarkers, mapInfos);
+  await addDirections(map, mapMarkers);
 }
 
 function addDirections(map, mapMarkers) {
@@ -550,7 +561,7 @@ function getCurrentGeolocation(map) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         position => {
-          const pos = {
+          pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
@@ -577,12 +588,12 @@ function handleLocationError(browserGeoState, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-function showHideMap() {
+async function showHideMap() {
   const mapCurState = document.getElementById('map');
   const mapPanel = document.getElementById('floating-panel');
   const taskContainer = document.getElementById('task-list-view');
   if (mapCurState.style.display === "none") {
-    initMap();
+    await initMap();
     mapCurState.style.display = "block";
     mapPanel.style.display = "block";
     taskContainer.style.display = "none";
