@@ -134,7 +134,7 @@ function doRemoveEvent(event) {
 async function doSomethingWithAPI() {
   const url = new URL(
       "https://maps.googleapis.com/maps/api/place/queryautocomplete/json?language=en&key=key&input=input");
-  url.searchParams.set("key", "AIzaSyBb2GMjAS9VVPXbVH8a6kCKTcpsIBt1h_0");
+  url.searchParams.set("key", config.API_KEY);
   url.searchParams.set("input", "Chelyabinsk, Molodo");
   console.log(url.toString());
   return fetch(url.toString(), {
@@ -388,9 +388,18 @@ async function buildComposeButton() {
   btnElement.addEventListener("click", addNewView);
 }
 
+async function addScript() {
+  const script = document.createElement('script');
+  script.src = "https://maps.googleapis.com/maps/api/js?key=" + config.API_KEY
+  script.async = false;
+  script.defer = true;
+  document.head.appendChild(script);
+}
+
 async function doPreparation() {
   await loadToDos();
   await buildComposeButton();
+  await addScript();
 }
 
 function initMap() {
