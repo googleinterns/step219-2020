@@ -292,7 +292,7 @@ async function untoggleElement() {
   let areChanged = false;
   if (autocompleteForm.getPlace() !== undefined) {
     lat = autocompleteForm.getPlace().geometry.location.lat()
-    lng = autocompleteForm.getPlace().geomerty.location.lng()
+    lng = autocompleteForm.getPlace().geometry.location.lng()
     areChanged = true
   }
 
@@ -307,7 +307,7 @@ async function untoggleElement() {
     'isDone': doneButton.classList.contains("marked_done_button"),
     'lat': lat,
     'lng': lng,
-    'coordinates_changed': areChanged
+    'are_coordinates_changed': areChanged
   });
 
   autocompleteForm = null;
@@ -405,18 +405,12 @@ async function buildComposeButton() {
   btnElement.addEventListener("click", addNewView);
 }
 
-async function addScript() {
-  const script = document.createElement('script');
-  script.src = "https://maps.googleapis.com/maps/api/js?key=" + config.API_KEY
-  script.async = false;
-  script.defer = true;
-  document.head.appendChild(script);
-}
 
 async function doPreparation() {
-  await loadToDos();
-  await buildComposeButton();
-  // await addScript();
+  const first = loadToDos();
+  const second = buildComposeButton();
+  await first;
+  await second;
 }
 
 async function initMap() {
@@ -424,7 +418,7 @@ async function initMap() {
   const map = new google.maps.Map(
       document.getElementById('map'), {
         center: {lat: 55.752779, lng: 37.621588},
-        zoom: 6,
+        zoom: 12,
         clickableIcons: true,
         backgroundColor: "#red"
       }
@@ -561,7 +555,7 @@ function getCurrentGeolocation(map) {
             lng: position.coords.longitude
           };
           infoWindow.setPosition(pos);
-          infoWindow.setContent("Location found.");
+          infoWindow.setContent("😎");
           infoWindow.open(map);
           map.setCenter(pos);
         },

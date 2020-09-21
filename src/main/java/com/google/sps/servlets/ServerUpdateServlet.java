@@ -79,6 +79,11 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty("date", request.getParameter("date"));
       entity.setProperty("isDone", request.getParameter("isDone"));
 
+      if (Boolean.parseBoolean(request.getParameter("are_coordinates_changed"))) {
+        entity.setProperty("lat", Double.parseDouble(request.getParameter("lat")));
+        entity.setProperty("lng", Double.parseDouble(request.getParameter("lng")));
+      }
+
       Date calendarDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
           .parse(request.getParameter("date") + " " + request.getParameter("time"));
       entity.setProperty("dateTime", calendarDate);

@@ -171,11 +171,19 @@ public class LocalUpdateServlet extends HttpServlet {
       for (Task task : tasks) {
         if (task.getDatastoreId() == number) {
           task.setComment(request.getParameter("comment"));
-          task.setPlace(new Place(request.getParameter("place")));
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           task.setDate(request.getParameter("date"));
           task.setIsDone(request.getParameter("isDone"));
+
+          Place place =
+              Boolean.parseBoolean(request.getParameter("are_coordinates_changed"))
+                  ? new Place(
+                  Double.parseDouble(request.getParameter("lat")),
+                  Double.parseDouble(request.getParameter("lng")),
+                  request.getParameter("place"))
+                  : new Place(request.getParameter("place"));
+          task.setPlace(place);
           return;
         }
       }
