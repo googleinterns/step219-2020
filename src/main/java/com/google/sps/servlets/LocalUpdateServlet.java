@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.google.sps.src.DateTime;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
+import com.google.sps.src.Users;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -23,7 +24,8 @@ import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
 import java.net.*;
 import java.io.*;
-
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
 
 
 @WebServlet("/update-local-task-list")
@@ -47,7 +49,12 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       throws IOException {
     try {
     tasks = new ArrayList<>();
-    String user_id = request.getParameter("user-id");
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //UserService userService = UserServiceFactory.getUserService();
+    //String user_id = userService.getCurrentUser().getUserId();
+    
+    System.out.println(user_id + "Gor by servlet from servlet");
     Key ancestorKey = KeyFactory.createKey("user", user_id);
     System.out.println("key created: "+ancestorKey);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -74,7 +81,9 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
   }
 
   private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
-    String user_id = request.getParameter("user-id");
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
     Key parentKey = KeyFactory.createKey("user", user_id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity taskEntity = new Entity("task", parentKey);//Entity.newBuilder(taskKey);
@@ -103,7 +112,9 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity taskEntity = buildTaskEntityFromRequest(request);
       datastore.put(taskEntity);
-      String user_id = request.getParameter("user-id");
+      Users users = new Users();
+      String user_id = users.getUserId(request.getUserPrincipal());
+      //String user_id = request.getParameter("user-id");
       //System.out.println("inside add found user key id = "+user_key_id);
       Task task =
           new Task(

@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.sps.src.Users;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,9 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    String user_id = request.getParameter("user-id");
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
     Key key = new KeyFactory.Builder("user", user_id)
         .addChild("task", number)
         .getKey();
@@ -45,7 +48,9 @@ public class ServerUpdateServlet extends HttpServlet {
   }
 
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response, long number) {
-    String user_id = request.getParameter("user-id");
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
     Key key = new KeyFactory.Builder("user", user_id)
         .addChild("task", number)
         .getKey();
@@ -76,7 +81,9 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    String user_id = request.getParameter("user-id");
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
     System.out.println("LOG: key not created");
     Key key = new KeyFactory.Builder("user", user_id)
         .addChild("task", number)

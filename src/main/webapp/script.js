@@ -118,10 +118,13 @@ async function fetchHelper(servletName, requestBody) {
   console.log("got user id inside fetchHelper" + user_id);
   //var user_id = "newuser";
   var rq = requestBody;
+  var new_rq = new URLSearchParams({
+      'user-id':user_id,
+  })
   if (requestBody == "") {
-      rq = "user-id="+user_id;
+      rq = new_rq.toString();
   } else {
-      rq = requestBody+"&user-id="+user_id;
+      rq = requestBody+"&"+new_rq.toString();
   }
   console.log("request body string 112 :"+ rq);
   return fetch(servletName, {
@@ -414,6 +417,7 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
       mapMarkers[markerName] = new google.maps.Marker({
         position: task.place,
         map: map,
+        draggable: true,
         title: markerName,//task.place.string
         icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
@@ -548,10 +552,6 @@ function onSignIn(googleUser) {
 // Useful data for your client-side scripts:
   var profile = googleUser.getBasicProfile();
   console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-  console.log('Full Name: ' + profile.getName());
-  console.log('Given Name: ' + profile.getGivenName());
-  console.log('Family Name: ' + profile.getFamilyName());
-  console.log("Image URL: " + profile.getImageUrl());
   console.log("Email: " + profile.getEmail());
 
   // The ID token you need to pass to your backend:
@@ -596,16 +596,8 @@ async function trial() {
   window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
 }
 
-async function trial2() {
-  console.log("trial2 request");
-  var user_id = fetchUserData().then();
-  console.log(user_id);
-  //window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
-
-}
-
 async function fetchUserData() {
-  const response = await fetch('/userapi');
+  const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
   const resp = await response.json();
   const user_id = resp[0];
   const sign_button = resp[1];
