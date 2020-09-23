@@ -20,7 +20,6 @@ async function loadToDos() {
   const tasksList = await response.json();
 
   const container = document.getElementById('task-container');
-  console.log(tasksList);
   container.innerText = '';
   //Debug element
   container.appendChild(createListElement({
@@ -111,7 +110,6 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
-  console.log("request body string 112 :"+ requestBody);
   return fetch(servletName, {
     method: 'POST',
     headers: {
@@ -146,7 +144,6 @@ function doRemoveEvent(event) {
 }
 
 async function doDoneEvent(event) {
-  console.log(event)
   const listView = findParentListView(event);
 
   const doneAlready = event.target.classList.contains("marked_done_button")
@@ -318,7 +315,6 @@ async function untoggleElement() {
   autocompleteForm = null;
 
   const changeRequestText2 = changeRequestParams2.toString();
-  console.log(changeRequestText2)
 
   const req1 = fetchHelper("/update-server-task-list", changeRequestText2);
   const req2 = fetchHelper("/update-local-task-list", changeRequestText2);
@@ -333,12 +329,9 @@ async function untoggleElement() {
  If something is already chosen, it becomes unchosen, all information from this sends to a server.
  Clicking means that the user want to edit this task or remove it. */
 async function doToggleEvent(event) {
-  console.log("Toggling event")
-  console.log(event)
 
   /** Clicks on buttons in right corner shouldn't untoggle the task */
   if (event.target.localName === "img") {
-    console.log("click on remove or done");
     return;
   }
 
@@ -353,7 +346,6 @@ async function doToggleEvent(event) {
   if (toggledElement === currentElement
       && (event.target.isContentEditable || event.target.localName
           === "input")) {
-    console.log("input click");
     return;
   }
 
@@ -393,7 +385,6 @@ function createListElement(task) {
 async function addNewView(event) {
   await untoggleElement();
 
-  console.log(event);
   const requestParams = new URLSearchParams({
     'type': 'add',
     'task-text': 'title',
@@ -438,7 +429,6 @@ async function initMap() {
         backgroundColor: "#red"
       }
   );
-  console.log('map showed');
   getCurrentGeolocation(map);
   var mapMarkers = {};
   var mapInfos = {};
@@ -507,8 +497,6 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
       this.infowindow.open(map, this);
     });
   }
-  console.log(mapMarkers);
-  console.log(mapInfos);
 }
 
 function composeIconUrl(task_time) {
@@ -620,12 +608,9 @@ function signOut() {
 function onSignIn(googleUser) {
 // Useful data for your client-side scripts:
   var profile = googleUser.getBasicProfile();
-  console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-  console.log("Email: " + profile.getEmail());
 
   // The ID token you need to pass to your backend:
   var id_token = googleUser.getAuthResponse().id_token;
-  console.log("ID Token: " + id_token);
   //sendSignInData(profile.getEmail());
   window.location.replace('/index.html');
 }
@@ -639,7 +624,6 @@ async function sendSignInData(id_token) {
     body: "user-id=" + id_token
   });
   const user_id = await response.json();
-  console.log(user_id);
 }
 
 async function sendUserData(id_token) {
@@ -649,19 +633,12 @@ async function sendUserData(id_token) {
 function getBasicProfile() {
   if (auth2.isSignedIn.get()) {
       var profile = auth2.currentUser.get().getBasicProfile();
-      console.log('ID: ' + profile.getId());
-      console.log('Full Name: ' + profile.getName());
-      console.log('Given Name: ' + profile.getGivenName());
-      console.log('Family Name: ' + profile.getFamilyName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail());
   }
 }
 
 async function trial() {
   await fetchHelper("/user-data", "");
   var user_id = await fetchUserData();
-  console.log(user_id);
   window.location.replace('/index.html');
 }
 
@@ -671,7 +648,6 @@ async function fetchUserData() {
   try {
       const user_id = resp[0];
       const sign_button = resp[1];
-      console.log(user_id);
       document.getElementById("signed-in").innerHTML = sign_button;
       return user_id;
   } catch (error) {
