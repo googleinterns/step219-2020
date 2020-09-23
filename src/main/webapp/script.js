@@ -1,5 +1,7 @@
 /** Element which is chosen by user for now */
 let toggledElement = null;
+let autocompleteForm = null;
+let pos = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
@@ -27,11 +29,10 @@ async function loadToDos() {
     },
     dateTime: {
       calendarDate: "Jan 1, 2020 12:00:00 AM",
-      time: "13:33",
-      date: "2020-01-01"
     },
     comment: "comment",
-    title: "debug"
+    title: "debug",
+    isDone: true
   }))
 
   for (const task of tasksList) {
@@ -123,7 +124,7 @@ async function fetchHelper(servletName, requestBody) {
 /** Removes task which is connected with this view */
 async function removeElement(view) {
   if (view === toggledElement) {
-    untoggleElement();
+    await untoggleElement();
   }
 
   const notificationText = "type=delete&number=" + view.id;
@@ -144,6 +145,23 @@ function doRemoveEvent(event) {
   }
 }
 
+async function doDoneEvent(event) {
+  console.log(event)
+  const listView = findParentListView(event);
+
+  const doneAlready = event.target.classList.contains("marked_done_button")
+
+  if (!doneAlready) {
+    event.target.classList.add("marked_done_button");
+    listView.className = "tasklist_node_done_chosen";
+
+    await untoggleElement();
+  } else {
+    event.target.classList.remove("marked_done_button");
+    listView.setAttribute("class", "tasklist_node_chosen shadowed_element");
+  }
+}
+
 function createButtonElements(task) {
   const buttonHolder = document.createElement("div");
   buttonHolder.setAttribute("class", "task_buttonHolder");
@@ -155,6 +173,19 @@ function createButtonElements(task) {
   removeButton.setAttribute("id", "remove_btn" + task.datastoreId);
   removeButton.setAttribute("hidden", "hidden");
 
+  const toggleButton = document.createElement("img")
+  toggleButton.classList.add("done_button");
+
+  if (task.isDone) {
+    toggleButton.classList.add("marked_done_button");
+  }
+
+  toggleButton.addEventListener("click", doDoneEvent);
+  toggleButton.setAttribute("src", "./images/done-24px.svg");
+  toggleButton.setAttribute("id", "done_btn" + task.datastoreId);
+  toggleButton.setAttribute("hidden", "hidden");
+
+  buttonHolder.appendChild(toggleButton);
   buttonHolder.appendChild(removeButton);
   return buttonHolder;
 }
@@ -164,9 +195,13 @@ function buildTaskRightPanel(task) {
 
   taskRightPanel.setAttribute("class", "task_rightPanel");
 
-  taskRightPanel.appendChild(createButtonElements(task));
-  taskRightPanel.appendChild(createTaskTimeElement(task));
-  taskRightPanel.appendChild(createTaskDateElement(task));
+  const upPart = document.createElement("div");
+
+  upPart.appendChild(createButtonElements(task));
+  upPart.appendChild(createTaskTimeElement(task));
+  upPart.appendChild(createTaskDateElement(task));
+
+  taskRightPanel.appendChild(upPart);
   taskRightPanel.appendChild(createTaskPlaceElement(task));
   return taskRightPanel;
 }
@@ -184,8 +219,10 @@ function buildMainTaskDataPanel(task) {
 function toggleElement(element) {
 
   const id = element.id;
-  element.setAttribute("class",
-      "tasklist_node_chosen shadowed_chosen_element")
+
+  element.classList.replace("tasklist_node_default", "tasklist_node_chosen");
+  element.classList.replace("tasklist_node_done", "tasklist_node_done_chosen");
+
   toggledElement = element
 
   const comment = document.getElementById("comment" + id)
@@ -194,8 +231,12 @@ function toggleElement(element) {
   const time = document.getElementById("time" + id)
   const date = document.getElementById("date" + id);
   const removeButton = document.getElementById("remove_btn" + id);
+  const doneButton = document.getElementById("done_btn" + id);
+
+  autocompleteForm = new google.maps.places.Autocomplete(place)
 
   removeButton.removeAttribute("hidden");
+  doneButton.removeAttribute("hidden");
 
   comment.setAttribute("class", "task_commentData_chosen");
   comment.contentEditable = "true";
@@ -218,10 +259,11 @@ async function untoggleElement() {
   if (toggledElement === null) {
     return;
   }
-
   const id = toggledElement.id;
-  toggledElement.setAttribute("class",
-      "tasklist_node shadowed_element");
+  toggledElement.classList.replace("tasklist_node_chosen",
+      "tasklist_node_default");
+  toggledElement.classList.replace("tasklist_node_done_chosen",
+      "tasklist_node_done");
 
   const comment = document.getElementById("comment" + id)
   const title = document.getElementById("title" + id)
@@ -230,7 +272,10 @@ async function untoggleElement() {
   const date = document.getElementById("date" + id);
 
   const removeButton = document.getElementById("remove_btn" + id);
+  const doneButton = document.getElementById("done_btn" + id);
+
   removeButton.setAttribute("hidden", "hidden");
+  doneButton.setAttribute("hidden", "hidden");
 
   comment.setAttribute("class", "task_commentData");
   comment.contentEditable = "false";
@@ -247,15 +292,36 @@ async function untoggleElement() {
   date.setAttribute("class", "task_dateData");
   date.setAttribute("readonly", "readonly");
 
-  const changeRequestText = "type=change&number=" + id
-      + "&title=" + title.value
-      + "&comment=" + comment.innerText
-      + "&place=" + place.value
-      + "&time=" + time.value
-      + "&date=" + date.value;
+  let lat = 0;
+  let lng = 0;
+  let areChanged = false;
+  if (autocompleteForm !== null && autocompleteForm.getPlace() !== undefined) {
+    lat = autocompleteForm.getPlace().geometry.location.lat()
+    lng = autocompleteForm.getPlace().geometry.location.lng()
+    areChanged = true
+  }
 
-  const req1 = fetchHelper("/update-server-task-list", changeRequestText);
-  const req2 = fetchHelper("/update-local-task-list", changeRequestText);
+  const changeRequestParams2 = new URLSearchParams({
+    'type': 'change',
+    'number': id,
+    'title': title.value,
+    'comment': comment.innerText,
+    'place': place.value,
+    'time': time.value,
+    'date': date.value,
+    'isDone': doneButton.classList.contains("marked_done_button"),
+    'lat': lat,
+    'lng': lng,
+    'are_coordinates_changed': areChanged
+  });
+
+  autocompleteForm = null;
+
+  const changeRequestText2 = changeRequestParams2.toString();
+  console.log(changeRequestText2)
+
+  const req1 = fetchHelper("/update-server-task-list", changeRequestText2);
+  const req2 = fetchHelper("/update-local-task-list", changeRequestText2);
 
   await req1;
   await req2;
@@ -266,11 +332,13 @@ async function untoggleElement() {
  If no element chosen yet, current becomes more dark to show user that this one is chosen.
  If something is already chosen, it becomes unchosen, all information from this sends to a server.
  Clicking means that the user want to edit this task or remove it. */
-function doToggleEvent(event) {
+async function doToggleEvent(event) {
+  console.log("Toggling event")
   console.log(event)
 
+  /** Clicks on buttons in right corner shouldn't untoggle the task */
   if (event.target.localName === "img") {
-    console.log("click on remove");
+    console.log("click on remove or done");
     return;
   }
 
@@ -293,20 +361,26 @@ function doToggleEvent(event) {
   if (toggledElement != null) {
     /** If user click the task which is already chosen, it becomes not chosen */
     if (currentElement === toggledElement) {
-      untoggleElement()
+      await untoggleElement()
       return
     } else {
 
-      untoggleElement();
+      await untoggleElement();
     }
   }
 
-  toggleElement(currentElement)
+  await toggleElement(currentElement)
 }
 
 function createListElement(task) {
   const liElement = document.createElement("li");
-  liElement.setAttribute("class", "tasklist_node shadowed_element");
+
+  if (task.isDone) {
+    liElement.setAttribute("class", "tasklist_node_done");
+  } else {
+    liElement.setAttribute("class", "tasklist_node_default shadowed_element");
+  }
+
   liElement.setAttribute("id", task.datastoreId);
 
   liElement.addEventListener("click", doToggleEvent)
@@ -317,10 +391,20 @@ function createListElement(task) {
 }
 
 async function addNewView(event) {
-  untoggleElement();
+  await untoggleElement();
 
   console.log(event);
-  const requestParams = "type=add&task-text=title&task-place=place&task-comment=comment&task-date=2020-01-01&task-time=00:00";
+  const requestParams = new URLSearchParams({
+    'type': 'add',
+    'task-text': 'title',
+    'task-comment': 'comment',
+    'task-date': '2020-01-01',
+    'task-time': '00:00',
+    'task-place': 'My location',
+    'lat': pos.lat,
+    'lng': pos.lng
+  }).toString();
+
   const response = await fetchHelper("/update-local-task-list", requestParams);
 
   const task = await response.json();
@@ -328,7 +412,7 @@ async function addNewView(event) {
   const newListElement = createListElement(task);
   document.getElementById('task-container')
   .appendChild(newListElement);
-  toggleElement(newListElement);
+  await toggleElement(newListElement);
 }
 
 async function buildComposeButton() {
@@ -337,15 +421,19 @@ async function buildComposeButton() {
 }
 
 async function doPreparation() {
-  await loadToDos();
-  await buildComposeButton();
+  const first = loadToDos();
+  const second = buildComposeButton();
+  await first;
+  await second;
+  await initMap();
 }
 
-function initMap() {
+async function initMap() {
+
   const map = new google.maps.Map(
       document.getElementById('map'), {
         center: {lat: 55.752779, lng: 37.621588},
-        zoom: 6,
+        zoom: 12,
         clickableIcons: true,
         backgroundColor: "#red"
       }
@@ -354,8 +442,8 @@ function initMap() {
   getCurrentGeolocation(map);
   var mapMarkers = {};
   var mapInfos = {};
-  fetchTasksOnMap(map, mapMarkers, mapInfos);
-  addDirections(map, mapMarkers);
+  await fetchTasksOnMap(map, mapMarkers, mapInfos);
+  await addDirections(map, mapMarkers);
 }
 
 function addDirections(map, mapMarkers) {
@@ -478,12 +566,12 @@ function getCurrentGeolocation(map) {
   if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(
         position => {
-          const pos = {
+          pos = {
             lat: position.coords.latitude,
             lng: position.coords.longitude
           };
           infoWindow.setPosition(pos);
-          infoWindow.setContent("Location found.");
+          infoWindow.setContent("😎");
           infoWindow.open(map);
           map.setCenter(pos);
         },
@@ -505,21 +593,18 @@ function handleLocationError(browserGeoState, infoWindow, pos) {
   infoWindow.open(map);
 }
 
-function showHideMap() {
-  mapCurState = document.getElementById('map');
-  mapPanel = document.getElementById('floating-panel');
-  taskForm = document.getElementById('task-list-full-container');
-  taskContainer = document.getElementById('task-container');
+async function showHideMap() {
+  const mapCurState = document.getElementById('map');
+  const mapPanel = document.getElementById('floating-panel');
+  const taskContainer = document.getElementById('task-list-view');
   if (mapCurState.style.display === "none") {
-    initMap();
+    await initMap();
     mapCurState.style.display = "block";
     mapPanel.style.display = "block";
-    taskForm.style.display = "none";
     taskContainer.style.display = "none";
   } else {
     mapCurState.style.display = "none";
     mapPanel.style.display = "none";
-    taskForm.style.display = "block";
     taskContainer.style.display = "block";
   }
 }

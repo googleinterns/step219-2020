@@ -96,11 +96,17 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty("text", request.getParameter("title"));
       entity.setProperty("comment", request.getParameter("comment"));
       entity.setProperty("place", request.getParameter("place"));
+      entity.setProperty("time", request.getParameter("time"));
+      entity.setProperty("date", request.getParameter("date"));
+      entity.setProperty("isDone", request.getParameter("isDone"));
 
-      Date calendarDate = new Date();
-      calendarDate =
-          new SimpleDateFormat("yyyy-MM-dd HH:mm")
-              .parse(request.getParameter("date") + " " + request.getParameter("time"));
+      if (Boolean.parseBoolean(request.getParameter("are_coordinates_changed"))) {
+        entity.setProperty("lat", Double.parseDouble(request.getParameter("lat")));
+        entity.setProperty("lng", Double.parseDouble(request.getParameter("lng")));
+      }
+
+      Date calendarDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
+          .parse(request.getParameter("date") + " " + request.getParameter("time"));
       entity.setProperty("dateTime", calendarDate);
       datastore.put(entity);
 

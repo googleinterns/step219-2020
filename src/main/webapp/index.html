@@ -5,10 +5,13 @@
     <title>To-do map app</title>
     <link rel="icon" href="./images/map_from_dora.png" type="image/gif">
     <link rel="stylesheet" href="style.css">
+    <script defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzzFT5PbnT9S2MgTqZE5s3zV4pSsm-qlE&libraries=places"
+            type="text/javascript"></script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAzzFT5PbnT9S2MgTqZE5s3zV4pSsm-qlE"></script>
     <script src="script.js"></script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAMzLfvWOGTvwbgpzB7YT4_M5nuPcSFMhc"
-    defer
-    ></script>
+    <script src="config_data.js"></script>
   </head>
   <body onload="doPreparation()">
       <div id = "title-main menu-line">
@@ -35,7 +38,6 @@
   </select>
 </div>
 
-<div id="map"></div>
-
+<div id="map" style="display: none"></div>
 </body>
 </html>

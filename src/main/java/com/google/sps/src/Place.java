@@ -1,9 +1,10 @@
 package com.google.sps.src;
 
 public class Place {
+
   private String name;
-  private double lat;
-  private double lng;
+  private double lat = 90;
+  private double lng = 90;
 
   public Place(String str) {
     this.name = str;

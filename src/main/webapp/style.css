@@ -33,6 +33,26 @@
   padding: 1px;
 }
 
+.done_button, .done_button:hover {
+  object-fit: contain;
+  float: bottom;
+  margin: 2px;
+  padding: 3px;
+  height: 18px;
+  width: 18px;
+  border-radius: 50%;
+  background: linear-gradient(to top, #0a6e00, #148a09);
+  box-shadow: var(--2dp_shadow);
+}
+
+.marked_done_button, .marked_done_button:hover {
+  background: linear-gradient(to top, #c25555, #ff4646);
+}
+
+.done_button:hover {
+  box-shadow: var(--8dp_shadow)
+}
+
 .task_button {
   object-fit: contain;
   float: bottom;
@@ -65,12 +85,15 @@
   outline: none;
   background-color: rgba(0, 0, 0, 0);
   padding: 3px;
+  width: 90%;
+  height: 25px;
 }
-
 
 .task_placeData_chosen {
   margin: 3px;
-  padding: 3px;
+  width: 90%;
+  padding: 1px;
+  height: 25px;
   background: white;
 }
 
@@ -128,32 +151,30 @@
 }
 
 
-.task_commentData, .task_commentData:focus {
+.task_commentData, .task_commentData:focus, .task_commentData_chosen {
   width: fit-content;
   margin: 3px;
   padding: 5px;
-  background: lightgray;
   border-style: inset;
   border-width: 3px;
   outline: none;
+  line-break: anywhere;
+  border-color: var(--primary-dark);
+  border-radius: 4px 4px 4px 12px;
+  box-shadow: 0 0 4px inset black;
+  overflow: hidden;
+  overflow-wrap: break-word;
+}
+
+.task_commentData, .task_commentData:focus {
+  background: rgba(0, 0, 0, 0.0);
   tab-index: -1;
   cursor: default;
-  border-color: var(--primary-dark);
-  border-radius: 4px 4px 4px 15px;
-  box-shadow: 0 0 4px inset black;
 }
 
 .task_commentData_chosen {
-  width: fit-content;
-  margin: 3px;
-  padding: 5px;
   background: white;
-  border-style: inset;
-  outline: none;
-  border-width: 3px;
-  border-color: var(--primary-dark);
-  border-radius: 4px 4px 4px 15px;
-  box-shadow: 0 0 4px inset black;
+  width: 90%;
 }
 
 .task_mainPanel {
@@ -161,44 +182,47 @@
 }
 
 .shadowed_element {
-  border-radius: 15px 1px 15px 15px;
   box-shadow: var(--2dp_shadow);
 }
 
+.task_rightPanel {
+  width: 20%;
+}
+
 .shadowed_chosen_element {
-  border-radius: 15px 1px 15px 15px;
   box-shadow: var(--8dp_shadow)
 }
 
-.tasklist_node {
+.tasklist_node_default, .tasklist_node_chosen, .tasklist_node_done, .tasklist_node_done_chosen {
   padding: 5px;
   list-style-type: none;
   display: flex;
   justify-content: space-between;
-  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
   margin-top: 10px;
+  border-radius: 15px 1px 15px 15px;
+  background: linear-gradient(to right, #c8c8c8, #c9c9c9);
 }
 
-.tasklist_node:hover {
-  padding: 5px;
-  list-style-type: none;
-  display: flex;
-  justify-content: space-between;
+.tasklist_node_default:hover {
   background: linear-gradient(to right, #c8c8c8, #c9c9c9);
-  margin-top: 10px;
   border-radius: 15px 1px 15px 15px;
   box-shadow: var(--8dp_shadow)
 }
 
 .tasklist_node_chosen {
-  padding: 5px;
-  list-style-type: none;
-  display: flex;
-  justify-content: space-between;
   background: linear-gradient(to right, #9da0a4, #b3b5b9);
-  margin-top: 10px;
+  box-shadow: var(--8dp_shadow)
 }
 
+.tasklist_node_done {
+  background: linear-gradient(to right, #eaeaea, #ededed);
+  opacity: 0.5;
+}
+
+.tasklist_node_done_chosen {
+  background: linear-gradient(to right, #eaeaea, #ededed);
+  opacity: 0.5;
+}
 
 #task_container {
   width: 100%;

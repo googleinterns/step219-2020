@@ -10,13 +10,16 @@ public class Task {
   private String comment;
   //private final long userDatastoreId;
   private String userDatastoreId;
+  private Boolean isDone;
 
-  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId, String userDatastoreId) {
+  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
+      Boolean isDone, String userDatastoreId) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;
     this.place = place;
     this.datastoreId = datastoreId;
+    this.isDone = isDone;
     this.userDatastoreId = userDatastoreId;
   }
 
@@ -67,5 +70,13 @@ public class Task {
 
   public Place getPlace() {
     return place;
+  }
+
+  public Boolean getIsDone() {
+    return isDone;
+  }
+
+  public void setIsDone(String isDone) {
+    this.isDone = Boolean.valueOf(isDone);
   }
 }
