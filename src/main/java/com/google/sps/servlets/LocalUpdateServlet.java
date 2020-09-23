@@ -224,7 +224,7 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           task.setDate(request.getParameter("date"));
-          task.setIsDone(request.getParameter("isDone"));
+          task.setIsDone(Boolean.valueOf(request.getParameter("isDone")));
 
           Place place =
               Boolean.parseBoolean(request.getParameter("are_coordinates_changed"))

@@ -9,7 +9,7 @@ public class Task {
   private String title;
   private String comment;
   //private final long userDatastoreId;
-  private String userDatastoreId;
+  private final String userDatastoreId;
   private Boolean isDone;
 
   public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
@@ -76,7 +76,7 @@ public class Task {
     return isDone;
   }
 
-  public void setIsDone(String isDone) {
-    this.isDone = Boolean.valueOf(isDone);
+  public void setIsDone(Boolean isDone) {
+    this.isDone = isDone;
   }
 }
