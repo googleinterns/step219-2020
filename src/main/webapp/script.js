@@ -604,7 +604,6 @@ function signOut() {
   });
 }
 
-
 function onSignIn(googleUser) {
 // Useful data for your client-side scripts:
   var profile = googleUser.getBasicProfile();
@@ -616,7 +615,7 @@ function onSignIn(googleUser) {
 }
 
 async function sendSignInData(id_token) {
-    const response = await fetch('/user-data', {
+  const response = await fetch('/user-data', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -632,7 +631,7 @@ async function sendUserData(id_token) {
 
 function getBasicProfile() {
   if (auth2.isSignedIn.get()) {
-      var profile = auth2.currentUser.get().getBasicProfile();
+    var profile = auth2.currentUser.get().getBasicProfile();
   }
 }
 
@@ -646,12 +645,12 @@ async function fetchUserData() {
   const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
   const resp = await response.json();
   try {
-      const user_id = resp[0];
-      const sign_button = resp[1];
-      document.getElementById("signed-in").innerHTML = sign_button;
-      return user_id;
+    const user_id = resp[0];
+    const sign_button = resp[1];
+    document.getElementById("signed-in").innerHTML = sign_button;
+    return user_id;
   } catch (error) {
-      window.location.replace('/index.html');
-      return "error";
+    window.location.replace('/index.html');
+    return "error";
   }
 }

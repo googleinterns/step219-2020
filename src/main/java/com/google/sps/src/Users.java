@@ -26,20 +26,18 @@ public class Users {
     String login_page = "/main-page.html";
 
     if (userPrincipal != null) {
-        user_id = userService.getCurrentUser().getUserId();
-        doStoreUserInfo(user_id, userService.getCurrentUser().getEmail());
-        sign_button = "<a href=\""
-                  + userService.createLogoutURL(login_page)
-                  + "\">sign out</a>.</p>";
+      user_id = userService.getCurrentUser().getUserId();
+      doStoreUserInfo(user_id, userService.getCurrentUser().getEmail());
+      sign_button = "<a href=\"" + userService.createLogoutURL(login_page) + "\">sign out</a>.</p>";
     } else {
-        user_id = "none";
+      user_id = "none";
       sign_button =
           "<p>Please <a href=\"" + userService.createLoginURL(login_page) + "\">sign in</a>.</p>";
       System.out.println("user not logged in");
     }
   }
 
-  public ArrayList<String> getUserIdAndButton(Principal userPrincipal){
+  public ArrayList<String> getUserIdAndButton(Principal userPrincipal) {
     if (user_id == "none") {
       checkLogInOfUser(userPrincipal);
     }
@@ -49,7 +47,7 @@ public class Users {
     return arrayResponse;
   }
 
-  public String getUserId(Principal userPrincipal){
+  public String getUserId(Principal userPrincipal) {
     if (user_id == "none") {
       checkLogInOfUser(userPrincipal);
     }

@@ -23,10 +23,8 @@ public class ServerUpdateServlet extends HttpServlet {
       throws IOException {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -48,10 +46,8 @@ public class ServerUpdateServlet extends HttpServlet {
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response, long number) {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(key);
   }
@@ -77,11 +73,9 @@ public class ServerUpdateServlet extends HttpServlet {
       throws IOException {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
-    //Key key = KeyFactory.createKey("task", number);
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
+    // Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -97,8 +91,9 @@ public class ServerUpdateServlet extends HttpServlet {
         entity.setProperty("lng", Double.parseDouble(request.getParameter("lng")));
       }
 
-      Date calendarDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-          .parse(request.getParameter("date") + " " + request.getParameter("time"));
+      Date calendarDate =
+          new SimpleDateFormat("yyyy-MM-dd HH:mm")
+              .parse(request.getParameter("date") + " " + request.getParameter("time"));
       entity.setProperty("dateTime", calendarDate);
       datastore.put(entity);
 

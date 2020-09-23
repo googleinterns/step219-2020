@@ -1,19 +1,24 @@
 package com.google.sps.src;
 
-
 public class Task {
 
   private final long datastoreId;
+  // private final long userDatastoreId;
+  private final String userDatastoreId;
   private DateTime dateTime;
   private Place place;
   private String title;
   private String comment;
-  //private final long userDatastoreId;
-  private final String userDatastoreId;
   private Boolean isDone;
 
-  public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
-      Boolean isDone, String userDatastoreId) {
+  public Task(
+      DateTime dateTime,
+      String title,
+      String comment,
+      Place place,
+      long datastoreId,
+      Boolean isDone,
+      String userDatastoreId) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;
@@ -47,14 +52,6 @@ public class Task {
     comment = message;
   }
 
-  public void setPlace(Place place) {
-    this.place = place;
-  }
-
-  public void setTime(String time) {
-    this.dateTime.setTime(time);
-  }
-
   public void setDate(String date) {
     this.dateTime.setDate(date);
   }
@@ -67,9 +64,16 @@ public class Task {
     return dateTime;
   }
 
+  public void setTime(String time) {
+    this.dateTime.setTime(time);
+  }
 
   public Place getPlace() {
     return place;
+  }
+
+  public void setPlace(Place place) {
+    this.place = place;
   }
 
   public Boolean getIsDone() {

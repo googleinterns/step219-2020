@@ -11,7 +11,6 @@ public class DateTime {
   /**
    * To variables below are needed to be used in javascript
    */
-
   public DateTime() {
     calendarDate = new Date();
   }
