@@ -56,8 +56,8 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("task").setAncestor(ancestorKey);
-    System.out.println("QYERY created");
-    query.addSort("dateTime", SortDirection.ASCENDING);
+    System.out.println("QUERY created");
+      query.addSort("dateTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String) entity.getProperty("text");
@@ -76,9 +76,7 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
               comment,
               new Place(lat, lng, place),
               entity.getKey().getId(),
-              Boolean.valueOf(state));
-      System.out.println(task);
-              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId(), user_id);
+              Boolean.valueOf(state), user_id);
       //System.out.println(task);
       tasks.add(task);
     }
