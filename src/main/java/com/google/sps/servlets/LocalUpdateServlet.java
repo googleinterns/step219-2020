@@ -38,7 +38,6 @@ public class LocalUpdateServlet extends HttpServlet {
   public void init() {
     tasks = new ArrayList<>();
     String user_id = "";
-    System.out.println("inside createTaskList");
 }
 
 private void doLoadTasksList(HttpServletRequest request, HttpServletResponse response)
@@ -50,14 +49,11 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
     //UserService userService = UserServiceFactory.getUserService();
     //String user_id = userService.getCurrentUser().getUserId();
 
-    System.out.println(user_id + "Gor by servlet from servlet");
     Key ancestorKey = KeyFactory.createKey("user", user_id);
-    System.out.println("key created: "+ancestorKey);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
     Query query = new Query("task").setAncestor(ancestorKey);
-    System.out.println("QUERY created");
-      query.addSort("dateTime", SortDirection.ASCENDING);
+       query.addSort("dateTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
       String text = (String) entity.getProperty("text");
@@ -68,7 +64,6 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       Double lat = (Double) entity.getProperty("lat");
       Double lng = (Double) entity.getProperty("lng");
 
-      System.out.println("New task with text: "+text + " new id "+ entity.getKey().getId());
       Task task =
           new Task(
               new DateTime(dateTime),
@@ -81,7 +76,7 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       tasks.add(task);
     }
     } catch (Exception e) {
-        System.out.println("LOG: tasks no loaded");
+      System.out.println("Error" + e);
     }
   }
 
@@ -140,7 +135,6 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
                         taskEntity.getKey().getId(), false, user_id);
 
       tasks.add(task);
-      System.out.println("The id of the task is " + taskEntity.getKey().getId());
       response
           .getWriter()
           .println(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create().toJson(task));
@@ -191,8 +185,6 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("LOG: doPost() function");
-    System.out.println("LOG: request type=" + request.getParameter("type"));
 
     String type = request.getParameter("type");
     if (type.equals("add")) {
