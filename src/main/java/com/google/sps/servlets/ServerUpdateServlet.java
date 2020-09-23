@@ -5,11 +5,13 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
+import com.google.appengine.api.datastore.KeyFactory.Builder;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import com.google.sps.src.Users;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,13 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doEditTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    Key key = KeyFactory.createKey("task", number);
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
+    System.out.println("LOG: key created");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -40,7 +48,12 @@ public class ServerUpdateServlet extends HttpServlet {
   }
 
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response, long number) {
-    Key key = KeyFactory.createKey("task", number);
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(key);
   }
@@ -68,15 +81,21 @@ public class ServerUpdateServlet extends HttpServlet {
 
   private void doChangeTask(HttpServletRequest request, HttpServletResponse response, long number)
       throws IOException {
-    Key key = KeyFactory.createKey("task", number);
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
+    System.out.println("LOG: key not created");
+    Key key = new KeyFactory.Builder("user", user_id)
+        .addChild("task", number)
+        .getKey();
+    //Key key = KeyFactory.createKey("task", number);
+    System.out.println("LOG: doChange servlet key created ");
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
       entity.setProperty("text", request.getParameter("title"));
       entity.setProperty("comment", request.getParameter("comment"));
       entity.setProperty("place", request.getParameter("place"));
-      entity.setProperty("time", request.getParameter("time"));
-      entity.setProperty("date", request.getParameter("date"));
 
       Date calendarDate = new Date();
       calendarDate =

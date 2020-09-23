@@ -11,6 +11,7 @@ import com.google.gson.GsonBuilder;
 import com.google.sps.src.DateTime;
 import com.google.sps.src.Place;
 import com.google.sps.src.Task;
+import com.google.sps.src.Users;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -19,6 +20,13 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import com.google.appengine.api.datastore.Key;
+import com.google.appengine.api.datastore.KeyFactory;
+import java.net.*;
+import java.io.*;
+import com.google.appengine.api.users.UserService;
+import com.google.appengine.api.users.UserServiceFactory;
+
 
 @WebServlet("/update-local-task-list")
 public class LocalUpdateServlet extends HttpServlet {
@@ -33,10 +41,26 @@ public class LocalUpdateServlet extends HttpServlet {
   @Override
   public void init() {
     tasks = new ArrayList<>();
+    String user_id = "";
+    System.out.println("inside createTaskList");
+}
 
+private void doLoadTasksList(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    try {
+    tasks = new ArrayList<>();
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //UserService userService = UserServiceFactory.getUserService();
+    //String user_id = userService.getCurrentUser().getUserId();
+    
+    System.out.println(user_id + "Gor by servlet from servlet");
+    Key ancestorKey = KeyFactory.createKey("user", user_id);
+    System.out.println("key created: "+ancestorKey);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Query query = new Query("task");
+    Query query = new Query("task").setAncestor(ancestorKey);
+    System.out.println("QYERY created");
     query.addSort("dateTime", SortDirection.ASCENDING);
     PreparedQuery results = datastore.prepare(query);
     for (Entity entity : results.asIterable()) {
@@ -44,21 +68,29 @@ public class LocalUpdateServlet extends HttpServlet {
       Date dateTime = (Date) entity.getProperty("dateTime");
       String place = (String) entity.getProperty("place");
       String comment = (String) entity.getProperty("comment");
-
+      System.out.println("New task with text: "+text + " new id "+ entity.getKey().getId());
       Task task =
           new Task(
-              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId());
-      System.out.println(task);
+              new DateTime(dateTime), text, comment, new Place(place), entity.getKey().getId(), user_id);
+      //System.out.println(task);
       tasks.add(task);
+    }
+    } catch (Exception e) {
+        System.out.println("LOG: tasks no loaded");
     }
   }
 
   private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
-    Entity taskEntity = new Entity("task");
-    taskEntity.setProperty("text", request.getParameter("task-date"));
-    taskEntity.setProperty("date", request.getParameter("task-text"));
+    Users users = new Users();
+    String user_id = users.getUserId(request.getUserPrincipal());
+    //String user_id = request.getParameter("user-id");
+    Key parentKey = KeyFactory.createKey("user", user_id);
+    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+    Entity taskEntity = new Entity("task", parentKey);//Entity.newBuilder(taskKey);
+    taskEntity.setProperty("text", request.getParameter("task-text"));
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
+    taskEntity.setProperty("user_id", user_id);
     String dateString = request.getParameter("task-date") + " " + request.getParameter("task-time");
 
     Date calendarDate = new Date();
@@ -80,7 +112,10 @@ public class LocalUpdateServlet extends HttpServlet {
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
       Entity taskEntity = buildTaskEntityFromRequest(request);
       datastore.put(taskEntity);
-
+      Users users = new Users();
+      String user_id = users.getUserId(request.getUserPrincipal());
+      //String user_id = request.getParameter("user-id");
+      //System.out.println("inside add found user key id = "+user_key_id);
       Task task =
           new Task(
               new DateTime(
@@ -88,7 +123,7 @@ public class LocalUpdateServlet extends HttpServlet {
               request.getParameter("task-text"),
               request.getParameter("task-comment"),
               new Place(request.getParameter("task-place")),
-              taskEntity.getKey().getId());
+              taskEntity.getKey().getId(), user_id);
 
       tasks.add(task);
       System.out.println("The id of the task is " + taskEntity.getKey().getId());
@@ -152,7 +187,9 @@ public class LocalUpdateServlet extends HttpServlet {
       doEditTask(request, response);
     } else if (type.equals("change")) {
       doChangeTask(request, response);
-    } else {
+    } else if (type.equals("loadtasks")){
+       doLoadTasksList(request, response);
+    }else {
       System.out.println("There is no needed type of request");
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }

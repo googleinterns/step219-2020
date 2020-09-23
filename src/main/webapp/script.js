@@ -3,6 +3,17 @@ let toggledElement = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
+  //user_key_id = fetchUserData();
+  //const response = await fetch('/update-local-task-list');
+  /*, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: "user-key-id="+user_key_id
+  });*/
+  await fetchHelper('/update-local-task-list', "type=loadtasks");
+  await fetchUserData();
   const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
 
@@ -99,6 +110,7 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
+  console.log("request body string 112 :"+ requestBody);
   return fetch(servletName, {
     method: 'POST',
     headers: {
@@ -389,6 +401,7 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
       mapMarkers[markerName] = new google.maps.Marker({
         position: task.place,
         map: map,
+        draggable: true,
         title: markerName,//task.place.string
         icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
@@ -436,7 +449,7 @@ function composeNewInfoContent(task_number) {
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer,
-    from_pos, to_pos) {
+    from_pos, to_pos, task_date) {
   //put direction on the map
   const selectedMode = document.getElementById("mode").value;
   directionsService.route(
@@ -446,7 +459,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,
         travelMode: google.maps.TravelMode[selectedMode]//,
         //i will need this in next commit
         /*transitOptions: {
-            departureTime: Date,
+            departureTime: new Date(task_date),
         }*/
       },
       (response, status) => {
@@ -495,7 +508,7 @@ function handleLocationError(browserGeoState, infoWindow, pos) {
 function showHideMap() {
   mapCurState = document.getElementById('map');
   mapPanel = document.getElementById('floating-panel');
-  taskForm = document.getElementById('task-form');
+  taskForm = document.getElementById('task-list-full-container');
   taskContainer = document.getElementById('task-container');
   if (mapCurState.style.display === "none") {
     initMap();
@@ -511,3 +524,73 @@ function showHideMap() {
   }
 }
 
+function signOut() {
+  var auth2 = gapi.auth2.getAuthInstance();
+  auth2.signOut().then(function () {
+    console.log('User signed out.');
+  });
+}
+
+
+function onSignIn(googleUser) {
+// Useful data for your client-side scripts:
+  var profile = googleUser.getBasicProfile();
+  console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+  console.log("Email: " + profile.getEmail());
+
+  // The ID token you need to pass to your backend:
+  var id_token = googleUser.getAuthResponse().id_token;
+  console.log("ID Token: " + id_token);
+  //sendSignInData(profile.getEmail());
+  window.location.replace('/index.html');
+}
+
+async function sendSignInData(id_token) {
+    const response = await fetch('/user-data', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: "user-id=" + id_token
+  });
+  const user_id = await response.json();
+  console.log(user_id);
+}
+
+async function sendUserData(id_token) {
+  await fetchHelper("/user-data", "id-token=" + id_token);
+}
+
+function getBasicProfile() {
+  if (auth2.isSignedIn.get()) {
+      var profile = auth2.currentUser.get().getBasicProfile();
+      console.log('ID: ' + profile.getId());
+      console.log('Full Name: ' + profile.getName());
+      console.log('Given Name: ' + profile.getGivenName());
+      console.log('Family Name: ' + profile.getFamilyName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail());
+  }
+}
+
+async function trial() {
+  await fetchHelper("/user-data", "");
+  var user_id = await fetchUserData();
+  console.log(user_id);
+  window.location.replace('/index.html');
+}
+
+async function fetchUserData() {
+  const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  const resp = await response.json();
+  try {
+      const user_id = resp[0];
+      const sign_button = resp[1];
+      console.log(user_id);
+      document.getElementById("signed-in").innerHTML = sign_button;
+      return user_id;
+  } catch (error) {
+      window.location.replace('/index.html');
+      return "error";
+  }
+}
