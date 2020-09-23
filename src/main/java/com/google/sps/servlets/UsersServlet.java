@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.io.PrintWriter;
 import com.google.sps.src.Users;
 
-// With @WebServlet annotation the webapp/WEB-INF/web.xml is no longer required.
+
 @WebServlet(
     name = "UserAPI",
     description = "UserAPI: Login / Logout with UserService",

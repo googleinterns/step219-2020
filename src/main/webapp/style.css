@@ -11,11 +11,20 @@
 }
 
 #app-title {
-  width: 15%;
+  width: 100%;
+  font-size: 35px;
+  text-align: center;
   font-family: "Lucida Console", Courier, monospace;
   background: var(--primary-color);
   padding: 3px;
-  color: white;
+  color: black;
+  background-color: white;
+}
+
+#dora-map-logo {
+    width: 8%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 
@@ -220,6 +229,6 @@
 }
 
 #map {
-  height: 400px;
-  width: 400px;
+  height: 600px;
+  width: 600px;
 }
