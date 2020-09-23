@@ -427,9 +427,9 @@ function addDirections(map, mapMarkers) {
 
 function directionsBetweenMarkers(mapMarkers, directionsService,
     directionsRenderer) {
-  for (var marker1 in mapMarkers) {
-    for (var marker2 in mapMarkers) {
-      if (marker1 != marker2) {
+  for (const marker1 in mapMarkers) {
+    for (const marker2 in mapMarkers) {
+      if (marker1 !== marker2) {
         calculateAndDisplayRoute(directionsService, directionsRenderer,
             mapMarkers[marker1].position, mapMarkers[marker2].position);
       }
@@ -518,7 +518,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,
         }*/
       },
       (response, status) => {
-        if (status == "OK") {
+        if (status === "OK") {
           directionsRenderer.setDirections(response);
         } else {
           window.alert("Directions request failed due to " + status);
@@ -610,13 +610,13 @@ async function sendUserData(id_token) {
 
 function getBasicProfile() {
   if (auth2.isSignedIn.get()) {
-    var profile = auth2.currentUser.get().getBasicProfile();
+    const profile = auth2.currentUser.get().getBasicProfile();
   }
 }
 
 async function trial() {
   await fetchHelper("/user-data", "");
-  var user_id = await fetchUserData();
+  await fetchUserData();
   window.location.replace('/index.html');
 }
 
