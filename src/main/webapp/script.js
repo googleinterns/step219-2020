@@ -449,7 +449,7 @@ function composeNewInfoContent(task_number) {
 }
 
 function calculateAndDisplayRoute(directionsService, directionsRenderer,
-    from_pos, to_pos) {
+    from_pos, to_pos, task_date) {
   //put direction on the map
   const selectedMode = document.getElementById("mode").value;
   directionsService.route(
@@ -459,7 +459,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,
         travelMode: google.maps.TravelMode[selectedMode]//,
         //i will need this in next commit
         /*transitOptions: {
-            departureTime: Date,
+            departureTime: new Date(task_date),
         }*/
       },
       (response, status) => {
@@ -542,7 +542,7 @@ function onSignIn(googleUser) {
   var id_token = googleUser.getAuthResponse().id_token;
   console.log("ID Token: " + id_token);
   //sendSignInData(profile.getEmail());
-  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
+  window.location.replace('/index.html');
 }
 
 async function sendSignInData(id_token) {
@@ -577,15 +577,20 @@ async function trial() {
   await fetchHelper("/user-data", "");
   var user_id = await fetchUserData();
   console.log(user_id);
-  window.location.replace('https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/index.html');
+  window.location.replace('/index.html');
 }
 
 async function fetchUserData() {
   const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
   const resp = await response.json();
-  const user_id = resp[0];
-  const sign_button = resp[1];
-  console.log(user_id);
-  document.getElementById("signed-in").innerHTML = sign_button;
-  return user_id;
+  try {
+      const user_id = resp[0];
+      const sign_button = resp[1];
+      console.log(user_id);
+      document.getElementById("signed-in").innerHTML = sign_button;
+      return user_id;
+  } catch (error) {
+      window.location.replace('/index.html');
+      return "error";
+  }
 }
