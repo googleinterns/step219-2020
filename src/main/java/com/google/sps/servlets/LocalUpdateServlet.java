@@ -45,8 +45,6 @@ public class LocalUpdateServlet extends HttpServlet {
       tasks = new ArrayList<>();
       Users users = new Users();
       String user_id = users.getUserId(request.getUserPrincipal());
-      // UserService userService = UserServiceFactory.getUserService();
-      // String user_id = userService.getCurrentUser().getUserId();
 
       Key ancestorKey = KeyFactory.createKey("user", user_id);
       DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
@@ -72,7 +70,7 @@ public class LocalUpdateServlet extends HttpServlet {
                 entity.getKey().getId(),
                 Boolean.valueOf(state),
                 user_id);
-        // System.out.println(task);
+
         tasks.add(task);
       }
     } catch (Exception e) {
@@ -83,7 +81,7 @@ public class LocalUpdateServlet extends HttpServlet {
   private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    // String user_id = request.getParameter("user-id");
+
     Key parentKey = KeyFactory.createKey("user", user_id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     Entity taskEntity = new Entity("task", parentKey); // Entity.newBuilder(taskKey);

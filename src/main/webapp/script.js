@@ -5,15 +5,6 @@ let pos = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
-  //user_key_id = fetchUserData();
-  //const response = await fetch('/update-local-task-list');
-  /*, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: "user-key-id="+user_key_id
-  });*/
   await fetchHelper('/update-local-task-list', "type=loadtasks");
   await fetchUserData();
   const response = await fetch('/update-local-task-list');
@@ -21,18 +12,6 @@ async function loadToDos() {
 
   const container = document.getElementById('task-container');
   container.innerText = '';
-  //Debug element
-  container.appendChild(createListElement({
-    place: {
-      string: "place"
-    },
-    dateTime: {
-      calendarDate: "Jan 1, 2020 12:00:00 AM",
-    },
-    comment: "comment",
-    title: "debug",
-    isDone: true
-  }))
 
   for (const task of tasksList) {
     container.appendChild(createListElement(task));
@@ -480,7 +459,7 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
         position: task.place,
         map: map,
         draggable: true,
-        title: markerName,//task.place.string
+        title: markerName,
         icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
       mapMarkers[markerName].setIcon(composeIconUrl(task.time));
@@ -642,7 +621,7 @@ async function trial() {
 }
 
 async function fetchUserData() {
-  const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  const response = await fetch('/userapi');
   const resp = await response.json();
   try {
     const user_id = resp[0];
