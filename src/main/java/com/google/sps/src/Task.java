@@ -8,16 +8,19 @@ public class Task {
   private Place place;
   private String title;
   private String comment;
+  //private final long userDatastoreId;
+  private String userDatastoreId;
   private Boolean isDone;
 
   public Task(DateTime dateTime, String title, String comment, Place place, long datastoreId,
-      Boolean isDone) {
+      Boolean isDone, String userDatastoreId) {
     this.dateTime = dateTime;
     this.title = title;
     this.comment = comment;
     this.place = place;
     this.datastoreId = datastoreId;
-    this.isDone = Boolean.valueOf(isDone);
+    this.isDone = isDone;
+    this.userDatastoreId = userDatastoreId;
   }
 
   public void setField(String fieldName, String data) throws RuntimeException {
