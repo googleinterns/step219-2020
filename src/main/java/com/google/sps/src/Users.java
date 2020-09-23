@@ -45,13 +45,7 @@ public class Users {
         user_id = "none";
         sign_button = "<p>Please <a href=\"" + userService.createLoginURL(login_page) + "\">sign in</a>.</p>";
         System.out.println("user not loged in");
-        //userService.createLoginURL(login_page);
     }
-    //ArrayList<String> JSONRequest = new ArrayList<String>(2);
-    //JSONRequest.add(gson.toJson(user_id));
-    //JSONRequest.add(gson.toJson(sign_button));
-    //out.println(JSONRequest);
-    //response.getWriter().println(new Gson().toJson(user_id));
   }
 
   public ArrayList<String> getUserIdAndButton(Principal userPrincipal){
