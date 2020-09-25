@@ -1,5 +1,5 @@
-#To-do map app#
-##Capstone STEP project by @postnikov and @dbaranovska##
+# To-do map app #
+## Capstone STEP project by @postnikov and @dbaranovska ##
 
 A to-do list with representation of all the tasks on a map.
 
