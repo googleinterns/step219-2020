@@ -7,6 +7,7 @@ A to-do list with representation of all the tasks on a map.
 * Add
 * Edit
 * Delete
+* Mark as done/not done
 * Choose time and date, which is transforemed into java.util Date
 * Autocomplition of places (Egor's final pull)
 
@@ -22,3 +23,9 @@ A to-do list with representation of all the tasks on a map.
 * Support multiuser with Google Users Java API
 * Suppor multitenant datastore, include paranting and ancestors path in java Datastore
 * Sign with a Google Sign In on a eparate page
+
+
+
+***Branches stages***:
+* master: Egor's marking tasks as done feature merged into. Merge has conflicts
+* dev: needs to be merged properly in a master
