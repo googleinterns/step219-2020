@@ -22,7 +22,7 @@ A to-do list with representation of all the tasks on a map.
 **User features:**
 * Support multiuser with Google Users Java API
 * Suppor multitenant datastore, include paranting and ancestors path in java Datastore
-* Sign with a Google Sign In on a eparate page
+* Sign with a Google Sign In on a separate page
 
 
 
