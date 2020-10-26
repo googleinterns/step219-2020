@@ -5,35 +5,13 @@ let pos = null;
 
 /** Loads list of user tasks from server and puts it into view*/
 async function loadToDos() {
-  //user_key_id = fetchUserData();
-  //const response = await fetch('/update-local-task-list');
-  /*, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: "user-key-id="+user_key_id
-  });*/
   await fetchHelper('/update-local-task-list', "type=loadtasks");
   await fetchUserData();
   const response = await fetch('/update-local-task-list');
   const tasksList = await response.json();
 
   const container = document.getElementById('task-container');
-  console.log(tasksList);
   container.innerText = '';
-  //Debug element
-  container.appendChild(createListElement({
-    place: {
-      string: "place"
-    },
-    dateTime: {
-      calendarDate: "Jan 1, 2020 12:00:00 AM",
-    },
-    comment: "comment",
-    title: "debug",
-    isDone: true
-  }))
 
   for (const task of tasksList) {
     container.appendChild(createListElement(task));
@@ -111,7 +89,6 @@ function getConfirmation() {
 }
 
 async function fetchHelper(servletName, requestBody) {
-  console.log("request body string 112 :"+ requestBody);
   return fetch(servletName, {
     method: 'POST',
     headers: {
@@ -146,7 +123,6 @@ function doRemoveEvent(event) {
 }
 
 async function doDoneEvent(event) {
-  console.log(event)
   const listView = findParentListView(event);
 
   const doneAlready = event.target.classList.contains("marked_done_button")
@@ -318,7 +294,6 @@ async function untoggleElement() {
   autocompleteForm = null;
 
   const changeRequestText2 = changeRequestParams2.toString();
-  console.log(changeRequestText2)
 
   const req1 = fetchHelper("/update-server-task-list", changeRequestText2);
   const req2 = fetchHelper("/update-local-task-list", changeRequestText2);
@@ -333,12 +308,9 @@ async function untoggleElement() {
  If something is already chosen, it becomes unchosen, all information from this sends to a server.
  Clicking means that the user want to edit this task or remove it. */
 async function doToggleEvent(event) {
-  console.log("Toggling event")
-  console.log(event)
 
   /** Clicks on buttons in right corner shouldn't untoggle the task */
   if (event.target.localName === "img") {
-    console.log("click on remove or done");
     return;
   }
 
@@ -353,7 +325,6 @@ async function doToggleEvent(event) {
   if (toggledElement === currentElement
       && (event.target.isContentEditable || event.target.localName
           === "input")) {
-    console.log("input click");
     return;
   }
 
@@ -393,7 +364,6 @@ function createListElement(task) {
 async function addNewView(event) {
   await untoggleElement();
 
-  console.log(event);
   const requestParams = new URLSearchParams({
     'type': 'add',
     'task-text': 'title',
@@ -438,7 +408,6 @@ async function initMap() {
         backgroundColor: "#red"
       }
   );
-  console.log('map showed');
   getCurrentGeolocation(map);
   var mapMarkers = {};
   var mapInfos = {};
@@ -458,9 +427,9 @@ function addDirections(map, mapMarkers) {
 
 function directionsBetweenMarkers(mapMarkers, directionsService,
     directionsRenderer) {
-  for (var marker1 in mapMarkers) {
-    for (var marker2 in mapMarkers) {
-      if (marker1 != marker2) {
+  for (const marker1 in mapMarkers) {
+    for (const marker2 in mapMarkers) {
+      if (marker1 !== marker2) {
         calculateAndDisplayRoute(directionsService, directionsRenderer,
             mapMarkers[marker1].position, mapMarkers[marker2].position);
       }
@@ -490,7 +459,7 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
         position: task.place,
         map: map,
         draggable: true,
-        title: markerName,//task.place.string
+        title: markerName,
         icon: {url: "https://maps.google.com/mapfiles/ms/icons/blue-dot.png"}
       });
       mapMarkers[markerName].setIcon(composeIconUrl(task.time));
@@ -507,8 +476,6 @@ function showTasksOnMap(tasksList, map, mapMarkers, mapInfos) {
       this.infowindow.open(map, this);
     });
   }
-  console.log(mapMarkers);
-  console.log(mapInfos);
 }
 
 function composeIconUrl(task_time) {
@@ -551,7 +518,7 @@ function calculateAndDisplayRoute(directionsService, directionsRenderer,
         }*/
       },
       (response, status) => {
-        if (status == "OK") {
+        if (status === "OK") {
           directionsRenderer.setDirections(response);
         } else {
           window.alert("Directions request failed due to " + status);
@@ -616,22 +583,18 @@ function signOut() {
   });
 }
 
-
 function onSignIn(googleUser) {
 // Useful data for your client-side scripts:
   var profile = googleUser.getBasicProfile();
-  console.log("ID: " + profile.getId()); // Don't send this directly to your server!
-  console.log("Email: " + profile.getEmail());
 
   // The ID token you need to pass to your backend:
   var id_token = googleUser.getAuthResponse().id_token;
-  console.log("ID Token: " + id_token);
   //sendSignInData(profile.getEmail());
   window.location.replace('/index.html');
 }
 
 async function sendSignInData(id_token) {
-    const response = await fetch('/user-data', {
+  const response = await fetch('/user-data', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded',
@@ -639,7 +602,6 @@ async function sendSignInData(id_token) {
     body: "user-id=" + id_token
   });
   const user_id = await response.json();
-  console.log(user_id);
 }
 
 async function sendUserData(id_token) {
@@ -648,34 +610,26 @@ async function sendUserData(id_token) {
 
 function getBasicProfile() {
   if (auth2.isSignedIn.get()) {
-      var profile = auth2.currentUser.get().getBasicProfile();
-      console.log('ID: ' + profile.getId());
-      console.log('Full Name: ' + profile.getName());
-      console.log('Given Name: ' + profile.getGivenName());
-      console.log('Family Name: ' + profile.getFamilyName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail());
+    const profile = auth2.currentUser.get().getBasicProfile();
   }
 }
 
 async function trial() {
   await fetchHelper("/user-data", "");
-  var user_id = await fetchUserData();
-  console.log(user_id);
+  await fetchUserData();
   window.location.replace('/index.html');
 }
 
 async function fetchUserData() {
-  const response = await fetch('/userapi');//?login-page=https://8080-17f5303d-2dea-4c50-b733-2cb7b78be97f.europe-west4.cloudshell.dev/main-page.html');
+  const response = await fetch('/userapi');
   const resp = await response.json();
   try {
-      const user_id = resp[0];
-      const sign_button = resp[1];
-      console.log(user_id);
-      document.getElementById("signed-in").innerHTML = sign_button;
-      return user_id;
+    const user_id = resp[0];
+    const sign_button = resp[1];
+    document.getElementById("signed-in").innerHTML = sign_button;
+    return user_id;
   } catch (error) {
-      window.location.replace('/index.html');
-      return "error";
+    window.location.replace('/index.html');
+    return "error";
   }
 }

@@ -5,13 +5,12 @@ import com.google.appengine.api.datastore.DatastoreServiceFactory;
 import com.google.appengine.api.datastore.Entity;
 import com.google.appengine.api.datastore.Key;
 import com.google.appengine.api.datastore.KeyFactory;
-import com.google.appengine.api.datastore.KeyFactory.Builder;
+import com.google.sps.src.Users;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import com.google.sps.src.Users;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
@@ -24,11 +23,8 @@ public class ServerUpdateServlet extends HttpServlet {
       throws IOException {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
-    System.out.println("LOG: key created");
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -42,7 +38,7 @@ public class ServerUpdateServlet extends HttpServlet {
       entity.setProperty(viewToProperty.get(request.getParameter("field")), newFieldData);
       datastore.put(entity);
     } catch (Exception e) {
-      System.out.println("Key doesn't exists");
+      System.out.println("Key doesn't exists" + e);
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
   }
@@ -50,10 +46,8 @@ public class ServerUpdateServlet extends HttpServlet {
   private void doDeleteTask(HttpServletRequest request, HttpServletResponse response, long number) {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     datastore.delete(key);
   }
@@ -61,10 +55,6 @@ public class ServerUpdateServlet extends HttpServlet {
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
     long number = Long.parseLong(request.getParameter("number"));
-
-    System.out.println("LOG: doPost /update-server-task-list request");
-    System.out.println("LOG: number of the item is " + number);
-    System.out.println("LOG: type of the request is " + request.getParameter("type"));
 
     String type = request.getParameter("type");
     if (type.equals("edit")) {
@@ -83,13 +73,9 @@ public class ServerUpdateServlet extends HttpServlet {
       throws IOException {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
-    System.out.println("LOG: key not created");
-    Key key = new KeyFactory.Builder("user", user_id)
-        .addChild("task", number)
-        .getKey();
-    //Key key = KeyFactory.createKey("task", number);
-    System.out.println("LOG: doChange servlet key created ");
+    // String user_id = request.getParameter("user-id");
+    Key key = new KeyFactory.Builder("user", user_id).addChild("task", number).getKey();
+    // Key key = KeyFactory.createKey("task", number);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
     try {
       Entity entity = datastore.get(key);
@@ -105,8 +91,9 @@ public class ServerUpdateServlet extends HttpServlet {
         entity.setProperty("lng", Double.parseDouble(request.getParameter("lng")));
       }
 
-      Date calendarDate = new SimpleDateFormat("yyyy-MM-dd HH:mm")
-          .parse(request.getParameter("date") + " " + request.getParameter("time"));
+      Date calendarDate =
+          new SimpleDateFormat("yyyy-MM-dd HH:mm")
+              .parse(request.getParameter("date") + " " + request.getParameter("time"));
       entity.setProperty("dateTime", calendarDate);
       datastore.put(entity);
 

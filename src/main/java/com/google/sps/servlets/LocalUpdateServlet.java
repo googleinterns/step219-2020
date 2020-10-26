@@ -23,7 +23,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-
 @WebServlet("/update-local-task-list")
 public class LocalUpdateServlet extends HttpServlet {
 
@@ -38,60 +37,54 @@ public class LocalUpdateServlet extends HttpServlet {
   public void init() {
     tasks = new ArrayList<>();
     String user_id = "";
-    System.out.println("inside createTaskList");
-}
+  }
 
-private void doLoadTasksList(HttpServletRequest request, HttpServletResponse response)
+  private void doLoadTasksList(HttpServletRequest request, HttpServletResponse response)
       throws IOException {
     try {
-    tasks = new ArrayList<>();
-    Users users = new Users();
-    String user_id = users.getUserId(request.getUserPrincipal());
-    //UserService userService = UserServiceFactory.getUserService();
-    //String user_id = userService.getCurrentUser().getUserId();
+      tasks = new ArrayList<>();
+      Users users = new Users();
+      String user_id = users.getUserId(request.getUserPrincipal());
 
-    System.out.println(user_id + "Gor by servlet from servlet");
-    Key ancestorKey = KeyFactory.createKey("user", user_id);
-    System.out.println("key created: "+ancestorKey);
-    DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
+      Key ancestorKey = KeyFactory.createKey("user", user_id);
+      DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-    Query query = new Query("task").setAncestor(ancestorKey);
-    System.out.println("QUERY created");
+      Query query = new Query("task").setAncestor(ancestorKey);
       query.addSort("dateTime", SortDirection.ASCENDING);
-    PreparedQuery results = datastore.prepare(query);
-    for (Entity entity : results.asIterable()) {
-      String text = (String) entity.getProperty("text");
-      Date dateTime = (Date) entity.getProperty("dateTime");
-      String place = (String) entity.getProperty("place");
-      String comment = (String) entity.getProperty("comment");
-      String state = (String) entity.getProperty("isDone");
-      Double lat = (Double) entity.getProperty("lat");
-      Double lng = (Double) entity.getProperty("lng");
+      PreparedQuery results = datastore.prepare(query);
+      for (Entity entity : results.asIterable()) {
+        String text = (String) entity.getProperty("text");
+        Date dateTime = (Date) entity.getProperty("dateTime");
+        String place = (String) entity.getProperty("place");
+        String comment = (String) entity.getProperty("comment");
+        String state = (String) entity.getProperty("isDone");
+        Double lat = (Double) entity.getProperty("lat");
+        Double lng = (Double) entity.getProperty("lng");
 
-      System.out.println("New task with text: "+text + " new id "+ entity.getKey().getId());
-      Task task =
-          new Task(
-              new DateTime(dateTime),
-              text,
-              comment,
-              new Place(lat, lng, place),
-              entity.getKey().getId(),
-              Boolean.valueOf(state), user_id);
-      //System.out.println(task);
-      tasks.add(task);
-    }
+        Task task =
+            new Task(
+                new DateTime(dateTime),
+                text,
+                comment,
+                new Place(lat, lng, place),
+                entity.getKey().getId(),
+                Boolean.valueOf(state),
+                user_id);
+
+        tasks.add(task);
+      }
     } catch (Exception e) {
-        System.out.println("LOG: tasks no loaded");
+      System.out.println("Error" + e);
     }
   }
 
   private Entity buildTaskEntityFromRequest(HttpServletRequest request) {
     Users users = new Users();
     String user_id = users.getUserId(request.getUserPrincipal());
-    //String user_id = request.getParameter("user-id");
+
     Key parentKey = KeyFactory.createKey("user", user_id);
     DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
-    Entity taskEntity = new Entity("task", parentKey);//Entity.newBuilder(taskKey);
+    Entity taskEntity = new Entity("task", parentKey); // Entity.newBuilder(taskKey);
     taskEntity.setProperty("text", request.getParameter("task-text"));
     taskEntity.setProperty("comment", request.getParameter("task-comment"));
     taskEntity.setProperty("place", request.getParameter("task-place"));
@@ -121,8 +114,8 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       datastore.put(taskEntity);
       Users users = new Users();
       String user_id = users.getUserId(request.getUserPrincipal());
-      //String user_id = request.getParameter("user-id");
-      //System.out.println("inside add found user key id = "+user_key_id);
+      // String user_id = request.getParameter("user-id");
+      // System.out.println("inside add found user key id = "+user_key_id);
 
       Place place =
           new Place(
@@ -132,15 +125,16 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
 
       Task task =
           new Task(
-                        new DateTime(
-                            request.getParameter("task-date") + " " + request.getParameter("task-time")),
-                        request.getParameter("task-text"),
-                        request.getParameter("task-comment"),
-                        new Place(request.getParameter("task-place")),
-                        taskEntity.getKey().getId(), false, user_id);
+              new DateTime(
+                  request.getParameter("task-date") + " " + request.getParameter("task-time")),
+              request.getParameter("task-text"),
+              request.getParameter("task-comment"),
+              new Place(request.getParameter("task-place")),
+              taskEntity.getKey().getId(),
+              false,
+              user_id);
 
       tasks.add(task);
-      System.out.println("The id of the task is " + taskEntity.getKey().getId());
       response
           .getWriter()
           .println(new GsonBuilder().setDateFormat("yyyy-MM-dd HH:mm").create().toJson(task));
@@ -191,8 +185,6 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
    */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
-    System.out.println("LOG: doPost() function");
-    System.out.println("LOG: request type=" + request.getParameter("type"));
 
     String type = request.getParameter("type");
     if (type.equals("add")) {
@@ -203,9 +195,9 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
       doEditTask(request, response);
     } else if (type.equals("change")) {
       doChangeTask(request, response);
-    } else if (type.equals("loadtasks")){
-       doLoadTasksList(request, response);
-    }else {
+    } else if (type.equals("loadtasks")) {
+      doLoadTasksList(request, response);
+    } else {
       System.out.println("There is no needed type of request");
       response.sendError(HttpServletResponse.SC_BAD_REQUEST);
     }
@@ -224,7 +216,7 @@ private void doLoadTasksList(HttpServletRequest request, HttpServletResponse res
           task.setTime(request.getParameter("time"));
           task.setTitle(request.getParameter("title"));
           task.setDate(request.getParameter("date"));
-          task.setIsDone(request.getParameter("isDone"));
+          task.setIsDone(Boolean.valueOf(request.getParameter("isDone")));
 
           Place place =
               Boolean.parseBoolean(request.getParameter("are_coordinates_changed"))
